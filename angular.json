@@ -30,17 +30,15 @@
               "projects/cms/src/favicon.ico",
               "projects/cms/src/assets"
             ],
-            "styles": [
-              "projects/cms/src/styles.scss"
-            ],
+            "styles": ["projects/cms/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/cms/src/environments/environment.ts",
-                  "with": "projects/cms/src/environments/environment.prod.ts"
+                  "replace": "projects/cms/src/env/dev.ts",
+                  "with": "projects/cms/src/env/prod.ts"
                 }
               ],
               "optimization": true,
@@ -94,9 +92,7 @@
               "projects/cms/src/favicon.ico",
               "projects/cms/src/assets"
             ],
-            "styles": [
-              "projects/cms/src/styles.scss"
-            ],
+            "styles": ["projects/cms/src/styles.scss"],
             "scripts": []
           }
         },
@@ -108,9 +104,7 @@
               "projects/cms/tsconfig.spec.json",
               "projects/cms/e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
@@ -126,6 +120,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "cms"
 }
