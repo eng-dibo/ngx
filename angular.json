@@ -2,5 +2,130 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "projects": {}
+  "projects": {
+    "cms": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/cms",
+      "sourceRoot": "projects/cms/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/cms",
+            "index": "projects/cms/src/index.html",
+            "main": "projects/cms/src/main.ts",
+            "polyfills": "projects/cms/src/polyfills.ts",
+            "tsConfig": "projects/cms/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "projects/cms/src/favicon.ico",
+              "projects/cms/src/assets"
+            ],
+            "styles": [
+              "projects/cms/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/cms/src/environments/environment.ts",
+                  "with": "projects/cms/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "cms:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "cms:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "cms:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/cms/src/test.ts",
+            "polyfills": "projects/cms/src/polyfills.ts",
+            "tsConfig": "projects/cms/tsconfig.spec.json",
+            "karmaConfig": "projects/cms/karma.conf.js",
+            "assets": [
+              "projects/cms/src/favicon.ico",
+              "projects/cms/src/assets"
+            ],
+            "styles": [
+              "projects/cms/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/cms/tsconfig.app.json",
+              "projects/cms/tsconfig.spec.json",
+              "projects/cms/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/cms/e2e/protractor.conf.js",
+            "devServerTarget": "cms:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "cms:serve:production"
+            }
+          }
+        }
+      }
+    }},
+  "defaultProject": "cms"
 }
