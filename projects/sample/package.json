@@ -1,0 +1,8 @@
+{
+  "name": "@eng-dibo/ngx-sample",
+  "version": "0.0.1",
+  "scripts": {
+    "ng": "ng"
+  },
+  "private": false
+}
