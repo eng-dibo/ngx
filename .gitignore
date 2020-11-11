@@ -1,14 +1,18 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
+# help.github.com/ignore-files
 
-# compiled output
+
+node_modules
 /dist
-/tmp
 /out-tsc
-# Only exists if Bazel was run
+/tmp
 /bazel-out
 
-# dependencies
-/node_modules
+*.log
+*.cache
+*.tmp
+
+# any folder ends with '!!', ex: notes!!
+*!!
 
 # profiling files
 chrome-profiler-events*.json
@@ -23,7 +27,6 @@ speed-measure-plugin*.json
 .settings/
 *.sublime-workspace
 
-# IDE - VSCode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -35,10 +38,6 @@ speed-measure-plugin*.json
 /.sass-cache
 /connect.lock
 /coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
 /typings
 
 # System Files
