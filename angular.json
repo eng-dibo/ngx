@@ -30,7 +30,10 @@
               "projects/cms/src/favicon.ico",
               "projects/cms/src/assets"
             ],
-            "styles": ["projects/cms/src/styles.scss"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "projects/cms/src/styles.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -92,7 +95,10 @@
               "projects/cms/src/favicon.ico",
               "projects/cms/src/assets"
             ],
-            "styles": ["projects/cms/src/styles.scss"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "projects/cms/src/styles.scss"
+            ],
             "scripts": []
           }
         },
@@ -148,9 +154,7 @@
               "projects/sample/src/favicon.ico",
               "projects/sample/src/assets"
             ],
-            "styles": [
-              "projects/sample/src/styles.scss"
-            ],
+            "styles": ["projects/sample/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -212,9 +216,7 @@
               "projects/sample/src/favicon.ico",
               "projects/sample/src/assets"
             ],
-            "styles": [
-              "projects/sample/src/styles.scss"
-            ],
+            "styles": ["projects/sample/src/styles.scss"],
             "scripts": []
           }
         },
@@ -226,9 +228,7 @@
               "projects/sample/tsconfig.spec.json",
               "projects/sample/e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
