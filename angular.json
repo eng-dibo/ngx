@@ -20,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/cms",
+            "outputPath": "dist/cms/browser",
             "index": "projects/cms/src/index.html",
             "main": "projects/cms/src/main.ts",
             "polyfills": "projects/cms/src/polyfills.ts",
@@ -108,7 +108,8 @@
             "tsConfig": [
               "projects/cms/tsconfig.app.json",
               "projects/cms/tsconfig.spec.json",
-              "projects/cms/e2e/tsconfig.json"
+              "projects/cms/e2e/tsconfig.json",
+              "projects/cms/tsconfig.server.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -123,6 +124,51 @@
             "production": {
               "devServerTarget": "cms:serve:production"
             }
+          }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/cms/server",
+            "main": "projects/cms/server.ts",
+            "tsConfig": "projects/cms/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "projects/cms/src/env/dev.ts",
+                  "with": "projects/cms/src/env/prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": true
+            }
+          }
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "options": {
+            "browserTarget": "cms:build",
+            "serverTarget": "cms:server"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "cms:build:production",
+              "serverTarget": "cms:server:production"
+            }
+          }
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "browserTarget": "cms:build:production",
+            "serverTarget": "cms:server:production",
+            "routes": ["/"]
+          },
+          "configurations": {
+            "production": {}
           }
         }
       }

@@ -6,6 +6,8 @@ import env from "./env";
 
 if (env.mode === "prod") enableProdMode();
 
-platformBrowserDynamic()
+document.addEventListener('DOMContentLoaded', () => {
+  platformBrowserDynamic()
   .bootstrapModule(AppModule)
   .catch(err => console.error(err));
+});
