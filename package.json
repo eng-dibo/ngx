@@ -3,10 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "dev:ssr": "ng run cms:serve-ssr",
-    "serve:ssr": "node dist/cms/server/main.js",
-    "build:ssr": "ng build --prod && ng run cms:server:production",
-    "prerender": "ng run cms:prerender"
+    "start:cms": "",
+    "start:cms:dev": ""
   },
   "private": false,
   "dependencies": {
@@ -22,7 +20,9 @@
     "@angular/platform-server": "~10.1.5",
     "@angular/router": "~10.1.5",
     "@nguniversal/express-engine": "^10.1.0",
+    "cross-env": "^7.0.2",
     "express": "^4.15.2",
+    "nodemon": "^2.0.6",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

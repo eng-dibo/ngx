@@ -2,7 +2,22 @@
   "name": "@eng-dibo/ngx-cms",
   "version": "0.0.1",
   "scripts": {
-    "ng": "ng"
+    "ng": "ng",
+    "build:browser": "ng build --aot --prod",
+    "build:browser:dev": "ng build",
+    "build:server": "ng run cms:server:production --bundleDependencies",
+    "build:server:dev": "ng run cms:server --bundleDependencies",
+    "build": "npx cross-env NODE_ENV=production npm run build:browser && npm run build:server",
+    "build:dev": "npx cross-env NODE_ENV=development npm run build:browser:dev && npm run build:server:dev",
+    "serve": "node dist/server/express.js --start",
+    "serve:inspect": "node --inspect dist/server/express.js --start",
+    "serve:dev": "nodemon --inspect dist/server/express.js --start",
+    "serve:ssr:dev": "ng run cms:serve-ssr",
+    "serve:ng": "ng serve -o",
+    "start": "npm run build && node task optimize && npm run serve",
+    "start:dev": "npm run build:dev && npm run serve:inspect",
+    "start:nodemon": "nodemon  src/ -e ts,html,scss --exec \"npm run start:dev\"",
+    "prerender": "ng run cms:prerender"
   },
   "private": false
 }

@@ -130,7 +130,7 @@
           "builder": "@angular-devkit/build-angular:server",
           "options": {
             "outputPath": "dist/cms/server",
-            "main": "projects/cms/server.ts",
+            "main": "projects/cms/src/server/express.ts",
             "tsConfig": "projects/cms/tsconfig.server.json"
           },
           "configurations": {
