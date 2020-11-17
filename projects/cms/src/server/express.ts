@@ -11,7 +11,7 @@ import { existsSync } from "fs";
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
-  const distFolder = "../browser";
+  const distFolder = join(__dirname, "../browser");
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine(
@@ -22,7 +22,7 @@ export function app(): express.Express {
   );
 
   server.set("view engine", "html");
-  const distFolder = join(__dirname, "../browser");
+  server.set("views", distFolder);
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
