@@ -5,8 +5,8 @@
     "target": "es2016",
     "types": ["node"]
   },
-  "files": ["src/server/main.ts", "src/server/express.ts"],
+  "files": ["main.ts", "express.ts"],
   "angularCompilerOptions": {
-    "entryModule": "./src/app/app.server.module#AppServerModule"
+    "entryModule": "./app.server.module#AppServerModule"
   }
 }
