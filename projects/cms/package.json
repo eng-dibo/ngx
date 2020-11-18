@@ -1,5 +1,6 @@
 {
   "name": "@eng-dibo/ngx-cms",
+  "description": "a CMS platform built with Angular",
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
