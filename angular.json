@@ -109,7 +109,7 @@
               "projects/cms/tsconfig.app.json",
               "projects/cms/tsconfig.spec.json",
               "projects/cms/e2e/tsconfig.json",
-              "projects/cms/src/server/tsconfig.json"
+              "projects/cms/server/tsconfig.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -130,11 +130,11 @@
           "builder": "@angular-builders/custom-webpack:server",
           "options": {
             "customWebpackConfig": {
-              "path": "projects/cms/src/server/webpack.config.js"
+              "path": "projects/cms/server/webpack.config.js"
             },
             "outputPath": "dist/cms/server",
-            "main": "projects/cms/src/server/express.ts",
-            "tsConfig": "projects/cms/src/server/tsconfig.json"
+            "main": "projects/cms/server/express.ts",
+            "tsConfig": "projects/cms/server/tsconfig.json"
           },
           "configurations": {
             "production": {

@@ -6,9 +6,10 @@ module.exports = (config, options) => {
   //change 'mode' by env (ex: npx cross-env NODE_ENV=production ...)
   config.mode = "none";
 
-  //change the entry defined in angular.json/**/server/main
+  //changes the entry defined in angular.json/**/server/main
+  //paths are related to angular.json/projects/cms
   //the output will be dist/**/express.js instead of main.js
-  config.entry = { express: "./src/server/express.ts" };
+  config.entry = { express: "./server/express.ts" };
 
   //execlude node_modules from bundling, use require(package) instead.
   config.externals.push(nodeExternals());

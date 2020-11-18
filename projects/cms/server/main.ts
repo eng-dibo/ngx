@@ -1,5 +1,5 @@
 import { enableProdMode } from "@angular/core";
-import env from "../env";
+import env from "../src/env";
 
 if (env.mode === "prod") {
   enableProdMode();

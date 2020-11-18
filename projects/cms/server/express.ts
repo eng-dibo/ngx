@@ -13,7 +13,9 @@ export function app(): express.Express {
   const server = express();
   const distFolder = join(__dirname, "../browser");
 
-  // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
+  //Universal express-engine
+  //https://github.com/angular/universal/tree/master/modules/express-engine
+  //https://expressjs.com/en/api.html#app.engine
   server.engine(
     "html",
     ngExpressEngine({
