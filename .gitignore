@@ -11,8 +11,9 @@ node_modules
 *.cache
 *.tmp
 
-# any folder ends with '!!', ex: notes!!
+# any folder or file ends with '!!', ex: notes!!
 *!!
+*!!.*
 
 # profiling files
 chrome-profiler-events*.json
