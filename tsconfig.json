@@ -17,7 +17,6 @@
     "target": "es2015",
     "module": "es2020",
     "lib": ["es2018", "dom"],
-    "paths": { "~*": ["./*"], "*": ["node_modules/*", "types/*"] },
     "types": ["node"],
     "typeRoots": ["node_modules/@types"],
     "lib": ["es2018", "dom"],
@@ -28,15 +27,16 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "rootDir": "./",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "preserveSymlinks": true,
     "sourceRoot": "",
     "mapRoot": "",
     "emitDecoratorMetadata": true,
     "locale": "en",
     "watch": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": { "~*": ["./*"], "*": ["node_modules/*", "types/*"] },
+    "allowSyntheticDefaultImports": false,
+    "esModuleInterop": false
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
