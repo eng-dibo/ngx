@@ -8,6 +8,11 @@
     "start:cms:dev": "npm run start:dev --prefix projects/cms"
   },
   "private": false,
+  "keywords": [
+    "angular",
+    "ngx",
+    "ng"
+  ],
   "dependencies": {
     "@angular-builders/custom-webpack": "^10.0.1",
     "@angular/animations": "~10.1.5",
