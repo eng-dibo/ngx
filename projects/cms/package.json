@@ -20,5 +20,11 @@
     "start:nodemon": "nodemon  src/ -e ts,html,scss --exec \"npm run start:dev\"",
     "prerender": "ng run cms:prerender"
   },
-  "private": false
+  "private": false,
+  "keywords": [
+    "cms",
+    "angular cms",
+    "content management system",
+    "wordpress"
+  ]
 }
