@@ -9,7 +9,7 @@ install the package and it's peer dependencies:
 
 ```
 npm i @engineers/graphics
-npm i sharp@^0.25.3
+npm i sharp@^0.26.3
 ```
 
 ## examples

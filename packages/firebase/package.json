@@ -1,16 +1,16 @@
 {
-  "name": "@engineers/package-name",
+  "name": "@engineers/firebase",
   "version": "1.0.0",
   "private": false,
-  "description": "use this package to work with images via sharp",
+  "description": "tools for firebase",
   "keywords": [
-    "graphics",
-    "images",
-    "resize images",
-    "sharp"
+    "firebase",
+    "hosting",
+    "domain"
   ],
   "peerDependencies": {
-    "sharp": "^0.26.3"
+    "firebase-admin": "^9.4.1",
+    "firebase-functions": "^3.11.0"
   },
   "repository": {
     "type": "git",

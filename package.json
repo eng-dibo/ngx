@@ -30,6 +30,8 @@
     "@ngx-share/buttons": "^7.1.4",
     "cross-env": "^7.0.2",
     "express": "^4.15.2",
+    "firebase-admin": "^9.4.1",
+    "firebase-functions": "^3.11.0",
     "mime": "^1.6.0",
     "mongoose": "^5.10.15",
     "ng-lazyload-image": "^7.1.0",
