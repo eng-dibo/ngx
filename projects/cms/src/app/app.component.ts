@@ -10,7 +10,7 @@ export class AppComponent {
   title = "cms";
 
   constructor(private router: Router) {}
-  go(path: Array | string) {
+  go(path: Array<string> | string) {
     if (typeof path == "string") path = [path];
     this.router.navigate(path);
   }
