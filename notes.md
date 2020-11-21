@@ -7,3 +7,5 @@
   - basic settings for tsconfig, webpack, ...
 
   -> to use the shared resources, add it to angular.json/assets[]
+
+  - compile env/\* as require()
