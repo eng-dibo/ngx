@@ -35,7 +35,7 @@
     "watch": false,
     "resolveJsonModule": true,
     "paths": { "~*": ["./*"], "*": ["node_modules/*", "types/*"] },
-    "allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": false
   },
   "angularCompilerOptions": {
