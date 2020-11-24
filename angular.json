@@ -14,25 +14,25 @@
         }
       },
       "root": "projects/cms",
-      "sourceRoot": "projects/cms/src",
+      "sourceRoot": "projects/cms/browser",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/cms/browser",
-            "index": "projects/cms/src/index.html",
-            "main": "projects/cms/src/main.ts",
-            "polyfills": "projects/cms/src/polyfills.ts",
+            "index": "projects/cms/browser/index.html",
+            "main": "projects/cms/browser/main.ts",
+            "polyfills": "projects/cms/browser/polyfills.ts",
             "tsConfig": "projects/cms/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/cms/src/favicon.ico",
-              "projects/cms/src/assets"
+              "projects/cms/browser/favicon.ico",
+              "projects/cms/browser/assets"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
-              "projects/cms/src/styles.scss"
+              "projects/cms/browser/styles.scss"
             ],
             "scripts": []
           },
@@ -87,17 +87,17 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/cms/src/test.ts",
-            "polyfills": "projects/cms/src/polyfills.ts",
+            "main": "projects/cms/browser/test.ts",
+            "polyfills": "projects/cms/browser/polyfills.ts",
             "tsConfig": "projects/cms/tsconfig.spec.json",
             "karmaConfig": "projects/cms/karma.conf.js",
             "assets": [
-              "projects/cms/src/favicon.ico",
-              "projects/cms/src/assets"
+              "projects/cms/browser/favicon.ico",
+              "projects/cms/browser/assets"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
-              "projects/cms/src/styles.scss"
+              "projects/cms/browser/styles.scss"
             ],
             "scripts": []
           }

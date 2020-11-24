@@ -4,12 +4,12 @@
     "outDir": "../../dist/cms/app",
     "types": []
   },
-  "files": ["src/main.ts", "src/polyfills.ts"],
-  "include": ["src/**/*.d.ts"],
+  "files": ["browser/main.ts", "browser/polyfills.ts"],
+  "include": ["browser/**/*.d.ts"],
   "exclude": [
     /*execlude test & server files*/
-    "src/test.ts",
-    "src/**/*.spec.ts",
-    "src/config/server.ts"
+    "browser/test.ts",
+    "browser/**/*.spec.ts",
+    "browser/config/server.ts"
   ]
 }
