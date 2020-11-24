@@ -5,7 +5,7 @@ import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ErrorComponent } from "./error.component";
 import { ContentModule } from "./content/content.module";
-import env from "../env";
+import env from "~config/env";
 
 /*
 routes are loaded in the following order:

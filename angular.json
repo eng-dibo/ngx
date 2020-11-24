@@ -40,8 +40,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/cms/src/env/index.ts",
-                  "with": "projects/cms/src/env/prod.ts"
+                  "replace": "projects/cms/config/env.ts",
+                  "with": "projects/cms/config/env.prod.ts"
                 }
               ],
               "optimization": true,
@@ -141,8 +141,8 @@
               "outputHashing": "media",
               "fileReplacements": [
                 {
-                  "replace": "projects/cms/src/env/index.ts",
-                  "with": "projects/cms/src/env/prod.ts"
+                  "replace": "projects/cms/config/env.ts",
+                  "with": "projects/cms/config/env.prod.ts"
                 }
               ],
               "sourceMap": false,
