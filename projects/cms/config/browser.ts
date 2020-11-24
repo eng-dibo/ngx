@@ -1,11 +1,13 @@
-import env from "../env";
+import env from "../src/env";
 
 export function metaTags() {
   return {
     name: "site name",
     baseUrl:
-      env.mode === "dev" ? "http://localhost:4200/" : "https://www.domain.com/",
-    link: "https://www.domain.com/",
+      env.mode === "dev"
+        ? "http://localhost:4200/"
+        : "https://www.example.com/",
+    link: "https://www.example.com/",
     description: "",
     "content-language": "ar,en",
     image: { src: `/assets/site-image.webp` },

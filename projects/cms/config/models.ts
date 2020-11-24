@@ -51,7 +51,7 @@ export const accounts = {
   type: String,
   entry: {}, //for Adsense: id (pub-*), slot, channel;
   user: { type: String, ref: "persons" },
-  role: { type: mongoose.ObjectId, ref: "roles" } //account role, ex: admin, modirator,...
+  role: { type: mongoose.Types.ObjectId, ref: "roles" } //account role, ex: admin, modirator,...
 };
 
 export const countries = {
