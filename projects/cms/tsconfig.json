@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "../../dist/cms",
-    "rootDir": "./"
+    "rootDir": "./",
+    "paths": { "~*": ["./*"] }
   },
   "exclude": []
 }

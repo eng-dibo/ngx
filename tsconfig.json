@@ -34,7 +34,7 @@
     "locale": "en",
     "watch": false,
     "resolveJsonModule": true,
-    "paths": { "~*": ["./*"], "*": ["node_modules/*", "types/*"] },
+    "paths": { "~~*": ["./*"], "*": ["node_modules/*", "types/*"] },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": false
   },

@@ -14,10 +14,14 @@ module.exports = (config, options) => {
   //execlude node_modules from bundling, use require(package) instead.
   config.externals.push(nodeExternals());
 
-  //set the root path alias(ex: ~packages/*)
-  //tsconfig.json/**/path sets the alias for typescript,
-  //use config.resolve.alias for webpack
-  config.resolve.alias["~"] = path.resolve(__dirname, "../../../../");
+  //exclude config dir, so the user can modify the dist version and add his own configs.
+  //matches: ~config/* ~~config/*  ../config/*
+  config.externals.push(/^(~{1,2}|.*\/)config\/.*/);
+
+  //set the root path alias(ex: ~packages/*) for typescript and webpack
+  //tsconfig.path & webpack.resolve.alias
+  config.resolve.alias["~"] = path.resolve(__dirname, "../");
+  config.resolve.alias["~~"] = path.resolve(__dirname, "../../");
 
   //fix: setting library & libraryTarget to fix issue: require('./server.js') == undefined
   //https://github.com/webpack/webpack/issues/2030#issuecomment-232886608
