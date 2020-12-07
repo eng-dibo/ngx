@@ -1,5 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
+const process = require("process");
 const nodeExternals = require("webpack-node-externals");
 
 module.exports = (config, options) => {
@@ -15,8 +16,37 @@ module.exports = (config, options) => {
   config.externals.push(nodeExternals());
 
   //exclude config dir, so the user can modify the dist version and add his own configs.
-  //matches: ~config/* ~~config/*  ../config/*
-  config.externals.push(/^(~{1,2}|.*\/)config\/.*/);
+  //i.e: keep it as require(config/*) instead of bundling it
+  //matches: ~config/* ~~config/* ./config/* ../../config/*
+  //todo: also exclude config dir in build:browser
+  config.externals.push(function() {
+    let context, request, callback;
+    if (arguments[0].context) {
+      //webpack 5
+      context = arguments[0].context;
+      request = arguments[0].request;
+      callback = arguments[1];
+    } else {
+      //webpack 4
+      context = arguments[0];
+      request = arguments[1];
+      callback = arguments[2];
+    }
+
+    let regx = /^(~{1,2}|\.\/|(\.\.\/)+)config\/.*/;
+    if (regx.test(request)) {
+      //get the path to config from the project's root (i.e: process.cwd() or '.')
+      //the dist path will include an additional part (core) i.e: dist/cms/core/server
+      //so we need to add an extra '../'
+      if (request.startsWith("~"))
+        request = `${path.relative(context, process.cwd())}/../config/env`;
+      else if (request.startsWith("~~")) {
+        //todo: get config's path from workspace's root
+      }
+
+      callback(null, `commonjs ${request}`);
+    } else callback();
+  });
 
   //set the root path alias(ex: ~packages/*) for typescript and webpack
   //tsconfig.path & webpack.resolve.alias

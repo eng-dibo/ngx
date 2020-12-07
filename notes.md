@@ -33,6 +33,9 @@ https://stackoverflow.com/questions/65160997/convert-alias-paths-back-to-real-pa
 - temporary use relative paths instead of alias for excluded paths
   (i.e: webpack.execludes[])
 
+- [cms] webpack
+https://stackoverflow.com/q/65171607/12577650
+https://github.com/webpack/webpack/issues/7357
 
 # notes
 current dir:
