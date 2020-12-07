@@ -25,7 +25,6 @@ const appRoutes: Routes = [
 ];
 const endRoutes: Routes = [{ path: "**", component: ErrorComponent }];
 const enableTracing = env.mode === "dev";
-console.log(">>>>>>>>>>>>>>>env.mode", env.mode, enableTracing);
 
 @NgModule({
   declarations: [AppComponent, ErrorComponent],
