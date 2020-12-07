@@ -33,16 +33,25 @@ module.exports = (config, options) => {
       callback = arguments[2];
     }
 
-    let regx = /^(~{1,2}|\.\/|(\.\.\/)+)config\/.*/;
-    if (regx.test(request)) {
+    let regex = /^(?:~{1,2}|\.\/|(?:\.\.\/)+)config\/(.*)/;
+    let match = request.match(regex);
+    if (match) {
+      //console.log({ context, request, match });
+      //
+      /*
       //get the path to config from the project's root (i.e: process.cwd() or '.')
       //the dist path will include an additional part (core) i.e: dist/cms/core/server
       //so we need to add an extra '../'
+      //todo: use request.replace(REGEX) to replace ${1}
       if (request.startsWith("~"))
-        request = `${path.relative(context, process.cwd())}/../config/env`;
+        request = `${path.relative(context, process.cwd())}/../config/${match[1]}`;
       else if (request.startsWith("~~")) {
         //todo: get config's path from workspace's root
-      }
+      }*/
+
+      //all paths are relative to the output file (i.e: dist/cms/core/express.js)
+      //because all require(config/*) statements are in this file
+      request = `../../config/${match[1]}`;
 
       callback(null, `commonjs ${request}`);
     } else callback();
