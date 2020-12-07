@@ -20,11 +20,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/cms/browser",
+            "outputPath": "dist/cms/core/browser",
             "index": "projects/cms/browser/index.html",
             "main": "projects/cms/browser/main.ts",
             "polyfills": "projects/cms/browser/polyfills.ts",
-            "tsConfig": "projects/cms/tsconfig.app.json",
+            "tsConfig": "projects/cms/browser/tsconfig.json",
             "aot": true,
             "assets": [
               "projects/cms/browser/favicon.ico",
@@ -106,7 +106,7 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/cms/tsconfig.app.json",
+              "projects/cms/browser/tsconfig.json",
               "projects/cms/tsconfig.spec.json",
               "projects/cms/e2e/tsconfig.json",
               "projects/cms/server/tsconfig.json"
@@ -132,7 +132,7 @@
             "customWebpackConfig": {
               "path": "projects/cms/server/webpack.config.js"
             },
-            "outputPath": "dist/cms/server",
+            "outputPath": "dist/cms/core/server",
             "main": "projects/cms/server/express.ts",
             "tsConfig": "projects/cms/server/tsconfig.json"
           },
