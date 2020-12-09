@@ -13,8 +13,8 @@ export const BUCKET = `${dev ? "test" : "bucketName"}`;
 export { schemas };
 
 export const DB = {
-  type: "username",
-  auth: ["dbUsername", "password@@"], //todo: ['username', 'env:dbPass']
+  type: "mongodb",
+  auth: ["dbUsername", "password"], //todo: ['username', 'env:dbPass']
   host: "username-gbdqa.gcp.mongodb.net",
   srv: true,
   dbName: dev ? "test" : "dbname"
