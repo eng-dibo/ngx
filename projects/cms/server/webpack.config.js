@@ -1,6 +1,7 @@
 const basicConfig = require("../webpack.config.js");
 
 module.exports = (config, options) => {
+  options.target = "server";
   config = basicConfig(config, options);
 
   //changes the entry defined in angular.json/**/server/main

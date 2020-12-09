@@ -5,8 +5,9 @@ const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 
 module.exports = (config, options) => {
+  options.target = options.target || "browser";
   //change 'mode' by env (ex: npx cross-env NODE_ENV=production ...)
-  config.mode = "none";
+  if (!"mode" in config) config.mode = options.mode || "none";
 
   config.externals = config.externals || [];
 
@@ -24,8 +25,11 @@ module.exports = (config, options) => {
   //https://github.com/webpack/webpack/issues/2030#issuecomment-290363910
   //todo: libraryTarget commonjs VS commonjs-module
   config.output = config.output || {};
-  config.output.library = "";
-  config.output.libraryTarget = "commonjs-module";
+  config.output.library = config.output.library || "";
+  config.output.libraryTarget =
+    config.output.libraryTarget || options.target === "server"
+      ? "commonjs-module"
+      : "window";
   config.module = config.module || {};
   config.module.rules = config.module.rules || [];
   config.module.rules.push(

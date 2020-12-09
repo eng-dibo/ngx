@@ -1,6 +1,7 @@
 const basicConfig = require("../webpack.config.js");
 
 module.exports = (config, options) => {
+  options.target = "browser";
   config = basicConfig(config, options);
 
   /*
@@ -10,5 +11,8 @@ module.exports = (config, options) => {
     main: "./browser/main.ts",
     polyfills: "./browser/polyfills.ts"
   }; */
+
+  config.output.libraryTarget = "window";
+  config.target = "web";
   return config;
 };
