@@ -3,8 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "../../dist/cms",
-    "rootDir": "./",
-    "paths": { "~*": ["./*"] }
-  },
-  "exclude": []
+    "paths": {
+      "~*": ["./*"],
+      "~~*": ["../../*"],
+      "*": ["node_modules/*", "types/*"]
+    }
+  }
 }
