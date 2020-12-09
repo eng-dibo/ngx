@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ErrorComponent } from "./error.component";
 import { ContentModule } from "./content/content.module";
 import env from "~config/env";
+import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { UniversalInterceptor } from "~~packages/ngx-universal-express/universal-interceptor";
 
 /*
 routes are loaded in the following order:
@@ -38,7 +40,13 @@ const enableTracing = env.mode === "dev";
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: UniversalInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
   exports: [RouterModule]
 })
