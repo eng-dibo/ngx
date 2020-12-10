@@ -40,6 +40,7 @@
     "firebase-functions": "^3.11.0",
     "mime": "^1.6.0",
     "mongoose": "^5.10.15",
+    "ncp": "^2.0.0",
     "ng-lazyload-image": "^7.1.0",
     "ngx-highlightjs": "^4.0.2",
     "ngx-loading": "^8.0.0",
