@@ -9,6 +9,7 @@ import env from "~config/env";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { UniversalInterceptor } from "@engineers/ngx-universal-express/universal-interceptor";
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { HighlightModule } from "ngx-highlightjs";
 /*
 routes are loaded in the following order:
 1- appRoutes: all routes in the project, except endRoutes, contentRoutes (dynamic routes)
@@ -39,7 +40,8 @@ const enableTracing = env.mode === "dev";
     RouterModule.forRoot(endRoutes, { enableTracing }),
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserAnimationsModule,
-    MatToolbarModule
+    MatToolbarModule,
+    HighlightModule //todo: import common languages only https://ngx-highlight.netlify.com/
   ],
   providers: [
     {

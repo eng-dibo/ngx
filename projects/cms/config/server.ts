@@ -10,6 +10,8 @@ export const dev = process.env.NODE_ENV === "development";
 export const TEMP = join(process.env.INIT_CWD || "", "./temp"); //todo: use system.temp
 export const DIST = join(process.env.INIT_CWD || "", "./dist"); //process.cwd() dosen't include /dist
 export const BUCKET = `${dev ? "test" : "bucketName"}`;
+//use auth code to perform admin operations.
+export const AUTH = "";
 export { schemas };
 
 export const DB = {
