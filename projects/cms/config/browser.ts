@@ -3,10 +3,13 @@ import env from "./env";
 export function metaTags() {
   return {
     name: "site name",
+    //name will be added to title via meta.service (i.e: page title - site name)
+    title: "page title",
     baseUrl:
       env.mode === "dev"
         ? "http://localhost:4200/"
         : "https://www.example.com/",
+    //page's canonical link (different for each page)
     link: "https://www.example.com/",
     description: "",
     "content-language": "ar,en",
@@ -15,9 +18,7 @@ export function metaTags() {
       site: "twitter_account",
       "site:id": "twitter_account"
       //todo: app:name:iphone,...
-    },
-    //name will be added to title via meta.service
-    title: "site title"
+    }
   };
 }
 
