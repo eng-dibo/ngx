@@ -6,7 +6,8 @@
     "paths": {
       "~*": ["./*"],
       "~~*": ["../../*"],
-      "*": ["node_modules/*", "types/*"]
+      "@engineers/*": ["../../packages/*"]
+      "*": ["node_modules/*", "types/*"],      
     }
   }
 }

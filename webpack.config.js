@@ -19,6 +19,7 @@ module.exports = (config, options) => {
   config.resolve = config.resolve || {};
   config.resolve.alias = config.resolve.alias || {};
   config.resolve.alias["~~"] = path.resolve(__dirname, "./");
+  config.resolve.alias["@engineers"] = path.resolve(__dirname, "./packages/");
 
   //fix: setting library & libraryTarget to fix issue: require('./server.js') == undefined
   //https://github.com/webpack/webpack/issues/2030#issuecomment-232886608
