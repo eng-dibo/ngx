@@ -1,4 +1,4 @@
-# @engineers/ngx-tools
+# @engineers/ngx
 
 useful tools for Angular.
 
@@ -22,7 +22,7 @@ dynamically inject a component into the DOM.
 
 ```
 //app.module.ts:
-import { DynamicLoadService } from '@engineers/ngx-tools/dynamic-load.service';
+import { DynamicLoadService } from '@engineers/ngx/dynamic-load.service';
 
 @NgModule{
   providers: [DynamicLoadService]
@@ -31,7 +31,7 @@ import { DynamicLoadService } from '@engineers/ngx-tools/dynamic-load.service';
 
 
 //component.ts
-import { DynamicLoadService } from '@engineers/ngx-tools/dynamic-load.service';
+import { DynamicLoadService } from '@engineers/ngx/dynamic-load.service';
 
 
 @Component({
@@ -67,7 +67,7 @@ dynamically load resources (js, css, images, ...)
 
 ```
 //don't forget to add the service to @NgModule.providers[]
-import { NgxToolsLoadService } from '@engineers/ngx-tools/load-scripts.service';
+import { NgxToolsLoadService } from '@engineers/ngx/load-scripts.service';
 
 @Component({ ... })
 export class ExampleComponent{
@@ -94,7 +94,7 @@ manage meta tags.
 
 ```
 //add the service to @NgModule.providers[]
-import { MetaService } from '@engineers/ngx-tools/load-scripts.service';
+import { MetaService } from '@engineers/ngx/load-scripts.service';
 
 @Component({ ... })
 export class ExampleComponent{
@@ -175,7 +175,7 @@ manage routes.
 //subscribe to any changes in either url params or url queries.
 //this method emits a value each time a change occurred in params or queries.
 
-import { urlParams } from '@engineers/ngx-tools/routes';
+import { urlParams } from '@engineers/ngx/routes';
 
 ...
 ngOnInit(){

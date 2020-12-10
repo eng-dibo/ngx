@@ -33,7 +33,7 @@ export class DynamicLoadService {
        @ViewChild('placeholder', {read: ViewContainerRef, static: true}) placeholder: ViewContainerRef;
    */
 
-  load(component, placeholder, inputs) {
+  load(component: any, placeholder: any, inputs: any) {
     placeholder.clear();
 
     //todo: provide text or renderer methods

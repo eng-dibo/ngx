@@ -10,6 +10,8 @@ import { Observable, Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import env from "~config/env";
 
+const dev = env.mode === "dev";
+
 export interface Obj {
   [key: string]: any;
 }
@@ -20,14 +22,7 @@ export interface Obj {
 export class HttpService {
   constructor(private http: HttpClient) {}
 
-  /**
-   *
-   * @method assign
-   * @param  options||{} [description]
-   * @param  {observe    [description]
-   * @return Observable<T>
-   */
-  get<T>(params, query?: Obj, options?: Obj): Observable<T> {
+  get<T>(params: string | Obj, query?: Obj, options?: Obj): Observable<T> {
     options = Object.assign(options || {}, {
       observe: "body"
     });
@@ -44,7 +39,7 @@ export class HttpService {
     if (params.refresh) (query || {})["refresh"] = params.refresh;
     options.params = this.queryParams(query);
 
-    if (env.dev) console.log("[httpService] get", { params, query, url });
+    if (dev) console.log("[httpService] get", { params, query, url });
     return this.http.get<T>(url, options);
   }
 
@@ -54,7 +49,7 @@ export class HttpService {
     query?: Obj,
     options: Obj = {}
   ): Observable<T> {
-    if (env.dev) console.log("[httpService] post", { type, query, data });
+    if (dev) console.log("[httpService] post", { type, query, data });
 
     //todo: sending data as FormData instead of Object causes that req.body=undefined
     if (options.formData !== false) data = this.toFormData(data); //typescript 3.2 dosen't support null safe operator i.e: options?.formData
@@ -66,10 +61,10 @@ export class HttpService {
   //same as get() & post(), but reports the progress
   progress<T>(
     method: "get" | "post",
-    params,
-    data?,
+    params: string | Obj,
+    data?: any,
     query?: Obj,
-    options?
+    options?: any
   ): Observable<HttpEvent<T>> {
     options = Object.assign(options || {}, {
       reportProgress: true,
@@ -143,11 +138,11 @@ export class HttpService {
         }
       }
     }
-    if (env.dev) console.log("toFormData()", { data, formData });
+    if (dev) console.log("toFormData()", { data, formData });
     return formData;
   }
 
-  queryParams(query) {
+  queryParams(query: Obj) {
     if (!query) return;
     let queryParams = new HttpParams();
     for (let key in query) {

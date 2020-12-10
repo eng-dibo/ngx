@@ -18,7 +18,7 @@ import {
   FormlyFormOptions,
   FieldArrayType
 } from "@ngx-formly/core";
-import { obs } from "@engineers/ngx-tools";
+import { obs } from "@engineers/ngx";
 
 //you need to add css classes: alert, alert-ok, alert-error for `reponse` div
 

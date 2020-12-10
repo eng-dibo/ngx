@@ -8,7 +8,7 @@ import {
   AfterViewChecked
 } from "@angular/core";
 import { FieldType } from "@ngx-formly/material";
-import { DynamicLoadService } from "@engineers/ngx-tools/dynamic-load.service";
+import { DynamicLoadService } from "@engineers/ngx/dynamic-load.service";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Categories } from "./functions";
 import { Observable } from "rxjs";

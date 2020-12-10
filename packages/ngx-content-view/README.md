@@ -75,7 +75,7 @@ export interface Keywords {
 
 # MetaService
 
-see @engineers/ngx-tools
+see @engineers/ngx
 
 you can use MetaService to easly add or modify the meta tags.
 to use it add it to `providers[]` in your module.

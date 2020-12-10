@@ -1,4 +1,4 @@
-# @engineers/nodejs-tools
+# @engineers/nodejs
 
 useful tools for nodejs.
 
@@ -149,7 +149,7 @@ replaceAsync('replace this content asynchronously',/content/,()=>getDataPromise(
 measure the execution's duration.
 
 ```
-import {setTimer, getTimer, endTimer} from '@engineers/nodejs-tools/timer';
+import {setTimer, getTimer, endTimer} from '@engineers/nodejs/timer';
 
 function getData(apiUrl){
   setTimer('getData');
@@ -169,7 +169,7 @@ function getData(apiUrl){
 
 ## utils
 
-import {log} from '@engineers/nodejs-tools/utils';
+import {log} from '@engineers/nodejs/utils';
 
 log some data to the console using the inspector.
 

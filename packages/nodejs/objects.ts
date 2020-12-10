@@ -86,6 +86,8 @@ export function merge(target: any, ...obj: any[]): any {
  * @param  array       [description]
  * @param  caseSensitive applies only if the element is string
  * @return boolean
+ *
+ * todo: rename to in() or exists()
  */
 export function inArray(
   element: any,
@@ -110,6 +112,9 @@ export function inArray(
   } else if (typeof array == "object") {
     return element in array;
   }
+
+  //todo: throw exception
+  return false;
 }
 
 /**
@@ -163,19 +168,25 @@ todo:
  - replacer: any (string | fn:()=>any | async fn | promise | any athor type (cust to string))
    ex: replacer may be a promise or a function that returns a promise
  */
-export function replaceAsync(str, regex, replacer) {
+export function replaceAsync(
+  str: string,
+  regex: RegExp | string,
+  replacer: any
+) {
   setTimer("replaceAsync");
   const matched = str.match(regex);
   if (!matched) return Promise.resolve(str);
   if (!regex.global)
-    return replacer(...matched).then(newStr => str.replace(regex, newStr));
+    return replacer(...matched).then((newStr: any) =>
+      str.replace(regex, newStr)
+    );
 
   //if regex.global (i.e: /regex/g) we need to recursively apply the replacement
   let i = 0;
   let index = 0;
-  const result = [];
+  const result: string[] = [];
   const copy = new RegExp(regex.source, regex.flags.replace("g", ""));
-  const callbacks = [];
+  const callbacks: any = [];
 
   while (matched.length > 0) {
     const substr = matched.shift(); //remove the first element and return it

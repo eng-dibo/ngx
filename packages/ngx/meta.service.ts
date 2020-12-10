@@ -131,7 +131,15 @@ export class MetaService {
 
     if (tags.twitter) {
       for (let key in tags.twitter) {
-        let value = tags.twitter[key];
+        //use `keyof typeof tags.twitter` as value type to fix:
+        // Element implicitly has an 'any' type because expression of type 'string' can't be used to index type {...}
+        //or add index signature to tags.twitter (i.e: {[key: string]: any})
+        //or value=tags.twitter[key as keyof tags.twitter]
+        //https://stackoverflow.com/a/57088282/12577650
+        //https://stackoverflow.com/a/60274490/12577650
+        //https://stackoverflow.com/a/64217699/12577650
+        //let value: keyof typeof tags.twitter = tags.twitter[key];
+        let value = tags.twitter[key as keyof tags.twitter];
         if (!value) continue;
         if (key.slice(0, 8) === "twitter:") key = key.slice(8);
         if (key === "site" || key === "site:id") {
@@ -147,7 +155,7 @@ export class MetaService {
       this.loadService.load((<types.Image>tags.image).src, "link", {
         rel: "image_src"
       });
-    this.titleService.setTitle(tags.title);
+    this.titleService.setTitle(tags.title || "");
 
     delete tags.desc;
     delete tags.link;
@@ -227,7 +235,7 @@ export class MetaService {
     return { [prop]: key, content: value };
   }
 
-  filter(tags) {
+  filter(tags: any) {
     let allowed = ["title", "description", "content", "refresh"]; // todo: list all allowed meta tags
 
     Object.keys(tags)

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
 import { QuillViewComponent } from "ngx-quill"; //todo: enable sanitizing https://www.npmjs.com/package/ngx-quill#security-hint
-import { obs } from "@engineers/ngx-tools";
+import { obs } from "@engineers/ngx";
 import { Article, Pref } from "./article";
-import { MetaService } from "@engineers/ngx-tools/meta.service";
+import { MetaService } from "@engineers/ngx/meta.service";
 /*
 - usage:
 <content-view [data]="{title,content,keywords[],auther{},...}" [related]="[{id,title,..}]" >
@@ -28,9 +28,9 @@ export interface DataObj {
   styleUrls: ["./view.scss"]
 })
 export class NgxContentViewComponent implements OnInit {
-  @Input() data: Data | Observable<Data>;
-  @Input() pref: Pref; //component prefrences
-  dataObj: DataObj;
+  @Input() data!: Data | Observable<Data>;
+  @Input() pref!: Pref; //component prefrences
+  dataObj!: DataObj;
 
   constructor(private meta: MetaService) {}
 

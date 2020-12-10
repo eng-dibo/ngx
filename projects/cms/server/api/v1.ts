@@ -3,12 +3,12 @@ import shortId from "shortid";
 import { connect, getModel } from "../mongoose/functions";
 import { dev, TEMP, BUCKET } from "~config/server";
 import { upload, bucket, getCategories } from "../functions";
-import { cache, mdir, write } from "@engineers/nodejs-tools/fs";
+import { cache, mdir, write } from "@engineers/nodejs/fs";
 import { Categories } from "~browser/categories-material/functions";
-import { setTimer, endTimer, getTimer } from "@engineers/nodejs-tools/timer";
+import { setTimer, endTimer, getTimer } from "@engineers/nodejs/timer";
 import { resize } from "@engineers/graphics";
 import { backup, restore, query as _query } from "@engineers/mongoose";
-import { replaceAll } from "@engineers/nodejs-tools/objects";
+import { replaceAll } from "@engineers/nodejs/objects";
 
 //todo: add auth token
 

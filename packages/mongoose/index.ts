@@ -1,8 +1,8 @@
 // todo: export default mongoose (instead of export every method separately) i.e import mongoose, not import * as mongoose ..
 import mongoose from "mongoose";
 import shortId from "shortid";
-import { setTimer, endTimer } from "@engineers/nodejs-tools/timer";
-import { arrayChunk } from "@engineers/nodejs-tools/objects";
+import { setTimer, endTimer } from "@engineers/nodejs/timer";
+import { arrayChunk } from "@engineers/nodejs/objects";
 export { mongoose };
 
 /*

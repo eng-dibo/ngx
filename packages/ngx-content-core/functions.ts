@@ -129,7 +129,7 @@ todo:
  * @param  sanitizer DomSanitizer
  * @return SafeHTML, the bypassed html value.
  */
-export function keepHtml(value: ContentValue, sanitizer?): string {
+export function keepHtml(value: ContentValue, sanitizer?: any): string {
   let content = getValue(value, "content");
   return sanitizer.bypassSecurityTrustHtml(content);
 }

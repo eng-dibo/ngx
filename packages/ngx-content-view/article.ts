@@ -51,6 +51,6 @@ export interface Pref extends Obj {
   styleUrls: ["./view.scss"]
 })
 export class NgxContentArticleComponent {
-  @Input() data: Article;
-  @Input() type: string;
+  @Input() data!: Article;
+  @Input() type!: string;
 }

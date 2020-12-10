@@ -5,14 +5,14 @@ import { DOCUMENT } from "@angular/common";
 //don't forget to add this service to ngModule.provide[]
 @Injectable()
 export class NgxToolsLoadService {
-  constructor(@Inject(DOCUMENT) private document) {}
+  constructor(@Inject(DOCUMENT) private document: any) {}
 
   load(
-    src,
+    src: any,
     type = "script",
     attributes: { [key: string]: any } = {},
     cb?: (type: "loaded" | "ready" | "error") => void,
-    parent? //todo: HtmlElement
+    parent?: any //todo: HtmlElement
   ) {
     //tmp: for index.html
     //if (!cb) cb = ev => console.log("[load]", ev, src);

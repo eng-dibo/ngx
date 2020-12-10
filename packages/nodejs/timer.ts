@@ -16,7 +16,7 @@ export function setTimer(name?: string, time?: number) {
 
 export function getTimer(name?: string, timeline = false) {
   let _now = now();
-  let diff = (_now - timer[name] || _now) / 1000;
+  let diff = (_now - timer[name || "default"] || _now) / 1000;
   //if(!timeline) calculate the diff cumulativly,
   //i.e: the difference between now and the last timer, not from the start
   //ex: +3s

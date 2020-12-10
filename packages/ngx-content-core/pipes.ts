@@ -15,7 +15,7 @@ export class SlugPipe implements PipeTransform {
    * @return [description]
    */
   //todo: transform(...args) causes an error, but transform(value,...args) not!
-  transform(value, ...args): string {
+  transform(value: fn.ContentValue, ...args: any[]): string {
     return fn.slug(value, ...args);
   }
 }
@@ -25,7 +25,7 @@ export class SlugPipe implements PipeTransform {
 })
 export class ContentPipe implements PipeTransform {
   //constructor(private sanitizer: DomSanitizer) {}
-  transform(value): string {
+  transform(value: fn.ContentValue): string {
     return fn.content(value);
   }
 }
@@ -34,7 +34,7 @@ export class ContentPipe implements PipeTransform {
   name: "html2text"
 })
 export class Html2textPipe implements PipeTransform {
-  transform(value, ...args): string {
+  transform(value: string, ...args: any[]): string {
     return fn.html2text(value, ...args);
   }
 }
@@ -43,7 +43,7 @@ export class Html2textPipe implements PipeTransform {
   name: "summary"
 })
 export class SummaryPipe implements PipeTransform {
-  transform(value, ...args): string {
+  transform(value: fn.ContentValue, ...args: any[]): string {
     return fn.summary(value, ...args);
   }
 }
@@ -52,7 +52,7 @@ export class SummaryPipe implements PipeTransform {
   name: "length"
 })
 export class LengthPipe implements PipeTransform {
-  transform(value, ...args): string {
+  transform(value: string, ...args: any[]): string {
     return fn.length(value, ...args);
   }
 }
@@ -61,7 +61,7 @@ export class LengthPipe implements PipeTransform {
   name: "nl2br"
 })
 export class Nl2brPipe implements PipeTransform {
-  transform(value): string {
+  transform(:string): string {
     return fn.nl2br(value);
   }
 }
@@ -79,7 +79,7 @@ export class KeepHtmlPipe implements PipeTransform {
  * @param  content   [description]
  * @return [description]
  */
-  transform(value) {
+  transform(value:fn.ContentValue) {
     return fn.keepHtml(value, this.sanitizer);
   }
 }
