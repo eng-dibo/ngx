@@ -8,7 +8,7 @@
     "build:browser:dev": "ng build",
     "build:server": "ng run cms:server:production --bundleDependencies",
     "build:server:dev": "ng run cms:server --bundleDependencies",
-    "build:config": "tsc -p config/tsconfig.json",
+    "build:config": "tsc -p config/tsconfig.json && ncp config ../../dist/config",
     "build": "npx cross-env NODE_ENV=production npm run build:config && npm run build:browser && npm run build:server",
     "build:dev": "npx cross-env NODE_ENV=development npm run build:config && npm run build:browser:dev && npm run build:server:dev",
     "serve": "node ../../dist/cms/core/server/express.js --start",
