@@ -39,7 +39,7 @@
       "*": ["node_modules/*", "types/*"]
     },
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": false
+    "esModuleInterop": true
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,

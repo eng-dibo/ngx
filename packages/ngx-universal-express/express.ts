@@ -21,7 +21,7 @@ import { ServerModule } from "@angular/platform-server";
 //imports for server()
 import "zone.js/dist/zone-node";
 import { ngExpressEngine } from "@nguniversal/express-engine";
-import * as express from "express";
+import express from "express";
 import { APP_BASE_HREF } from "@angular/common";
 
 /*
