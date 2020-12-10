@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { FormlyModule } from "@ngx-formly/core";
 import { NgxFormComponent } from "./form";
 import { MatButtonModule } from "@angular/material/button";
-import { NgxContentCoreModule } from "../ngx-content/core";
+import { NgxContentCoreModule } from "@engineers/ngx-content-core";
 import { NgxLoadingModule } from "ngx-loading";
 /*
  - we added NgxFormComponent to @NgModule.exports[]

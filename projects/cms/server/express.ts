@@ -1,7 +1,7 @@
 import {
   server as expressServer,
   run
-} from "~~packages/ngx-universal-express/express";
+} from "@engineers/ngx-universal-express/express";
 import { AppServerModule } from "./main";
 import { join } from "path";
 

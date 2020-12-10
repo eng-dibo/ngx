@@ -1,8 +1,8 @@
 // todo: export default mongoose (instead of export every method separately) i.e import mongoose, not import * as mongoose ..
 import mongoose from "mongoose";
 import shortId from "shortid";
-import { setTimer, endTimer } from "pkg/nodejs-tools/timer";
-import { arrayChunk } from "pkg/nodejs-tools/objects";
+import { setTimer, endTimer } from "@engineers/nodejs-tools/timer";
+import { arrayChunk } from "@engineers/nodejs-tools/objects";
 export { mongoose };
 
 /*
@@ -304,7 +304,7 @@ export function restore(backupData: types.BackupData, chunkSize: number = 50) {
  * @example: GET /api/v1/find/articles/[{"status":"approved"},null,{"limit":1}]
  * @method query
  * @param  operation  operation name, ex: find
- * @param  modelObj   model object (as accepted in pkg/mongoose model()) or collection name as string
+ * @param  modelObj   model object (as accepted in @engineers/mongoose model()) or collection name as string
  * @param  params  every operation has it's own params, for example find accepts filter, docs, options
  * @return {}
  */

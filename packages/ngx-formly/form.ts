@@ -10,7 +10,7 @@ import {
   SimpleChanges
 } from "@angular/core";
 import { Observable } from "rxjs";
-import { keepHtml } from "../ngx-content/core/functions";
+import { keepHtml } from "@engineers/ngx-content-core/functions";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { FormGroup, FormArray } from "@angular/forms";
 import {
@@ -18,7 +18,7 @@ import {
   FormlyFormOptions,
   FieldArrayType
 } from "@ngx-formly/core";
-import { obs } from "pkg/ngx-tools";
+import { obs } from "@engineers/ngx-tools";
 
 //you need to add css classes: alert, alert-ok, alert-error for `reponse` div
 

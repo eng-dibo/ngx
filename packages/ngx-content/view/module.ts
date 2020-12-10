@@ -14,7 +14,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { NgxContentViewComponent } from "./view";
 import { NgxContentArticleComponent } from "./article";
-import { NgxContentCoreModule } from "../core"; //to use pipes
+import { NgxContentCoreModule } from "@engineers/ngx-content-core"; //to use pipes
 
 import { MatGridListModule } from "@angular/material/grid-list";
 import { MatIconModule } from "@angular/material/icon";

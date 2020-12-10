@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
 import { QuillViewComponent } from "ngx-quill"; //todo: enable sanitizing https://www.npmjs.com/package/ngx-quill#security-hint
-import { obs } from "pkg/ngx-tools";
+import { obs } from "@engineers/ngx-tools";
 import { Article, Pref } from "./article";
-import { MetaService } from "pkg/ngx-tools/meta.service";
+import { MetaService } from "@engineers/ngx-tools/meta.service";
 /*
 - usage:
 <content-view [data]="{title,content,keywords[],auther{},...}" [related]="[{id,title,..}]" >

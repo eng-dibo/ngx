@@ -7,7 +7,7 @@ import { ErrorComponent } from "./error.component";
 import { ContentModule } from "./content/content.module";
 import env from "~config/env";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
-import { UniversalInterceptor } from "~~packages/ngx-universal-express/universal-interceptor";
+import { UniversalInterceptor } from "@engineers/ngx-universal-express/universal-interceptor";
 
 /*
 routes are loaded in the following order:
