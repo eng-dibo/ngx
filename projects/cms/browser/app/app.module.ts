@@ -8,7 +8,7 @@ import { ContentModule } from "./content/content.module";
 import env from "~config/env";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { UniversalInterceptor } from "@engineers/ngx-universal-express/universal-interceptor";
-
+import { MatToolbarModule } from "@angular/material/toolbar";
 /*
 routes are loaded in the following order:
 1- appRoutes: all routes in the project, except endRoutes, contentRoutes (dynamic routes)
@@ -38,7 +38,8 @@ const enableTracing = env.mode === "dev";
     ContentModule,
     RouterModule.forRoot(endRoutes, { enableTracing }),
     BrowserModule.withServerTransition({ appId: "serverApp" }),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatToolbarModule
   ],
   providers: [
     {
