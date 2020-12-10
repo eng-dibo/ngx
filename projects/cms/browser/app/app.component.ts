@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
+import { metaTags } from "~config/front";
 
 @Component({
   selector: "app-root",
@@ -7,7 +8,7 @@ import { Router } from "@angular/router";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  title = "cms";
+  name = metaTags().name;
 
   constructor(private router: Router) {}
   go(path: Array<string> | string) {
