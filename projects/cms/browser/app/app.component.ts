@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { metaTags } from "~config/front";
+import { metaTags } from "~config/browser";
 
 @Component({
   selector: "app-root",
