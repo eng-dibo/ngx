@@ -43,9 +43,21 @@
   },
   "execlude": ["node_modules"],
   "angularCompilerOptions": {
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
+    "enableIvy": true,
     "strictTemplates": true,
-    "enableIvy": true
+
+    /* override some of 'strictTemplates' strictness */
+    "strictInjectionParameters": true,
+    "strictInputTypes": true,
+    "strictInputAccessModifiers": true,
+    "strictNullInputTypes": true,
+    /* todo: enable, it causes error in packages/ngx-content-view/article.html <span dir="auto"> */
+    "strictAttributeTypes": false,
+    "strictSafeNavigationTypes": true,
+    "strictDomLocalRefTypes": true,
+    "strictOutputEventTypes": true,
+    "strictDomEventTypes": true,
+    "strictContextGenerics": true,
+    "strictLiteralTypes": true
   }
 }
