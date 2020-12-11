@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "../../../dist/cms/config",
     "removeComments": false,
+    "sourceMap": false,
     "module": "commonjs"
   }
 }
