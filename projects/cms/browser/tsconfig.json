@@ -9,6 +9,7 @@
   "exclude": [
     /*execlude test & server files*/
     "test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "node_modules"
   ]
 }

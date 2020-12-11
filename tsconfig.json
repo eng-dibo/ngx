@@ -41,6 +41,7 @@
     "esModuleInterop": true,
     "strictPropertyInitialization": true
   },
+  "execlude": ["node_modules"],
   "angularCompilerOptions": {
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
