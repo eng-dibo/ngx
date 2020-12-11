@@ -19,7 +19,7 @@ export interface Obj {
   [k: string]: any;
 }
 
-export function getValue(value, keys?: string | string[]) {
+export function getValue(value: ContentValue, keys: string | string[] = []) {
   if (objectType(value) == "object") {
     if (!(keys instanceof Array)) keys = [keys];
     for (let i = 0; i < keys.length; i++)
@@ -49,7 +49,9 @@ export function slug(
 
   allowedChars = allowedChars
     .split("|")
-    .map(el => (el.startsWith(":") ? lang[el.substr(1)] : ""))
+    .map(el =>
+      el.startsWith(":") ? lang[el.substr(1) as keyof typeof lang] : ""
+    )
     .join("");
   let slug = getValue(value, ["slug", "title"])
     .trim() //remove trailing spaces

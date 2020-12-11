@@ -57,7 +57,7 @@ export function merge(target: any, ...obj: any[]): any {
 
   const type = objectType(target); // todo: error: Cannot read property 'objectType' of undefined
   for (let i = 1; i < _arg.length; i++) {
-    if (this.objectType(_arg[i]) !== type) {
+    if (objectType(_arg[i]) !== type) {
       return target;
     }
   }
@@ -87,7 +87,7 @@ export function merge(target: any, ...obj: any[]): any {
  * @param  caseSensitive applies only if the element is string
  * @return boolean
  *
- * todo: rename to in() or exists()
+ * todo: rename to in(container, element) or exists()
  */
 export function inArray(
   element: any,
@@ -103,10 +103,10 @@ export function inArray(
   else if (isIterable(array)) {
     for (let i = 0; i < (array as Array<any>).length; i++) {
       return (
-        array[i] == element ||
+        array[i as keyof typeof array] == element ||
         (!caseSensitive &&
-          typeof array[i] == "string" &&
-          array[i].toLowerCase() == element)
+          typeof array[i as keyof typeof array] == "string" &&
+          (array[i as keyof typeof array] as string).toLowerCase() == element)
       );
     }
   } else if (typeof array == "object") {
@@ -148,7 +148,7 @@ export function replaceAll(
   replaceWith: string
 ): string {
   replace = new RegExp(replace, "g");
-  return str.replace(<RegExp>replace, replaceWith); //faster than str.split().join() https://jsperf.com/replace-all-vs-split-join
+  return str.replace(replace as RegExp, replaceWith); //faster than str.split().join() https://jsperf.com/replace-all-vs-split-join
   //return str.split(replace).join(with)
 }
 
@@ -168,11 +168,7 @@ todo:
  - replacer: any (string | fn:()=>any | async fn | promise | any athor type (cust to string))
    ex: replacer may be a promise or a function that returns a promise
  */
-export function replaceAsync(
-  str: string,
-  regex: RegExp | string,
-  replacer: any
-) {
+export function replaceAsync(str: string, regex: RegExp, replacer: any) {
   setTimer("replaceAsync");
   const matched = str.match(regex);
   if (!matched) return Promise.resolve(str);
@@ -189,15 +185,17 @@ export function replaceAsync(
   const callbacks: any = [];
 
   while (matched.length > 0) {
-    const substr = matched.shift(); //remove the first element and return it
+    const substr: string = matched.shift() || ""; //remove the first element and return it
     const nextIndex = str.indexOf(substr, index); //position of substr after the current index
     result[i] = str.slice(index, nextIndex);
     i++;
     let j = i;
     callbacks.push(
-      replacer(...substr.match(copy), nextIndex, str).then(newStr => {
-        result[j] = newStr;
-      })
+      replacer(...(substr.match(copy) || []), nextIndex, str).then(
+        (newStr: any) => {
+          result[j] = newStr;
+        }
+      )
     );
     index = nextIndex + substr.length;
     i++;

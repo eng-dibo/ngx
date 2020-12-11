@@ -123,7 +123,8 @@ export class MetaService {
     if (tags.apps) {
       for (let k in tags.apps) {
         for (let kk in tags.app[k])
-          defaultTwitterTags[`${kk}:${k}`] = tags.app[k][kk];
+          defaultTwitterTags[`${kk}:${k}` as keyof typeof defaultTwitterTags] =
+            tags.app[k][kk];
       }
     }
 
@@ -133,17 +134,16 @@ export class MetaService {
       for (let key in tags.twitter) {
         //use `keyof typeof tags.twitter` as value type to fix:
         // Element implicitly has an 'any' type because expression of type 'string' can't be used to index type {...}
-        //or add index signature to tags.twitter (i.e: {[key: string]: any})
-        //or value=tags.twitter[key as keyof tags.twitter]
         //https://stackoverflow.com/a/57088282/12577650
         //https://stackoverflow.com/a/60274490/12577650
         //https://stackoverflow.com/a/64217699/12577650
         //let value: keyof typeof tags.twitter = tags.twitter[key];
-        let value = tags.twitter[key as keyof tags.twitter];
+        //or add index signature to tags.twitter (i.e: {[key: string]: any})
+        let value: string = tags.twitter[key as keyof typeof tags.twitter];
         if (!value) continue;
         if (key.slice(0, 8) === "twitter:") key = key.slice(8);
         if (key === "site" || key === "site:id") {
-          if (!value.startsWith("@")) value = "@" + value;
+          if (!(value as string).startsWith("@")) value = "@" + value;
         } else if (key === "description") value = value.slice(0, 200);
         tags[`twitter:${key}`] = value;
       }

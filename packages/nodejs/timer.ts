@@ -8,10 +8,10 @@ example:
 
  */
 
-var timer = {};
+var timer: { [key: string]: number } = {};
 
-export function setTimer(name?: string, time?: number) {
-  timer[name || "default"] = time || new Date().getTime();
+export function setTimer(name = "default", time?: number) {
+  timer[name] = time || new Date().getTime();
 }
 
 export function getTimer(name?: string, timeline = false) {

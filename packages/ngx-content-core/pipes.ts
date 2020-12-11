@@ -61,7 +61,7 @@ export class LengthPipe implements PipeTransform {
   name: "nl2br"
 })
 export class Nl2brPipe implements PipeTransform {
-  transform(:string): string {
+  transform(value: string): string {
     return fn.nl2br(value);
   }
 }
@@ -79,7 +79,7 @@ export class KeepHtmlPipe implements PipeTransform {
  * @param  content   [description]
  * @return [description]
  */
-  transform(value:fn.ContentValue) {
+  transform(value: fn.ContentValue) {
     return fn.keepHtml(value, this.sanitizer);
   }
 }

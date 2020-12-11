@@ -22,7 +22,7 @@ export interface Obj {
 export class HttpService {
   constructor(private http: HttpClient) {}
 
-  get<T>(params: string | Obj, query?: Obj, options?: Obj): Observable<T> {
+  get<T>(params: string | Obj, query: Obj = {}, options?: Obj): Observable<T> {
     options = Object.assign(options || {}, {
       observe: "body"
     });
@@ -34,9 +34,9 @@ export class HttpService {
       if (params.id) url += params.id;
       else if (params.category)
         url += `category=${encodeURIComponent(params.category)}`;
+      if (params.refresh) (query || {})["refresh"] = params.refresh;
     }
 
-    if (params.refresh) (query || {})["refresh"] = params.refresh;
     options.params = this.queryParams(query);
 
     if (dev) console.log("[httpService] get", { params, query, url });
@@ -46,7 +46,7 @@ export class HttpService {
   post<T>(
     type: string,
     data: Obj,
-    query?: Obj,
+    query: Obj = {},
     options: Obj = {}
   ): Observable<T> {
     if (dev) console.log("[httpService] post", { type, query, data });
@@ -116,7 +116,7 @@ export class HttpService {
    * @param  singleElements append the element as a single entry i.e: JSON.stringify(el)
    * @return FormData
    */
-  toFormData(data, singleElements?: string[]): FormData {
+  toFormData(data: FormData | Obj, singleElements?: string[]): FormData {
     if (data instanceof FormData) return data;
 
     let formData = new FormData();
