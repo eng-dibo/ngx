@@ -4,6 +4,7 @@ import { ContentViewComponent } from "./view.component";
 import { ContentEditorComponent } from "./editor.component";
 import { ContentManageComponent } from "./manage.component";
 import { Routes, RouterModule } from "@angular/router";
+import { NgxContentViewModule } from "@engineers/ngx-content-view/module";
 
 const routes: Routes = [
   //ex: /articles/category-slug/item-slug=123
@@ -23,7 +24,7 @@ const routes: Routes = [
     ContentEditorComponent,
     ContentManageComponent
   ],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), NgxContentViewModule],
   exports: [RouterModule]
 })
 export class ContentModule {}

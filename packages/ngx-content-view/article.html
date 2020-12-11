@@ -38,7 +38,7 @@
       lazyLoad="{{data.cover.lazy? data.cover.srcset || data.cover.src : ''}}"
       sizes="{{data.cover.sizes}}"
       defaultImage="{{data.cover.lazy? data.cover.placeholder || '//via.placeholder.com/'+(data.cover.width||'500')+'x'+(data.cover.height||'250')+'.webp?text=loading...':''}}"
-      [useSrcset]="data.cover.lazy && data.cover.srcset"
+      [useSrcset]="data.cover.lazy && !!data.cover.srcset"
       src="data.cover.lazy?'':data.cover.src"
       alt="{{data.cover.alt || data.title}}"
     />
