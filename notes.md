@@ -15,6 +15,8 @@
 
 - [cms] copy config/firebase.json to dist/\*
 
+- ts: enable all strict flags, replace all 'any' types, remove '@ts-ignore', '@ts-nocheck'
+
 # issue:
 
 - [dist/cms/server/express] convert ~cofig/\* to ../config/\*
