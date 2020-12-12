@@ -67,8 +67,11 @@ export interface AppOptions {
 }
 
 // The Express server() is exported so that it can be used by serverless Functions.
-export function server(options: AppOptions): express.Express {
-  const app = express();
+export function server(
+  options: AppOptions,
+  cb: (app: express.Express) => express.Express
+): express.Express {
+  const app: express.Express = express();
 
   //todo: error
   if (!("browserDir" in options)) {
@@ -108,7 +111,10 @@ export function server(options: AppOptions): express.Express {
     );
   }
 
-  // All regular routes use the Universal engine
+  //allow the consumer to modify app (ex: adding routes) before the final route added (i.e: "*")
+  if (cb && typeof cb === "function") app = cb(app) || app;
+
+  // All regular routes use the Universal engine, must be after all other routes
   app.get("*", (req, res) => {
     res.render(<string>options.indexFile, {
       req,
