@@ -42,7 +42,16 @@ solutions:
 
 # notes
 
-current dir:
+- current dir:
 
-- path.dirname(process['mainModule'].filename)
-- \_\_dirname
+  - path.dirname(process['mainModule'].filename)
+
+  - \_\_dirname
+
+- commit title:
+  [target] {flag} title
+  - target = [projectName] or [pkg: packageName]
+  - flag = {server} {browser} {minor} {tmp}
+    - minor: minor changes (ex: fix typo)
+    - tmp: temporary change or disable feature, must be re-enabled later
+      (ex: temporary disable a strict flag in tsconfig.json)
