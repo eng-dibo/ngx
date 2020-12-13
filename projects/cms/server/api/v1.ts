@@ -1,10 +1,10 @@
 import express from "express";
 import shortId from "shortid";
-import { connect, getModel } from "../mongoose/functions";
+import { connect, getModel } from "../mongoose";
 import { dev, TEMP, BUCKET } from "~config/server";
 import { upload, bucket, getCategories } from "../functions";
-import { cache, mdir, write } from "@engineers/nodejs/fs";
-import { Categories } from "~browser/categories-material/functions";
+import { cache, write } from "@engineers/nodejs/fs";
+import { Categories } from "~browser/formly-categories-material/functions";
 import { setTimer, endTimer, getTimer } from "@engineers/nodejs/timer";
 import { resize } from "@engineers/graphics";
 import { backup, restore, query as _query } from "@engineers/mongoose";
@@ -32,7 +32,7 @@ const supportedCollections = [
   "persons",
   "languages"
 ];
-app.get("/collections", (req, res) => res.json(supportedCollections));
+app.get("/collections", (req: any, res: any) => res.json(supportedCollections));
 
 export function query(
   operation: string,
@@ -49,7 +49,7 @@ export function query(
   ex: /api/v1/:find/articles/$articleId
   ex: /api/v1/:find/articles?params=[{"status":"approved"},null,{"limit":2}]
  */
-app.get(/\/:([^\/]+)\/([^\/]+)(?:\/(.+))?/, (req, res) => {
+app.get(/\/:([^\/]+)\/([^\/]+)(?:\/(.+))?/, (req: any, res: any) => {
   let operation = req.params[0],
     collection = req.params[1],
     params = JSON.parse(<string>req.params[2] || "[]"); //array of function params ex: find(...params)
@@ -57,8 +57,8 @@ app.get(/\/:([^\/]+)\/([^\/]+)(?:\/(.+))?/, (req, res) => {
   setTimer(`get ${req.url}`);
 
   query(operation, collection, params)
-    .then(data => res.json(data))
-    .catch(error => res.json({ error }))
+    .then((data: any) => res.json(data))
+    .catch((error: any) => res.json({ error }))
     .then(() => {
       if (dev) console.log("[server] get", req.url, endTimer(`get_${req.url}`));
     });
@@ -68,7 +68,7 @@ app.get(/\/:([^\/]+)\/([^\/]+)(?:\/(.+))?/, (req, res) => {
 //ex: <img src="/images/articles-cover-$topicId/slug-text.png?size=250" />
 //todo: change to /api/v1/articles/image/$articleId-$imageName (move to the previous app.get(); execlude from ngsw cache)
 //todo:  /api/v1/$collection/image=$name-$id/slug-text?size
-app.get(/\/image\/([^/-]+)-([^/-]+)-([^/]+)/, (req, res) => {
+app.get(/\/image\/([^/-]+)-([^/-]+)-([^/]+)/, (req: any, res: any) => {
   setTimer("/image");
 
   //todo: use system.temp folder
@@ -90,20 +90,20 @@ app.get(/\/image\/([^/-]+)-([^/-]+)-([^/]+)/, (req, res) => {
     () =>
       cache(
         localPath,
-        () => bucket.download(bucketPath).then(data => data[0]),
+        () => bucket.download(bucketPath).then((data: any) => data[0]),
         24
-      ).then(data =>
+      ).then((data: any) =>
         resize(data, size, {
           //  dest: resizedPath, //if the resizid img saved to a file, data=readFile(resized)
           format:
-            req.headers.accept.indexOf("image/webp") !== -1 ? "webp" : "jpg",
+            req.headers?.accept.indexOf("image/webp") !== -1 ? "webp" : "jpg",
           allowBiggerDim: false, //todo: add this options to resize()
           allowBiggerSize: false
         })
       ),
     24
   )
-    .then(data => {
+    .then((data: any) => {
       //todo: set cache header
       //todo: resize with sharp, convert to webp
       //res.write VS res.send https://stackoverflow.com/a/54874227/12577650
@@ -122,7 +122,7 @@ app.get(/\/image\/([^/-]+)-([^/-]+)-([^/]+)/, (req, res) => {
         );
       res.end();
     })
-    .catch(error => res.json({ error }));
+    .catch((error: any) => res.json({ error }));
 });
 
 /*
@@ -135,10 +135,10 @@ app.get(/\/image\/([^/-]+)-([^/-]+)-([^/]+)/, (req, res) => {
   ex: /api/v1/articles/category=123 -> get articles from this category
   ex: /api/v1/articles_categories -> get categories list
  */
-app.get(/\/([^\/]+)(?:\/(.+))?/, (req, res, next) => {
+app.get(/\/([^\/]+)(?:\/(.+))?/, (req: any, res: any, next: any) => {
   let collection = req.params[0],
-    itemType,
-    item;
+    itemType: string,
+    item: any;
 
   setTimer(`get ${req.url}`);
 
@@ -186,10 +186,10 @@ app.get(/\/([^\/]+)(?:\/(.+))?/, (req, res, next) => {
         if (itemType == "item") content = query("find", collection, [item]);
         else {
           let findOptions = {
-            filter: JSON.parse(<string>req.query.filter || null) || {},
+            filter: JSON.parse(<string>req.query.filter || "{}") || {},
             //todo: support docs{} -> typeod docsstring in both cases
             docs: req.query.docs, //projection
-            options: JSON.parse(<string>req.query.options || null) || {}
+            options: JSON.parse(<string>req.query.options || "{}") || {}
           };
           if (req.query.limit) findOptions.options.limit = +req.query.limit;
 
@@ -208,19 +208,21 @@ app.get(/\/([^\/]+)(?:\/(.+))?/, (req, res, next) => {
               findOptions.options
             ]);
           } else if (itemType == "category") {
-            content = getCategories(collection).then(categories => {
+            content = getCategories(collection).then((categories: any) => {
               let ctg = new Categories(categories);
 
-              let category = categories.categories.find(el => el.slug == item);
+              let category = categories.categories.find(
+                (el: any) => el.slug == item
+              );
 
               let branches = [category, ...ctg.getBranches(category)];
               let items = new Set();
 
               categories = categories.categories
-                .find(el => branches.includes(el))
-                .forEach(el => {
+                .find((el: any) => branches.includes(el))
+                .forEach((el: any) => {
                   if (el.items instanceof Array)
-                    el.items.forEach(item => items.add(item));
+                    el.items.forEach((item: any) => items.add(item));
                 });
 
               findOptions.filter._id = { $in: items };
@@ -238,7 +240,7 @@ app.get(/\/([^\/]+)(?:\/(.+))?/, (req, res, next) => {
     //todo: ?refresh=AUTH_TOKEN
     req.query.refresh ? -1 : 3
   )
-    .then(payload => {
+    .then((payload: any) => {
       res.json(payload);
       if (dev)
         console.log(
@@ -247,7 +249,7 @@ app.get(/\/([^\/]+)(?:\/(.+))?/, (req, res, next) => {
           payload
         );
     })
-    .catch(error => {
+    .catch((error: any) => {
       res.json({ error });
       if (dev)
         console.error(
@@ -261,7 +263,7 @@ app.get(/\/([^\/]+)(?:\/(.+))?/, (req, res, next) => {
 //todo: typescript: add files[] to `req` definition
 //todo: cover= only one img -> upload.single()
 //todo: change to /api/v1/collection/itemType[/id]
-app.post("/:collection", upload.single("cover"), (req: any, res) => {
+app.post("/:collection", upload.single("cover"), (req: any, res: any) => {
   if (dev)
     console.log("[server/api] post", {
       body: req.body,
@@ -275,7 +277,7 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
 
   let data = req.body;
 
-  let update;
+  let update: boolean;
   if (!data._id) {
     data._id = shortId.generate();
     update = false;
@@ -287,7 +289,7 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
   setTimer(`post ${req.url}`);
 
   let tmp = `${TEMP}/${collection}/item/${data._id}`;
-  mdir(tmp);
+  mkdir(tmp);
 
   //todo: replace content then return insertData()
   /*
@@ -307,7 +309,13 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
   // handle base64-encoded data (async)
   data.content = data.content.replace(
     /<img src="data:image\/(.+?);base64,([^=]+)={0,2}">/g,
-    (match, extention, imgData, matchPosition, fullString) => {
+    (
+      match: any,
+      extention: any,
+      imgData: any,
+      matchPosition: any,
+      fullString: any
+    ) => {
       let fileName = date.getTime(),
         bucketPath = `${BUCKET}/${collection}/${data._id}/${fileName}.webp`,
         src = `api/v1/image/${collection}-${fileName}-${data._id}/${data.slug}.webp`,
@@ -319,7 +327,7 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
 
       //todo: catch(err=>writeFile('queue/*',{imgData,err})) to retry uploading again
       resize(imgData, "", { format: "webp", input: "base64" })
-        .then(data => bucket.upload(data, bucketPath)) //todo: get fileName
+        .then((data: any) => bucket.upload(data, bucketPath)) //todo: get fileName
         .then(() => {
           console.log(`[server/api] uploaded: ${fileName}`);
           write(`${tmp}/${fileName}.webp`, imgData);
@@ -338,14 +346,14 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
     let bucketPath = `${BUCKET}/${collection}/${data._id}/cover.webp`;
 
     resize(req.file.buffer, "", { format: "webp" })
-      .then(data => bucket.upload(data, bucketPath))
-      .then(file => {
+      .then((data: any) => bucket.upload(data, bucketPath))
+      .then((file: any) => {
         console.log(`[server/api] cover uploaded`);
         write(`${tmp}/cover.webp`, req.file.buffer);
       });
   }
 
-  write(`${tmp}/data.json`, data).catch(error =>
+  write(`${tmp}/data.json`, data).catch((error: any) =>
     console.error(
       `[server/api] cannot write the temp file for: ${data._id}`,
       error
@@ -365,13 +373,13 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
               timestamps: true
             })
             //return data to the front-End
-            .then(doc => {
+            .then((doc: any) => {
               let temp = `${TEMP}/${collection}/item/${data._id}`;
-              readdir(temp).then(files => {
-                files.forEach(file => {
+              readdir(temp).then((files: any) => {
+                files.forEach((file: any) => {
                   //remove images and cover sizes; cover.webp, $images.webp and data.json are already renewed.
                   if (file.indexOf(".webp") && file.indexOf("_") !== -1)
-                    unlink(`${temp}/${file}`).catch(error =>
+                    unlink(`${temp}/${file}`).catch((error: any) =>
                       console.error(
                         `[server/api] cannot delete ${temp}/${file}`,
                         {
@@ -388,7 +396,7 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
       let content = new contentModel(data);
       return content.save();
     })
-    .then(data => {
+    .then((data: any) => {
       res.send(data);
       unlink(`${TEMP}/${collection}/index.json`);
       if (dev)
@@ -398,7 +406,7 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
           data
         );
     })
-    .catch(error => {
+    .catch((error: any) => {
       res.send({ error });
       console.error(
         `[server/api] post: ${collection}`,
@@ -411,20 +419,20 @@ app.post("/:collection", upload.single("cover"), (req: any, res) => {
 });
 
 //todo: /backup?filter=db1,db2:coll1,coll2,db3:!coll4
-app.get("/backup", (req, res) => {
-  let filter;
+app.get("/backup", (req: any, res: any) => {
+  let filter: any;
   if (req.query.filter) {
     let tmp = JSON.parse(<string>req.query.filter);
-    if (tmp instanceof Array) filter = (db, coll) => tmp.includes(db);
+    if (tmp instanceof Array) filter = (db: any, coll: any) => tmp.includes(db);
     //todo: else of object; else if string
   } else
-    filter = (db, coll) => {
+    filter = (db: any, coll: any) => {
       if (dev) console.log("[backup] filter", db, coll);
       return true;
     };
 
   connect()
-    .then(con => {
+    .then((con: any) => {
       let host = con.client.s.options.srvHost,
         now = replaceAll(new Date().toISOString(), ":", "-");
       console.log(`[backup] host: ${host}`);
@@ -433,7 +441,7 @@ app.get("/backup", (req, res) => {
       //don't convert void to boolean this way, use ',' (console.log(),true)
       //playground: https://www.typescriptlang.org/play?#code/GYVwdgxgLglg9mABFApgZygCgB4H4BcARnHADYoCGYAlAN4C+AsAFAssD07cA1i6hpkwQEaMigB0pOAHNM1ADRQATiBTVqbVs04olSuEr7oswsKPKSZcjc35YAhKfMSps9UYFOxlt4gA+fsgqakA
       //issue: https://github.com/microsoft/TypeScript/issues/28248#issuecomment-434693307
-      return backup(con, filter).then(data => {
+      return backup(con, filter).then((data: any) => {
         let file = `${process.env.INIT_CWD}/tmp/db-backup/${host}/${now}.json`;
         if (dev) console.log("[backup]", { file, data });
         let result = { info: con.client.s, backup: data };
@@ -443,19 +451,19 @@ app.get("/backup", (req, res) => {
             console.log("[backup] Done");
             res.json(result);
           })
-          .catch(error => {
+          .catch((error: any) => {
             console.error({ error });
             throw Error(`[backup] cannot write to ${file}`);
           });
       });
     })
 
-    .catch(error => res.json({ error }));
+    .catch((error: any) => res.json({ error }));
 });
 
 //todo: /restore?filter=db1;db2:coll2,coll3;db3:!coll1,coll2 & change=db2:db5
 //i.e: upload db2:coll2 to db5
-app.get("/restore", (req, res) => {});
+app.get("/restore", (req: any, res: any) => {});
 /*
  cors default options:
  {

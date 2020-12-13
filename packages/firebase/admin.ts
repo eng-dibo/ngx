@@ -32,15 +32,15 @@ export interface initOptions extends Obj {}
 
 //todo: extends admin
 export class Firebase {
-  public admin;
+  public admin: any;
 
   //todo: init app here causes error, admin.initializeApp() must be called from /server.ts
   //https://medium.com/google-cloud/firebase-separating-configuration-from-code-in-admin-sdk-d2bcd2e87de6
-  constructor(options?) {
+  constructor(options?: initOptions) {
     this.admin = admin;
     if (options) this.init(options);
   }
-  init(options?: initOptions) {
+  init(options: initOptions = {}) {
     if (!("credential" in options)) {
       if (options.cert) {
         //note: in this case the cert path must be absolute,
@@ -84,8 +84,8 @@ class Storage {
    * @param  bucket  [description]
    */
   //todo: if(bucket instanceof admin.Bucket)this.bucket=bucket
-  public bucket;
-  constructor(admin, bucket?: string, app?: admin.app.App) {
+  public bucket: any;
+  constructor(admin: any, bucket?: string, app?: admin.app.App) {
     this.bucket = admin.storage(app).bucket(bucket); //default bucket
   }
 
@@ -110,7 +110,7 @@ class Storage {
 
     if (typeof file === "string") return this.bucket.upload(file, options);
     else if (file instanceof Buffer) {
-      let fileObj = this.bucket.file(options.destination);
+      let fileObj = this.bucket.file(options?.destination);
       return fileObj.save(file);
     }
   }
@@ -124,11 +124,11 @@ class Storage {
    */
 
   //todo: file: string | File
-  download(file, options?: downloadOptions) {
+  download(file: any, options?: downloadOptions) {
     if (typeof file === "string") file = this.bucket.file(file);
     if (typeof options === "string") options = { destination: options };
     return file.download(options);
   }
 
-  write(file, content: string | Buffer) {}
+  write(file: any, content: string | Buffer) {}
 }

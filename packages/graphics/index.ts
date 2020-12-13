@@ -13,6 +13,8 @@ export interface ResizeOptions {
     | ((img: string | Buffer, size: number[], options: any) => string);
   [key: string]: any;
 }
+
+export type Size = number | string | Array<number | string | null>;
 /**
  * [resize description]
  * @method resize
@@ -26,11 +28,9 @@ export interface ResizeOptions {
  */
 export function resize(
   img: string | Buffer | sharp,
-  size: number | string | Array<number | string>,
-  options?: ResizeOptions
+  size: Size,
+  options: ResizeOptions = {}
 ): Promise<any> {
-  options = options || {};
-
   if (
     typeof img == "string" &&
     (img.indexOf("data:image/") === 0 || options.input == "base64")
@@ -52,14 +52,14 @@ export function resize(
   //passing (0) to img.resize() will not generate the image.
   //+el: to convert into number
   //don't use (size as number[]|string[]).map()  https://stackoverflow.com/a/49511416/12577650
-  size = (size as Array<number | string>).map(el =>
-    !el || el === 0 ? null : +el
-  );
+  size = size.map((el: any) => (!el || el === 0 ? null : +el));
 
   //Include all metadata (EXIF, XMP, IPTC) from the input image in the output image
   if (options.withMetadata !== false) img = img.withMetadata();
 
-  return img.metadata().then(metadata => {
+  return img.metadata().then((metadata: any) => {
+    //for typescript
+    size = <Array<string | number | null>>size;
     if (
       !size[0] &&
       !size[1] &&
@@ -76,7 +76,7 @@ export function resize(
       img = img
         .toBuffer()
         .then(
-          data =>
+          (data: any) =>
             `data:image/${options.format ||
               metadata.format};base64,${data.toString("base64")}`
         );
@@ -92,7 +92,7 @@ export function resize(
       }
       img = img
         .toFile(options.output)
-        .then(info => ({ options, metadata, ...info }));
+        .then((info: any) => ({ options, metadata, ...info }));
     }
 
     return img;
@@ -107,8 +107,14 @@ export function resize(
  * @return Promise<any>
  */
 
-export function resizeAll(img, sizes: Array<any>, options) {
-  return Promise.all(sizes.map(size => size => resize(img, size, options)));
+export function resizeAll(
+  img: string | Buffer | sharp,
+  sizes: Array<Size>,
+  options: ResizeOptions
+) {
+  return Promise.all(
+    sizes.map((size: Size) => (size: Size) => resize(img, size, options))
+  );
 }
 
 export function convert(

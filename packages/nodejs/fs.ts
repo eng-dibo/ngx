@@ -25,6 +25,9 @@ import {
   PathLike
 } from "fs";
 
+//todo: upgrade Nodejs to use "fs/promises"
+//or use require("fs").promises
+//check firebase node version requirement first.
 import {
   lstat,
   rename,
@@ -107,7 +110,7 @@ export function resolve(...paths: PathLike[]): string {
   return _resolve(normalize(join(...stringPaths))); // if it null it will be the current working dir (of the working script)
 }
 
-export function parsePath(path) {
+export function parsePath(path: any) {
   let extension = getExtension(path);
   return {
     type: isDirSync(path) ? "dir" : "file",
@@ -126,8 +129,8 @@ export function parsePath(path) {
 // TODO: if(file[0]=='.' && no other ".")return file ex: .gitignore
 // todo: remove `.` from extention
 //or: file.split(".").pop().toLowerCase()
-export function getExtension(file: PathLike): string {
-  if (typeof file != "string") return null;
+export function getExtension(file: PathLike): string | undefined {
+  if (typeof file != "string") return undefined;
   return extname(file).toLowerCase();
 }
 
@@ -136,8 +139,8 @@ export function getSize(
   unit: "b" | "kb" | "mb" | "gb" = "b"
 ): Promise<number> {
   return lstat(path)
-    .then(stats => stats.size)
-    .then(size => {
+    .then((stats: any) => stats.size)
+    .then((size: any) => {
       if (unit === "kb") return size / 1024;
       else if (unit === "mb") return size / (1024 * 1024);
       else if (unit === "gb") return size / (1024 * 1024 * 1024);
@@ -146,25 +149,22 @@ export function getSize(
 }
 
 export function getSizeSync(
-  path?: PathLike,
+  path: PathLike,
   unit: "b" | "kb" | "mb" | "gb" = "b"
 ): number {
-  let size = lstatSync(path).size;
-  if (unit === "kb") return size / 1024;
-  else if (unit === "mb") return size / (1024 * 1024);
-  else if (unit === "gb") return size / (1024 * 1024 * 1024);
-  else return size;
+  let base = { b: 1, kb: 1024, mb: 1024 ^ 2, gb: 1024 ^ 3 };
+  return lstatSync(path).size / base[unit];
 }
 
 export function isDir(path: PathLike): Promise<boolean> {
-  return lstat(path).then(stats => stats.isDirectory());
+  return lstat(path).then((stats: any) => stats.isDirectory());
 }
 export function isDirSync(path: PathLike): boolean {
-  return !existsSync(path) ? null : lstatSync(path).isDirectory();
+  return existsSync(path) && lstatSync(path).isDirectory();
 }
 
 export function getMtime(file: PathLike): Promise<number> {
-  return lstat(file).then(stats => stats.mtimeMs);
+  return lstat(file).then((stats: any) => stats.mtimeMs);
 }
 
 export function getMtimeSync(file: PathLike): number {
@@ -207,6 +207,7 @@ function moveSync(path: PathLike, newPath: PathLike, options?: MoveOptions) {
 
  */
 export function remove(path: string, options?: DeleteOptions): Promise<boolean>;
+
 export function remove(
   path: string[],
   options?: DeleteOptions
@@ -214,7 +215,7 @@ export function remove(
 
 export function remove(
   path: string | string[],
-  options
+  options: DeleteOptions = {}
 ): Promise<boolean | { [path: string]: any }> {
   if (!path) return Promise.reject("no path");
   if (path instanceof Array)
@@ -223,11 +224,11 @@ export function remove(
   return (
     access(path, constants.R_OK)
       .then(() => isDir(path as string))
-      .then(_isDir => {
+      .then((_isDir: boolean) => {
         if (_isDir)
           return (
             readdir(path)
-              .then(files =>
+              .then((files: any[]) =>
                 Promise.all(
                   files.map(file => {
                     let curPath = `${path}/${file}`;
@@ -255,27 +256,28 @@ export function remove(
 
 export function removeSync(
   path: string | string[],
-  options?: DeleteOptions
+  options: DeleteOptions = {}
 ): boolean | { [path: string]: any } {
   if (!path) return false; //todo: throw error
   if (path instanceof Array)
-    return path.map(p => ({ [p]: remove(p as string, options) }));
+    return path.map((p: string) => ({ [p]: removeSync(p as string, options) }));
 
   path = <string>path;
   path = resolve(path);
-  options = options || {};
 
-  if (existsSync(path)) return false;
+  //todo: options.noExist=stop
+  if (!existsSync(path)) return false;
 
   if (isDirSync(path))
-    readdirSync(path).forEach(file => {
+    readdirSync(path).forEach((file: string) => {
       let curPath = `${path}/${file}`;
       if (isDirSync(curPath)) {
-        if (!options.filesOnly) remove(curPath, options);
+        if (!options.filesOnly) removeSync(curPath, options);
       } else unlinkSync(curPath);
     });
   else unlinkSync(path);
   if (!options.keepDir) rmdirSync(path);
+  return true;
 }
 
 export function write(file: PathLike, data: any, options?: any): Promise<void> {
@@ -328,7 +330,7 @@ export async function cache(
   data?: any,
   expire = 0, //todo: number | [number, number]
   maxAge = 0,
-  type?,
+  type?: string,
   allowEmpty = false
 ): Promise<any> {
   setTimer("cache");
@@ -337,15 +339,15 @@ export async function cache(
   files = files.map(file => resolve(file));
 
   if (data === ":purge:")
-    return Promise.all(files.map(file => ({ [file]: unlink(file) })));
+    return Promise.all(files.map((file: string) => ({ [file]: unlink(file) })));
 
-  let readCache = function(file) {
+  let readCache = function(file: string) {
     if (!type) {
-      if (getExtension(file) == ".json") type = "json";
+      if (getExtension(file) === ".json") type = "json";
       else if (
         //todo: list all media types
         [".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp3", ".mp4"].includes(
-          getExtension(file)
+          <string>getExtension(file)
         )
       )
         type = "buffer";
@@ -354,20 +356,20 @@ export async function cache(
     if (type == "buffer") data = readFile(file);
     else {
       // without encoding (i.e utf-8) will return a stream instead of a string
-      data = readFile(file, "utf8").then(data => {
+      data = readFile(file, "utf8").then((data: any) => {
         data = data.toString();
         if (type === "json") data = JSON.parse(data);
         return data;
       });
     }
 
-    return data.then(data => {
+    return data.then((data: any) => {
       if (dev) console.log("[cache] file exists", endTimer("cache"), file);
       return data;
     });
   };
 
-  let filesInfo = {}; //contains exists files only with mtime for each file.
+  let filesInfo: { [key: string]: number } = {}; //contains exists files only with mtime for each file.
 
   let _now = now();
 
@@ -394,16 +396,16 @@ export async function cache(
   //  we get file1.txt from cache, then changed data, then saved the new data into file2.txt
   if (typeof data === "function") data = /* await*/ data();
 
-  let p = isPromise ? data : Promise.resolve(data);
+  let p: Promise<any> = isPromise(data) ? data : Promise.resolve(data);
 
   return p
-    .then(data => {
+    .then((data: any) => {
       if (allowEmpty || !isEmpty(data)) write(files[0], data);
       if (dev)
         console.log("[cache] refereshed in", endTimer("cache"), files[0]);
       return data; //todo: return write()
     })
-    .catch(error => {
+    .catch((error: any) => {
       if (dev)
         console.warn(
           "[cache] faild to refresh the cache" +
@@ -450,9 +452,14 @@ export function mkdirSync(
   path: string | string[],
   file = false,
   options: number | string | MakeDirectoryOptions = {}
-) {
-  if (path instanceof Array)
-    return path.map(p => ({ [p]: mkdirSync(p, file) }));
+): void | { [key: string]: void } {
+  if (path instanceof Array) {
+    let result: { [key: string]: void } = {};
+    path.forEach((p: string) => {
+      result[p] = <void>mkdirSync(p, file);
+    });
+    return result;
+  }
 
   if (file) path = dirname(path);
   if (typeof options === "string" || isNumber(options))
@@ -467,13 +474,13 @@ export function mkdirSync(
 
 //todo: replace with read() & write()
 export let json = {
-  read(file: string) {
+  read(file: string): any {
     if (!file) return null;
     var data = readFileSync(file).toString();
-    return JSON.parse(data || null);
+    return data ? JSON.parse(data) : null;
   },
-  write(file: string, data: any, cb?) {
-    return write(file, data, cb);
+  write(file: string, data: any, options?: any) {
+    return write(file, data, options);
   },
   convert(data: any) {
     if (typeof data == "string") {

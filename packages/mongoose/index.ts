@@ -91,7 +91,7 @@ export function connect(uri: types.uri, options: types.ConnectionOptions = {}) {
     keepAlive: true
   };
 
-  let srv = false;
+  let srv: boolean;
   if (typeof uri !== "string") {
     /* -->deprecated
     if (uri instanceof Array) {
@@ -103,7 +103,7 @@ export function connect(uri: types.uri, options: types.ConnectionOptions = {}) {
       };
     } */
 
-    srv = uri.srv;
+    srv = !!uri.srv;
     if (!uri.host) {
       uri.host = "localhost:27017";
     } else if (uri.host instanceof Array) {
@@ -113,7 +113,7 @@ export function connect(uri: types.uri, options: types.ConnectionOptions = {}) {
     uri = `${encode(uri.auth[0])}:${encode(uri.auth[1])}@${uri.host}/${
       uri.dbName
     }`;
-  }
+  } else srv = false;
 
   if ((uri as string).substr(0, 7) != "mongodb") {
     uri = "mongodb" + (srv ? "+srv" : "") + "://" + uri;
@@ -130,11 +130,14 @@ export function connect(uri: types.uri, options: types.ConnectionOptions = {}) {
   });
 }
 
+export interface SchemaOptions extends mongoose.SchemaOptions {
+  shortId?: boolean;
+}
 export function model(
   collection: string | typeof mongoose.Model,
   obj: types.Model = {},
-  options?: mongoose.SchemaOptions,
-  con? //example: db = mongoose.connection.useDb('dbName')
+  options: SchemaOptions = {},
+  con?: string | typeof mongoose | mongoose.Connection //example: db = mongoose.connection.useDb('dbName')
 ) {
   // todo: merge schema's defaultOptions
 
@@ -148,18 +151,24 @@ export function model(
     : mongoose;
 
   //todo: option.force -> remove the existing model and create a new one
-  if (collection.prototype instanceof con.Model) return collection;
+  if (
+    typeof collection !== "string" &&
+    collection.prototype instanceof mongoose.Model
+  )
+    return collection;
 
   //todo: if opt.override delete the existing one
-  if (con.models[collection]) return con.models[collection];
+  if (con.models[<string>collection]) return con.models[<string>collection];
   let schema: mongoose.Schema;
-  options = options || {};
+
   if (!("fields" in obj)) obj = { fields: obj };
 
-  options.collection = collection;
+  options.collection = <string>collection;
   if (!("timestamps" in options)) options.timestamps = true; //add createdAt, updatedAt https://mongoosejs.com/docs/guide.html#timestamps
 
-  if (options.shortId !== false && !("_id" in obj.fields)) {
+  //@ts-ignore: object possibly undefined
+  if (options.shortId !== false && !("_id" in obj?.fields)) {
+    //@ts-ignore
     obj.fields._id = { type: String, default: shortId.generate };
     delete options.shortId;
   }
@@ -167,29 +176,43 @@ export function model(
   // todo: add methods,virtuals,...
 
   //to get schema: model.schema
-  return con.model(collection, schema);
+  //@ts-ignore: This expression is not callable. Each member of the union type ... has signatures, but none of those signatures are compatible with each other.
+  return (con as typeof mongoose | mongoose.Connection).model(
+    <string>collection,
+    schema
+  );
 }
 
 export function encode(str: string) {
   return encodeURIComponent(str); //.replace(/%/g, "%25");
 }
 
+/**
+ * useDb and return mongoDB native db
+ * @method useDb
+ * @param  dbName [description]
+ * @return [description]
+ */
 export function useDb(dbName: string = "") {
+  //@ts-ignore: client dosen't exist in Connection
   return mongoose.connection.useDb(dbName).client.db(dbName);
 }
 
 export function admin(dbName: string = "") {
   //return new (mongoose.mongo.Admin)((connection || mongoose.connection).db);
+  //@ts-ignore: admin dosen't exist in Connection
   return useDb(dbName).admin();
 }
 
 export function dbs(systemDbs = false) {
   return admin()
     .listDatabases()
-    .then(dbs =>
+    .then((dbs: any) =>
       systemDbs
         ? dbs.databases
-        : dbs.databases.filter(db => !["admin", "local"].includes(db.name))
+        : dbs.databases.filter(
+            (db: any) => !["admin", "local"].includes(db.name)
+          )
     );
 }
 
@@ -209,29 +232,29 @@ export function collections(dbName?: string) {
  * @return {promise<Data>}   { dbName: { collectionName:{data} }}
  */
 export function backup(
-  connection, //todo: mongoose.connection || MongoClient
+  connection: any, //todo: mongoose.connection || MongoClient
   filter: types.BackupFilter = () => true
 ): Promise<types.BackupData> {
   //convert [{k:v}] to {k:v}
-  let extract = arr =>
+  let extract: any = (arr: any) =>
     arr.reduce(
-      (obj, item) => ({
+      (obj: any, item: any) => ({
         ...obj,
         [Object.keys(item)[0]]: item[Object.keys(item)[0]]
       }),
       {}
     );
 
-  return dbs().then(dbs =>
+  return dbs().then((dbs: any) =>
     Promise.all(
       dbs
-        .filter(db => filter(db.name))
-        .map(async db => ({
-          [db.name]: await collections(db.name).then(collections =>
+        .filter((db: any) => filter(db.name))
+        .map(async (db: any) => ({
+          [db.name]: await collections(db.name).then((collections: any) =>
             Promise.all(
               collections
-                .filter(coll => filter(db.name, coll.name))
-                .map(async coll => ({
+                .filter((coll: any) => filter(db.name, coll.name))
+                .map(async (coll: any) => ({
                   [coll.name]: {
                     coll,
                     data: await useDb(db.name)
@@ -240,12 +263,12 @@ export function backup(
                       .toArray()
                   }
                 }))
-            ).then(result => extract(result))
+            ).then((result: any) => extract(result))
           )
 
           //.catch(error => ({}))
         }))
-    ).then(result => extract(result))
+    ).then((result: any) => extract(result))
   );
 }
 
@@ -285,13 +308,13 @@ export function restore(backupData: types.BackupData, chunkSize: number = 50) {
             .then(() =>
               console.log(`${collName}: part ${index + 1}/${chunks} inserted`)
             )
-            .catch(err => console.error(`error in ${collName}:`, err))
+            .catch((err: any) => console.error(`error in ${collName}:`, err))
         );
       } else
         dataModel
           .insertMany(data)
           .then(() => console.log(`${collName}: inserted`))
-          .catch(err => console.error(`error in ${collName}:`, err));
+          .catch((err: any) => console.error(`error in ${collName}:`, err));
     }
   }
 }
@@ -311,14 +334,14 @@ export function restore(backupData: types.BackupData, chunkSize: number = 50) {
 export function query(
   operation: string,
   collection: string | Array<any> | typeof mongoose.model,
-  params?: Array<any>
+  params: Array<any> = []
 ) {
   if (dev) console.log("[server] query", { operation, collection, params });
 
   let contentModel =
     collection instanceof Array
       ? model(collection[0], collection[1], collection[2], collection[3]) //todo: model(...collection) gives error
-      : model(collection);
+      : model(<string | typeof mongoose.Model>collection);
 
   if (typeof params[0] === "string") {
     if (operation === "find") operation = "findById";

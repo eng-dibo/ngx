@@ -6,21 +6,24 @@ import { AppServerModule } from "./main";
 import { join } from "path";
 import { connect, disconnect } from "./mongoose";
 import { dev, DIST, TEMP } from "~config/server";
+import { parseDomain, ParseResultListed } from "parse-domain";
+import { json as jsonParser, urlencoded as urlParser } from "body-parser";
+import cors from "cors";
+import v1 from "./api/v1";
 
 export function server() {
   //todo: no need to use connect().then(...), as the connection now is already open
   //connect dosen't create a new connection if readystate=1
   connect();
-
+  const browserDir = join(DIST, "./browser");
   return expressServer(
     {
-      browserDir: join(DIST, "./browser"),
-      serverModule: AppServerModule
+      browserDir,
+      serverModule: AppServerModule,
+      //TEMP: cache files, created at runtime
+      staticDirs: [browserDir, TEMP]
     },
     app => {
-      //cache files, created at runtime
-      app.staticDirs.push(TEMP);
-
       //to use req.protocol in case of using a proxy in between (ex: cloudflare, heroku, ..), without it express may always returns req.protocole="https" even if GET/ https://***
       //https://stackoverflow.com/a/46475726
       app.enable("trust proxy");
@@ -68,6 +71,8 @@ export function server() {
 
       app.use(jsonParser());
       app.use(urlParser({ extended: true }));
+
+      //access the server API from client-side (i.e: Angular)
       app.use(cors());
 
       app.use("/api/v1", v1);

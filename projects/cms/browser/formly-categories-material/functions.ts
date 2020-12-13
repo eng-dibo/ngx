@@ -1,12 +1,21 @@
+export interface Ctg {
+  //todo: string | categoriy{}
+  main: any;
+  categories: any[];
+  branches: any[];
+  parents: any[];
+  top: any;
+}
+
 export class Categories {
-  ctg;
+  ctg: any;
 
   /**
    * [constructor description]
    * @method constructor
    * @param  categories  [{_id, title, slug, ...}]
    */
-  constructor(categories) {
+  constructor(categories: any) {
     this.ctg = { main: null, categories: categories || [] };
   }
 
@@ -18,7 +27,7 @@ export class Categories {
   adjust() {
     if (this.ctg.main) return this.ctg; //already adjusted
     let main = this.getMain();
-    let categories = this.ctg.categories.map(ctg => {
+    let categories = this.ctg.categories.map((ctg: any) => {
       let parents = this.getParents(ctg);
       ctg.branches = this.getBranches(ctg._id);
       ctg.parents = parents;
@@ -36,22 +45,22 @@ export class Categories {
    * @param  data      [{_id, categories[]}]
    * @return [description]
    */
-  itemCategories(data) {
+  itemCategories(data: any) {
     data = data || [];
 
     //remove old articles from all categories
-    this.ctg.categories.map(el => {
+    this.ctg.categories.map((el: any) => {
       el.items = [];
       return el;
     });
 
-    data.forEach(el => {
+    data.forEach((el: any) => {
       if (
         el.categories &&
         el.categories instanceof Array &&
         el.categories.length > 0
       ) {
-        el.categories.forEach(c => {
+        el.categories.forEach((c: any) => {
           if (this.ctg.categories[c]) this.ctg.categories[c].items.push(el._id);
         });
       }
@@ -65,8 +74,8 @@ export class Categories {
    * @param  ctg array of categories
    * @return ids[]
    */
-  ids(ctg) {
-    return ctg.map(el => (typeof el == "string" ? el : el._id));
+  ids(ctg: any) {
+    return ctg.map((el: any) => (typeof el == "string" ? el : el._id));
   }
 
   /**
@@ -75,9 +84,9 @@ export class Categories {
    * @param  id     [description]
    * @return category{}
    */
-  getCtg(id) {
+  getCtg(id: any) {
     return typeof id == "string"
-      ? this.ctg.categories.find(el => el._id == id) || {}
+      ? this.ctg.categories.find((el: any) => el._id == id) || {}
       : id;
   }
 
@@ -90,12 +99,12 @@ export class Categories {
   getMain(ids = true) {
     let data = this.ctg.main
       ? this.ctg.main
-      : this.ctg.categories.filter(el => !el.parent);
+      : this.ctg.categories.filter((el: any) => !el.parent);
     return ids ? this.ids(data) : data;
   }
 
   //top-level category of the carent one
-  getTop(ctg, parents, ids = true) {
+  getTop(ctg: any, parents: any, ids = true) {
     let main = this.getMain(true);
 
     let top = (parents || this.getParents(ctg, true)).find(el =>
@@ -105,21 +114,21 @@ export class Categories {
   }
 
   //get childs of this category
-  getChilds(id, ids = true) {
+  getChilds(id: any, ids = true) {
     if (typeof id != "string") id = id._id;
-    let data = this.ctg.categories.filter(el => el.parent == id);
+    let data = this.ctg.categories.filter((el: any) => el.parent == id);
     return ids ? this.ids(data) : data;
   }
 
   //get childs and childs of childs etc..
-  getBranches(ctg, ids = true) {
+  getBranches(ctg: any, ids = true): Set<any> {
     if (typeof ctg != "string") ctg = ctg._id;
     let branches = [];
     let childs = this.getChilds(ctg, ids); //ids[] or els[]
 
     if (childs.length > 0) {
       branches.push(...childs);
-      childs.forEach(el => {
+      childs.forEach((el: any) => {
         let childsOfChilds = this.getBranches(ids ? el : el._id, ids);
         if (childsOfChilds.length > 0) branches.push(...childsOfChilds);
       });
@@ -129,7 +138,7 @@ export class Categories {
   }
 
   //get parent and parent of parent etc...
-  getParents(ctg, ids = true) {
+  getParents(ctg: any, ids = true) {
     let parents = [];
     ctg = this.getCtg(ctg);
     if (!ctg) return [];
@@ -159,7 +168,11 @@ export class Categories {
    */
 
   //todo: compitible with angular reactive forms, add formControl,...
-  createInputs(ctg?, filter?: ((el: any) => boolean) | string[], tab = "") {
+  createInputs(
+    ctg?: any,
+    filter?: ((el: any) => boolean) | string[],
+    tab = ""
+  ) {
     if (!ctg) ctg = this.getMain(false);
     let output = "";
     if (ctg instanceof Array) {
@@ -178,7 +191,11 @@ export class Categories {
       //`<mat-checkbox name="groups" value="${ctg._id}">${ctg.title}</mat-checkbox><br />`;
       let childs = this.getChilds(ctg, true);
       if (childs.length > 0)
-        output += this.createInputs(childs, null, tab + "&nbsp;".repeat(5));
+        output += this.createInputs(
+          childs,
+          undefined,
+          tab + "&nbsp;".repeat(5)
+        );
     }
 
     return output;

@@ -35,5 +35,5 @@ export function log(
   );
   obj = inspect(obj, options);
 
-  console[type](obj);
+  console[type as keyof typeof console](obj);
 }

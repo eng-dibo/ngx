@@ -112,7 +112,8 @@ export function server(
   }
 
   //allow the consumer to modify app (ex: adding routes) before the final route added (i.e: "*")
-  if (cb && typeof cb === "function") app = cb(app) || app;
+  //app will be changed by reference, cb() dosn't have to return it.
+  if (cb && typeof cb === "function") cb(app); // app = cb(app) || app;
 
   // All regular routes use the Universal engine, must be after all other routes
   app.get("*", (req, res) => {

@@ -40,7 +40,7 @@ export function disconnect() {
  * @param  schemaObj={} [description]
  * @return [description]
  */
-export function getModel(collection, schemaObj = {}) {
+export function getModel(collection: any, schemaObj = {}) {
   //console.log("model: " +{ type, models: mongoose.models, modelNames: mongoose.modelNames() });
   //todo: schemas/mongoose.ts
 
@@ -51,7 +51,9 @@ export function getModel(collection, schemaObj = {}) {
       ? "categories"
       : collection;
     schemaObj =
-      schemaName in schemas ? schemas[schemaName] : schemas["basic"] || {};
+      schemaName in schemas
+        ? schemas[schemaName as keyof typeof schemas]
+        : schemas["basic"] || {};
   }
 
   return model(collection, schemaObj, { strict: false });

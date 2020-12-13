@@ -1,24 +1,9 @@
-import { connect, getModel } from "./mongoose/functions";
-
-import {
-  cache,
-  mdir,
-  ext,
-  parsePath,
-  rename,
-  unlink,
-  readdir,
-  resolve,
-  writeFile,
-  json
-} from "@engineers/nodejs/fs";
-import { statSync, renameSync, writeFileSync, existsSync } from "fs";
-
+import { connect, getModel } from "./mongoose";
+import { cache, mkdir, json } from "@engineers/nodejs/fs";
 import { Firebase } from "@engineers/firebase/admin";
 import { initializeApp } from "firebase-admin";
 import multer from "multer";
-
-import { Categories } from "@engineers/ngx-formly/categories-material/functions";
+import { Categories } from "~browser/formly-categories-material/functions";
 import { setTimer, getTimer, endTimer } from "@engineers/nodejs/timer";
 import { TEMP } from "~config/server";
 import { FIREBASE } from "~config/firebase";
@@ -110,10 +95,10 @@ export const jsonData = {
       console.warn(`jsonData.get(${type},${id}) failed`, e);
     }
   },
-  save(type: string, data) {
+  save(type: string, data: any) {
     if (data) {
       let dir = `${TEMP}/${type}`;
-      mdir(dir);
+      mkdir(dir);
       if (data instanceof Array) json.write(`${dir}/index.json`, data);
       else json.write(`${dir}/${data._id}/data.json`, data);
     }
@@ -130,7 +115,7 @@ export let upload = multer({
     fieldSize: 10 * 1024 * 1024, //form total size; formData[content] contains some images (base64 encoded)
     files: 20
   },
-  fileFilter: function(req, file, cb) {
+  fileFilter: function(req: any, file: any, cb: any) {
     //we only upload 'cover image', so only images are available
     //other files are pasted into quill editor as base64-encoded data.
     let result = file.mimetype.startsWith("image/");
@@ -145,7 +130,7 @@ export let upload = multer({
   storage: multer.memoryStorage() /*multer.diskStorage({
     destination: function(req, file, cb) {
       let dir = `${TEMP}/uploads`;
-      mdir(dir);
+      mkdir(dir);
       cb(null, dir);
     },
     filename: function(req, file, cb) {

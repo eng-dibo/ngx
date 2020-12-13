@@ -11,6 +11,6 @@ import { https } from "firebase-functions";
  *    or http://localhost:4201/<projectId>/us-central1/<functionName>
  *    get projectId from the file: `/.firebaserc`
  */
-export function express(app) {
+export function express(app: any) {
   return https.onRequest(app);
 }

@@ -14,7 +14,7 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor } from "@angular/forms";
   templateUrl: "./component.html"
 })
 export class FormlyFieldFile extends FieldType {
-  @ViewChild("fileInput") fileInput;
+  @ViewChild("fileInput") fileInput: any;
   files: Set<File> = new Set();
 
   //available: this.formControl, this.to, this.fileInput.nativeElement.getAttribute("data-test")
@@ -30,7 +30,7 @@ export class FormlyFieldFile extends FieldType {
     else this.files = new Set([files[0]]);
   }
 
-  remove(file) {
+  remove(file: any) {
     this.files.delete(file);
   }
 
@@ -54,10 +54,10 @@ export class FormlyFieldFile extends FieldType {
 })
 export class FileValueAccessor implements ControlValueAccessor {
   value: any;
-  onChange = _ => {};
+  onChange = (_: any) => {};
   onTouched = () => {};
 
-  writeValue(value) {}
+  writeValue(value: any) {}
   registerOnChange(fn: any) {
     this.onChange = fn;
   }

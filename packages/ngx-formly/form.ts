@@ -52,15 +52,15 @@ export interface Progress {
   templateUrl: "./form.html"
 })
 export class NgxFormComponent implements OnInit {
-  @Input() formObj: FormObj | Observable<FormObj>;
-  _formObj: FormObj;
-  @Input() response: Response;
-  @Input() progress: Progress; //todo: show progress bar
-  @Input() step: number;
+  @Input() formObj!: FormObj | Observable<FormObj>;
+  _formObj!: FormObj;
+  @Input() response!: Response;
+  @Input() progress!: Progress; //todo: show progress bar
+  @Input() step!: number;
   @Output() submit = new EventEmitter<FormObj>();
 
   //give the parent component access to #formElement, whitch is a child of this component
-  @ViewChild("formElement") formElement; //todo: formElement:ElementRef<HTMLElement>
+  @ViewChild("formElement") formElement: any; //todo: formElement:ElementRef<HTMLElement>
 
   /*
   in parent component, subscribe to `formChange` event to update `this.formObj`
@@ -96,18 +96,21 @@ export class NgxFormComponent implements OnInit {
   }
 
   go(n = 0) {
-    this.step += n;
-    let step = this._formObj.steps[this.step];
+    //prevent error TS2532: Object is possibly 'undefined'
+    if (this._formObj && this._formObj.steps) {
+      this.step += n;
+      let step = this._formObj.steps[this.step];
 
-    if (step) {
-      //https://stackoverflow.com/a/46070221/12577650
-      this._formObj = Object.assign(this._formObj, {
-        fields: step.fields,
-        title: step.title
-        //  model: this.formObj.form.value
-      });
+      if (step) {
+        //https://stackoverflow.com/a/46070221/12577650
+        this._formObj = Object.assign(this._formObj, {
+          fields: step.fields,
+          title: step.title
+          //  model: this.formObj.form.value
+        });
 
-      this.save(); //save the current value,so the feilds values preserved when the user come back to this step.
+        this.save(); //save the current value,so the feilds values preserved when the user come back to this step.
+      }
     }
   }
 
