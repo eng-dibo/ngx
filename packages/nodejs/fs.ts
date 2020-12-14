@@ -25,9 +25,11 @@ import {
   PathLike
 } from "fs";
 
+/*
 //todo: upgrade Nodejs to use "fs/promises"
 //or use require("fs").promises
 //check firebase node version requirement first.
+//https://github.com/webpack/webpack-cli/issues/1612
 import {
   lstat,
   rename,
@@ -39,19 +41,13 @@ import {
   mkdir as _mkdir,
   rmdir
 } from "fs/promises";
-
+*/
 //todo: does 'export *' impact the bundle size?
 
 //todo: error TS2308: Module "fs" has already exported a member named 'access'. Consider explicitly re-exporting to resolve the ambiguity.
 //export * from "fs";
-export * from "fs/promises";
-
-//todo:
-//import {readSync,renameSync,truncateSync,ftruncateSync,chownSync,fchownSync,lchownSync,chmodSync,fchmodSync,lchmodSync,fstatSync,readlinkSync,realpathSync,unlinkSync,rmdirSync,mkdirSync,mkdtempSync,readdirSync,openSync,utimesSync} from "fs";
-
-/*
-tmp: https://github.com/webpack/webpack-cli/issues/1612
-
+//export * from "fs/promises";
+const promises = require("fs").promises;
 const {
   lstat,
   rename,
@@ -60,12 +56,9 @@ const {
   writeFile,
   readFile,
   access,
-  mkdir as _mkdir,
   rmdir
-} = require("fs").promises;
-
-export { rename, unlink, readdir, writeFile };
-*/
+} = promises;
+const _mkdir = promises.mkdir;
 
 /*
 todo: export * from 'path'

@@ -1,4 +1,4 @@
-import sharp from "sharp";
+import sharp, { Sharp } from "sharp";
 import { parsePath } from "@engineers/nodejs/fs";
 import { existsSync } from "fs";
 
@@ -6,38 +6,43 @@ export { sharp };
 
 export interface ResizeOptions {
   format?: string;
+  //todo: rename to: meta
   withMetadata?: boolean;
   output?:
     | string
     | boolean
-    | ((img: string | Buffer, size: number[], options: any) => string);
+    | ((img: Img, size: Size | Size[], options: any) => string);
   [key: string]: any;
 }
 
-export type Size = number | string | Array<number | string | null>;
+//Sharp or sharp.Sharp
+export type Img = string | Buffer | Sharp;
+export type Size = number | string | null;
 /**
  * [resize description]
  * @method resize
- * @param  {string | Buffer} img     file path or image buffer;
- * @param  {number | string | Array[number | string]} size    width or [width, height] or 'width,height'
+ * @param  {Img} img     file path or image buffer;
+ * @param  {Size | Size[]} size    width or [width, height] or 'width,height', if size=null just convert img type
  * @param  {[type]} options [description]
  * @return Promise<info>
  *
  * todo:
  *  - rename size to dimensions
+ *  - convert(img) = resize(img,size=null,{output=type})
  */
 export function resize(
-  img: string | Buffer | sharp,
-  size: Size,
+  img: Img,
+  size: Size | Size[],
   options: ResizeOptions = {}
 ): Promise<any> {
   if (
-    typeof img == "string" &&
-    (img.indexOf("data:image/") === 0 || options.input == "base64")
+    typeof img === "string" &&
+    (img.indexOf("data:image/") === 0 || options.input === "base64")
   )
     img = Buffer.from(img.replace(/data:image\/.+?;base64,/, ""), "base64");
 
-  if (!(img instanceof sharp)) img = sharp(img, options.sharp);
+  if (!(img instanceof sharp)) img = sharp(<string | Buffer>img, options.sharp);
+  img = <Sharp>img;
 
   if (options.output == "")
     Promise.reject(
@@ -59,7 +64,8 @@ export function resize(
 
   return img.metadata().then((metadata: any) => {
     //for typescript
-    size = <Array<string | number | null>>size;
+    img = <Sharp>img;
+    size = <Size[]>size;
     if (
       !size[0] &&
       !size[1] &&
@@ -69,11 +75,15 @@ export function resize(
         "width & height can be dismissed only when the image converted into another format, use options.format"
       );
 
-    img = img.resize(size[0], size[1], options.resize);
-    if (options.format) img = img.toFormat(options.format);
-    if (options.output === "buffer" || !options.output) img = img.toBuffer();
+    //@ts-ignore: type 'string | number | null' is not assignable to 'number | null | undefined'
+    img = (<Sharp>img).resize(size[0], size[1], options.resize);
+    if (options.format) img = (<Sharp>img).toFormat(options.format);
+    if (options.output === "buffer" || !options.output)
+      //@ts-ignore
+      (<Promise<Buffer>>img) = (<Sharp>img).toBuffer();
     else if (options.output === "base64")
-      img = img
+      //@ts-ignore
+      (<Promise<string>>img) = (<Sharp>img)
         .toBuffer()
         .then(
           (data: any) =>
@@ -90,7 +100,8 @@ export function resize(
           size[1] ? "X" + size[1] : ""
         }${parts.extension}`;
       }
-      img = img
+      //@ts-ignore
+      (<Promise<any>>img) = (<Sharp>img)
         .toFile(options.output)
         .then((info: any) => ({ options, metadata, ...info }));
     }
@@ -108,7 +119,7 @@ export function resize(
  */
 
 export function resizeAll(
-  img: string | Buffer | sharp,
+  img: Img,
   sizes: Array<Size>,
   options: ResizeOptions
 ) {
@@ -117,10 +128,7 @@ export function resizeAll(
   );
 }
 
-export function convert(
-  img: string | Buffer | sharp,
-  options: string | ResizeOptions
-) {
+export function convert(img: Img, options: string | ResizeOptions) {
   if (typeof options === "string") options = { format: options };
   return resize(img, [null, null], options);
 }

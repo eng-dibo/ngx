@@ -3,10 +3,13 @@ import shortId from "shortid";
 import { connect, getModel } from "../mongoose";
 import { dev, TEMP, BUCKET } from "~config/server";
 import { upload, bucket, getCategories } from "../functions";
-import { cache, write } from "@engineers/nodejs/fs";
+import { cache, write, mkdir } from "@engineers/nodejs/fs";
 import { Categories } from "~browser/formly-categories-material/functions";
 import { setTimer, endTimer, getTimer } from "@engineers/nodejs/timer";
-import { resize } from "@engineers/graphics";
+
+//todo: removing "/index" causes the alias path translated to packages/mongoose
+//instead of packages/graphics??
+import { resize } from "@engineers/graphics/index";
 import { backup, restore, query as _query } from "@engineers/mongoose";
 import { replaceAll } from "@engineers/nodejs/objects";
 
@@ -39,6 +42,7 @@ export function query(
   collection: string | Array<any>,
   params: Array<any>
 ) {
+  //@ts-ignore
   return _query(operation, getModel(collection), params);
 }
 
@@ -181,6 +185,7 @@ app.get(/\/([^\/]+)(?:\/(.+))?/, (req: any, res: any, next: any) => {
   return cache(
     tmp,
     () =>
+      //@ts-ignore: error TS2349: This expression is not callable. Each member of the union type ... has signatures, but none of those signatures are compatible with each other.
       connect().then(() => {
         let content;
         if (itemType == "item") content = query("find", collection, [item]);
@@ -363,6 +368,7 @@ app.post("/:collection", upload.single("cover"), (req: any, res: any) => {
   //todo: data.summary=summary(data.content)
 
   connect()
+    //@ts-ignore: error TS2349: This expression is not callable. Each member of the union type ... has signatures, but none of those signatures are compatible with each other.
     .then(() => {
       let contentModel = getModel(collection);
       if (update)
@@ -431,7 +437,8 @@ app.get("/backup", (req: any, res: any) => {
       return true;
     };
 
-  connect()
+  connect
+    //@ts-ignore: error TS2349: This expression is not callable. Each member of the union type ... has signatures, but none of those signatures are compatible with each other.
     .then((con: any) => {
       let host = con.client.s.options.srvHost,
         now = replaceAll(new Date().toISOString(), ":", "-");

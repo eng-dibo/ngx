@@ -107,7 +107,7 @@ export class Categories {
   getTop(ctg: any, parents: any, ids = true) {
     let main = this.getMain(true);
 
-    let top = (parents || this.getParents(ctg, true)).find(el =>
+    let top = (parents || this.getParents(ctg, true)).find((el: any) =>
       main.includes(el)
     );
     return ids ? top : this.getCtg(top);
@@ -121,7 +121,7 @@ export class Categories {
   }
 
   //get childs and childs of childs etc..
-  getBranches(ctg: any, ids = true): Set<any> {
+  getBranches(ctg: any, ids = true): Array<any> {
     if (typeof ctg != "string") ctg = ctg._id;
     let branches = [];
     let childs = this.getChilds(ctg, ids); //ids[] or els[]
@@ -138,7 +138,7 @@ export class Categories {
   }
 
   //get parent and parent of parent etc...
-  getParents(ctg: any, ids = true) {
+  getParents(ctg: any, ids = true): any[] {
     let parents = [];
     ctg = this.getCtg(ctg);
     if (!ctg) return [];
@@ -182,7 +182,9 @@ export class Categories {
         //todo: el.startsWith("!")? !filter.includes(): filter.includes()
         else ctg = ctg.filter(filter);
       }
-      ctg.forEach(el => (output += this.createInputs(el, null, tab)));
+      ctg.forEach((el: any) => {
+        output += this.createInputs(el, undefined, tab);
+      });
     } else {
       ctg = this.getCtg(ctg);
       output =

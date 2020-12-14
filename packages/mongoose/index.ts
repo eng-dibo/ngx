@@ -348,5 +348,6 @@ export function query(
     else if (["update", "delete"].includes(operation)) operation += "One";
     if (operation.indexOf("One")) params[0] = { _id: params[0] };
   }
-  return contentModel[operation](...params).lean();
+  //@ts-ignore
+  return contentModel[operation as keyof typeof contentModel](...params).lean();
 }

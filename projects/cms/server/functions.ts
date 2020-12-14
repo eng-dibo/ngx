@@ -44,6 +44,7 @@ export const bucket = new Firebase(FIREBASE).storage();
  */
 export function getCategories(collection: string = "articles") {
   return cache(`./temp/${collection}/categories.json`, () =>
+    //@ts-ignore: error TS2349: This expression is not callable. Each member of the union type ... has signatures, but none of those signatures are compatible with each other.
     connect().then(() => {
       setTimer("getCategories");
       return Promise.all([
@@ -52,6 +53,7 @@ export function getCategories(collection: string = "articles") {
           .lean(),
         //get all topics categories
         getModel(collection)
+          //@ts-ignore
           .find({}, "categories")
           .lean()
       ])
