@@ -4,12 +4,5 @@
     "outDir": "../../../dist/cms/core/browser",
     "types": []
   },
-  "files": ["main.ts", "polyfills.ts"],
-  "include": ["**/*.d.ts"],
-  "exclude": [
-    /*execlude test & server files*/
-    "test.ts",
-    "**/*.spec.ts",
-    "node_modules"
-  ]
+  "files": ["main.ts", "polyfills.ts"]
 }

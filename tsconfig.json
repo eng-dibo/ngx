@@ -41,7 +41,7 @@
     "esModuleInterop": true,
     "strictPropertyInitialization": true
   },
-  "execlude": ["node_modules"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/e2e"],
   "angularCompilerOptions": {
     "enableIvy": true,
     "strictTemplates": true,
