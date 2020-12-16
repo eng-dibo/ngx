@@ -21,9 +21,9 @@ import { Observable } from "rxjs";
   `
 })
 export class FormlyFieldCategories extends FieldType implements OnInit {
-  categories;
+  categories: any;
   @ViewChild("ref", { read: ViewContainerRef, static: true })
-  ref: ViewContainerRef;
+  ref!: ViewContainerRef;
 
   constructor(private dynamic: DynamicLoadService) {
     super();
@@ -66,11 +66,11 @@ todo:
 })
 /*implements OnInit, AfterViewInit, AfterViewChecked*/
 export class FormlyFieldCategoriesHelper {
-  @Input() data: any[];
+  @Input() data!: any[];
   @Input() to: any; //templateOptions
   @Input() formControl: any; //https://github.com/aitboudad/ngx-formly/blob/28bf56ab63ad158a7418ea6d7f2377165252a3e3/src/material/checkbox/src/checkbox.type.ts
   @Input() field: any;
-  categories;
+  categories: any;
   constructor(private sanitizer: DomSanitizer) {}
   ngOnInit() {
     console.log("FormlyFieldCategoriesHelper", {
@@ -119,7 +119,7 @@ export class FormlyFieldCategoriesHelper {
     );
   } */
 
-  onChange(el) {
+  onChange(el: any) {
     //todo: add el to formControl
     console.log("onChange", el);
   }
