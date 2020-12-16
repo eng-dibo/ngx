@@ -30,7 +30,9 @@ module.exports = class IgnoreNotFoundExportPlugin extends IgnoreWarningPlugin {
       message.test(warn.message);
 
     console.log(
-      `[${level || ""}] ${warn.message} => ${ignore ? "ignore" : "keep"}`
+      `webpack.IgnoreNotFoundExportPlugin: [${level || ""}] ${
+        warn.message
+      } => ${ignore ? "ignore" : "keep"}`
     );
     return !ignore;
   }
