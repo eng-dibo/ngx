@@ -15,7 +15,7 @@ export function server() {
   //todo: no need to use connect().then(...), as the connection now is already open
   //connect dosen't create a new connection if readystate=1
   connect();
-  const browserDir = join(DIST, "./browser");
+  const browserDir = join(DIST, "./core/browser");
   return expressServer(
     {
       browserDir,
