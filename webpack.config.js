@@ -3,6 +3,7 @@ const path = require("path");
 //const webpack = require("webpack");
 //const process = require("process");
 const nodeExternals = require("webpack-node-externals");
+const IgnoreNotFoundExportPlugin = require("./packages/webpack-ignore-warnings/export-not-found");
 
 module.exports = (config, options) => {
   options.target = options.target || "browser";
@@ -43,6 +44,11 @@ module.exports = (config, options) => {
       test: /\.node$/,
       use: "node-loader"
     }
+  );
+
+  config.plugins = config.plugins || [];
+  config.plugins.push(
+    new IgnoreNotFoundExportPlugin(undefined, ["warnings", "errors"])
   );
 
   //optimization: {minimize: false},
