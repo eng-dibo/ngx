@@ -8,30 +8,31 @@ todo:
   https://github.com/MurhafSousli/ngx-sharebuttons/issues/429#issuecomment-583906237
   so we temporary stopped <share-buttons>
  -->
-<ng-container *ngIf="dataObj; else loading">
+<ng-container *ngIf="data; else loading">
+  <!-- *ngTemplateOutlet="!data===null?noContent:type==.." -->
   <ng-container
-    *ngTemplateOutlet="!dataObj.payload?noContent:dataObj.type=='item'?itemBlock:pref.layout=='list'?listBlock:gridBlock; context:{dataObj:dataObj.payload}"
+    *ngTemplateOutlet="type=='item'?itemBlock:pref.layout=='list'?listBlock:gridBlock; context:{data:data}"
   ></ng-container>
 </ng-container>
 
-<ng-template let-item="dataObj" #itemBlock>
+<ng-template let-item="data" #itemBlock>
   <ngx-content-article [data]="item" type="item"></ngx-content-article>
 </ng-template>
 
-<ng-template #gridBlock let-dataObj="dataObj">
+<ng-template #gridBlock let-data="data">
   <!-- todo: use the same scroll bar for cdk/scrolling and the browser scrollbar-->
   <cdk-virtual-scroll-viewport itemSize="5" style="height:500vh">
     <div class="masonry">
-      <div class="masonry-item" *cdkVirtualFor="let item of dataObj">
+      <div class="masonry-item" *cdkVirtualFor="let item of data">
         <ngx-content-article [data]="item" type="list"></ngx-content-article>
       </div>
     </div>
   </cdk-virtual-scroll-viewport>
 </ng-template>
 
-<ng-template #listBlock let-dataObj="dataObj">
+<ng-template #listBlock let-data="data">
   <mat-list>
-    <mat-list-item *ngFor="let item of dataObj">
+    <mat-list-item *ngFor="let item of data">
       <h4 mat-line dir="auto">
         <a href="{{item.link || '#'}}">{{item.title | length:200}}</a>
       </h4>

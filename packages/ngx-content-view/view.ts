@@ -11,16 +11,11 @@ import { MetaService } from "@engineers/ngx/meta.service";
 
 export type Payload = Article | Article[];
 
-export interface Data {
-  payload: Payload;
-  tags?: { [key: string]: any }; //todo: import MetaTags from meta.service
-}
+export interface Tags {
+  [key: string]: any;
+} //todo: import MetaTags from meta.service
 
-//todo: merge DataObj & Data
-export interface DataObj {
-  type?: "list" | "item";
-  payload: Payload;
-}
+export type Type = "list" | "item";
 
 @Component({
   selector: "ngx-content-view",
@@ -28,9 +23,10 @@ export interface DataObj {
   styleUrls: ["./view.scss"]
 })
 export class NgxContentViewComponent implements OnInit {
-  @Input() data!: Data | Observable<Data>;
+  @Input() data!: Payload | Observable<Payload>;
+  @Input() type!: Type;
+  @Input() tags!: Tags;
   @Input() pref!: Pref; //component prefrences
-  dataObj!: DataObj;
 
   constructor(private meta: MetaService) {}
 
@@ -40,45 +36,12 @@ export class NgxContentViewComponent implements OnInit {
     //todo: pref.back=/$item.categories[0]
     this.pref.back = this.pref.back || "/";
 
-    obs(this.data, result => {
-      //if (typeof data == "string") data = JSON.parse(data);
-      let data = result.payload,
-        tags = result.tags;
+    obs(this.data, (data: Payload) => {
+      //todo: if (typeof data == "string") data = JSON.parse(data);
 
-      if (data.baseUrl && data.link && data.link.startsWith("/"))
-        data.link = data.baseUrl + data.link;
-
-      if (data instanceof Array) {
-        this.dataObj = { type: "list", payload: data };
-      } else {
-        this.dataObj = { type: "item", payload: !data.error ? data : null };
-      }
-
-      tags = {
-        image: data.cover,
-        description: data.description || data.summary,
-        author: data.author ? data.author.name : null,
-        keywoadrs:
-          data.keywords instanceof Array
-            ? data.keywords.join(",")
-            : data.keywords,
-        date: data.createdAt, //todo: || now
-        "last-modified": data.updatedAt, //todo: convert time format, todo: use createdAt, updatedAt
-        ...(data instanceof Array ? null : data),
-        ...tags
-      };
-
-      delete tags.id;
-      delete tags.slug;
-      delete tags.cover;
-      delete tags.content;
-      delete tags.summary;
-      delete tags.sources; //todo: display resources
-      delete tags.path; //todo: display path, ex: news/politics
-      delete tags.createdAt;
-      delete tags.updatedAt;
-
-      this.meta.setTags(tags);
+      this.meta.setTags(<Tags>this.tags);
+      this.type = data instanceof Array ? "list" : "item";
+      this.data = data;
     });
   }
 }

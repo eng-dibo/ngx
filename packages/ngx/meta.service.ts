@@ -1,5 +1,17 @@
 // todo: types
 //todo tags.author{name, email, url}
+/*
+todo:
+if (tags.keywords instanceof Array)
+  tags.keywords = data.keywords.join(",");
+if (!("last-modified" in tags) && tags.updatedAt) {
+  tags["last-modified"] = tags.updatedAt;
+  delete tags.updatedAt;
+}
+if(data.createdAt && ){...}
+
+
+ */
 import { Injectable } from "@angular/core";
 import {
   Meta as MetaTagsService,
