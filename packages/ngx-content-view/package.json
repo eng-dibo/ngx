@@ -5,7 +5,7 @@
   "description": "",
   "peerDependencies": {
     "@angular/material": "^9.2.1",
-    "ng-lazyload-image": "^7.1.0",
+    "ng-lazyload-image": "^9.1.0",
     "ngx-highlightjs": "^4.0.2",
     "ngx-quill": "^8.1.3",
     "@ngx-share/buttons": "^7.1.4",

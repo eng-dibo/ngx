@@ -8,7 +8,7 @@ export interface Article extends Obj {
   id: string;
   title: string;
   subtitle?: string;
-  content?: string;
+  content: string;
   //todo: if(keywods:string)keywords=keywords.split(',').map(text=>({text}))
   keywords?: Keywords[];
   cover?: Image;

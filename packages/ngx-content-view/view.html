@@ -20,7 +20,15 @@ todo:
 </ng-template>
 
 <ng-template #gridBlock let-data="data">
-  <!-- todo: use the same scroll bar for cdk/scrolling and the browser scrollbar-->
+  <!-- tmp: *cdkVirtualFor not work-->
+  <div class="masonry">
+    <div class="masonry-item" *ngFor="let item of data">
+      <ngx-content-article [data]="item" type="list"></ngx-content-article>
+    </div>
+  </div>
+
+  <!-- todo: *cdkVirtualFor not work, temporary remove cdk scroll
+  <!-- todo: use the same scroll bar for cdk/scrolling and the browser scrollbar--
   <cdk-virtual-scroll-viewport itemSize="5" style="height:500vh">
     <div class="masonry">
       <div class="masonry-item" *cdkVirtualFor="let item of data">
@@ -28,6 +36,7 @@ todo:
       </div>
     </div>
   </cdk-virtual-scroll-viewport>
+  -->
 </ng-template>
 
 <ng-template #listBlock let-data="data">
