@@ -304,8 +304,8 @@ export function writeSync(
  * cache data into a file, or read the cache file if the data is fresh
  * @method cache
  * @param  file       [description]
- * @param  data       [description]
- * @param  expire     in hours
+ * @param  dataSource      ()=>any
+ * @param  age     in hours
  * @param  type       [description]
  * @param  allowEmpty allow creating an empty cache file
  * @return Promise<data:any>;  returns a promise (because some operations executed in async mode) , use await or .then()
@@ -317,12 +317,14 @@ export function writeSync(
     ex: replace mkdirSync() with mkdir().then()
   - cacheSync
 
+  notes:
+  - maxAge:  (in hours), the maximum file's age to get in case of fetching data failed
+
  */
-export async function cache(
+export function cache(
   files: string | string[], //todo: PathLike | PathLike[]
-  data?: any,
-  expire = 0, //todo: number | [number, number]
-  maxAge = 0,
+  dataSource: () => any,
+  age: number | [number, number] = 0,
   type?: string,
   allowEmpty = false
 ): Promise<any> {
@@ -331,9 +333,16 @@ export async function cache(
   if (!(files instanceof Array)) files = [files];
   files = files.map(file => resolve(file));
 
-  if (data === ":purge:")
-    return Promise.all(files.map((file: string) => ({ [file]: unlink(file) })));
+  let maxAge: number;
+  if (age instanceof Array) [age, maxAge] = age;
+  else maxAge = 0;
 
+  /*
+  //use fs.delete(files)
+  if (dataSource === ":purge:")
+    return Promise.all(files.map((file: string) => ({ [file]: unlink(file) })));
+*/
+  let data;
   let readCache = function(file: string) {
     if (!type) {
       if (getExtension(file) === ".json") type = "json";
@@ -362,6 +371,7 @@ export async function cache(
     });
   };
 
+  //todo: remove filesInfo
   let filesInfo: { [key: string]: number } = {}; //contains exists files only with mtime for each file.
 
   let _now = now();
@@ -371,24 +381,19 @@ export async function cache(
       filesInfo[files[i]] = getMtimeSync(files[i]) as number;
 
       if (
-        expire > -1 &&
-        (expire == 0 || filesInfo[files[i]] + expire * 60 * 60 * 1000 > _now)
+        age > -1 &&
+        (age == 0 || filesInfo[files[i]] + age * 60 * 60 * 1000 > _now)
       )
         return readCache(files[i]);
     }
   }
 
-  //if there is no valid file, run data()
+  //if there is no valid file, run dataSource()
   if (dev) console.log("[cache] refreshing", files[0]);
   mkdirSync(files[0] as string, true); //todo: replace with mkdir().then()
+  data = dataSource();
 
   //todo: also support rxjs.Observable
-  //no need to support Async functions, because it is nonsense if data() function returns another function. (func.constructor.name === "AsyncFunction")
-  //todo: await dosen't work if the function returned cache()
-  //  ex: cache(file2.txt, ()=>cache(file1.txt, ()=>Promise.resolve('data')).then(data=>'data changed')  )
-  //  we get file1.txt from cache, then changed data, then saved the new data into file2.txt
-  if (typeof data === "function") data = /* await*/ data();
-
   let p: Promise<any> = isPromise(data) ? data : Promise.resolve(data);
 
   return p
