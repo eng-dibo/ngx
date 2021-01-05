@@ -1,5 +1,5 @@
 {
-  "name": "@engineers/package-name",
+  "name": "@engineers/graphics",
   "version": "1.0.0",
   "private": false,
   "description": "use this package to work with images via sharp",

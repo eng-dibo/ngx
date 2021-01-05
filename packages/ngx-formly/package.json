@@ -1,5 +1,5 @@
 {
-  "name": "@engineers/package-name",
+  "name": "@engineers/ngx-formly",
   "version": "1.0.0",
   "private": false,
   "description": "convert plain objects into Angular reactive forms using formly",

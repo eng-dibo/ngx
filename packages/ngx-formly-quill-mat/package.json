@@ -1,5 +1,5 @@
 {
-  "name": "@engineers/ngx-formly-file-mat",
+  "name": "@engineers/ngx-formly-quill-mat",
   "version": "1.0.0",
   "private": false,
   "description": "custom formly component for quill editor (material design)",

@@ -1,5 +1,5 @@
 {
-  "name": "@engineers/package-name",
+  "name": "@engineers/mongoose",
   "version": "1.0.0",
   "private": false,
   "description": "automates most of mongoose work",

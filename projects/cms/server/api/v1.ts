@@ -6,10 +6,7 @@ import { upload, bucket, getCategories } from "../functions";
 import { cache, write, mkdir } from "@engineers/nodejs/fs";
 import { Categories } from "~browser/formly-categories-material/functions";
 import { setTimer, endTimer, getTimer } from "@engineers/nodejs/timer";
-
-//todo: removing "/index" causes the alias path translated to packages/mongoose
-//instead of packages/graphics??
-import { resize } from "@engineers/graphics/index";
+import { resize } from "@engineers/graphics";
 import { backup, restore, query as _query } from "@engineers/mongoose";
 import { replaceAll } from "@engineers/nodejs/objects";
 
