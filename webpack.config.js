@@ -3,7 +3,7 @@ const path = require("path");
 //const webpack = require("webpack");
 //const process = require("process");
 const nodeExternals = require("webpack-node-externals");
-const IgnoreNotFoundExportPlugin = require("./packages/webpack-ignore-warnings/export-not-found");
+const IgnoreNotFoundExportPlugin = require("./packages/webpack-ignore/export-not-found");
 
 module.exports = (config, options) => {
   options.target = options.target || "browser";
