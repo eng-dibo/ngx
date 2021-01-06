@@ -28,7 +28,6 @@ module.exports = (config, options) => {
   //https://github.com/webpack/webpack/issues/2030#issuecomment-290363910
   //todo: libraryTarget commonjs VS commonjs-module
   config.output = config.output || {};
-  config.output.library = config.output.library || "";
   config.output.libraryTarget =
     config.output.libraryTarget || options.target === "server"
       ? "commonjs-module"
@@ -37,12 +36,13 @@ module.exports = (config, options) => {
   config.module.rules = config.module.rules || [];
   config.module.rules.push(
     { test: /\.ts$/, loader: "ts-loader" },
+    //load .node files
+    //ex: ./node_modules/sharp/build/Release/sharp.node
+    // https://github.com/lovell/sharp/issues/794#issuecomment-307188099
     {
-      //load .node files
-      //ex: ./node_modules/sharp/build/Release/sharp.node
-      // https://github.com/lovell/sharp/issues/794#issuecomment-307188099
       test: /\.node$/,
-      use: "node-loader"
+      loader: "node-loader",
+      options: { name: "[name]-[contenthash].[ext]" }
     }
   );
 
