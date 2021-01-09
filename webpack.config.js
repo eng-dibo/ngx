@@ -8,7 +8,7 @@ const IgnoreNotFoundExportPlugin = require("./packages/webpack-ignore/export-not
 module.exports = (config, options) => {
   options.target = options.target || "browser";
   //change 'mode' by env (ex: npx cross-env NODE_ENV=production ...)
-  if (!"mode" in config) config.mode = options.mode || "none";
+  if (!("mode" in config)) config.mode = options.mode || "none";
 
   config.externals = config.externals || [];
 
