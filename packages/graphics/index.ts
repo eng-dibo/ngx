@@ -1,11 +1,34 @@
-import sharp, { Sharp } from "sharp";
+import sharp, {
+  Sharp,
+  FormatEnum,
+  AvailableFormatInfo,
+  OutputOptions,
+  JpegOptions,
+  PngOptions,
+  WebpOptions,
+  AvifOptions,
+  HeifOptions,
+  GifOptions,
+  TiffOptions
+} from "sharp";
 import { parsePath } from "@engineers/nodejs/fs";
 import { existsSync } from "fs";
 
 export { sharp };
+export type Format = keyof FormatEnum | AvailableFormatInfo;
+export type FormatOptions =
+  | OutputOptions
+  | JpegOptions
+  | PngOptions
+  | WebpOptions
+  | AvifOptions
+  | HeifOptions
+  | GifOptions
+  | TiffOptions;
 
 export interface ResizeOptions {
-  format?: string;
+  format?: Format;
+  formatOptions?: FormatOptions;
   //todo: rename to: meta
   withMetadata?: boolean;
   output?:
@@ -77,7 +100,8 @@ export function resize(
 
     //@ts-ignore: type 'string | number | null' is not assignable to 'number | null | undefined'
     img = (<Sharp>img).resize(size[0], size[1], options.resize);
-    if (options.format) img = (<Sharp>img).toFormat(options.format);
+    if (options.format)
+      img = (<Sharp>img).toFormat(options.format, options.formatOptions);
     if (options.output === "buffer" || !options.output)
       //@ts-ignore
       (<Promise<Buffer>>img) = (<Sharp>img).toBuffer();
@@ -129,8 +153,10 @@ export function resizeAll(
 }
 
 export function convert(img: Img, options: string | ResizeOptions) {
-  if (typeof options === "string") options = { format: options };
-  return resize(img, [null, null], options);
+  if (typeof options === "string")
+    //@ts-ignore: Conversion of type 'string' to type 'ResizeOptions' may be a mistake
+    (<ResizeOptions>options) = { format: <string>options };
+  return resize(img, [null, null], <ResizeOptions>options);
 }
 
 //todo:

@@ -97,7 +97,7 @@ app.get(/\/image\/([^/-]+)-([^/-]+)-([^/]+)/, (req: any, res: any) => {
         resize(data, size, {
           //  dest: resizedPath, //if the resizid img saved to a file, data=readFile(resized)
           format:
-            req.headers?.accept.indexOf("image/webp") !== -1 ? "webp" : "jpg",
+            req.headers?.accept.indexOf("image/webp") !== -1 ? "webp" : "jpeg",
           allowBiggerDim: false, //todo: add this options to resize()
           allowBiggerSize: false
         })
@@ -111,7 +111,7 @@ app.get(/\/image\/([^/-]+)-([^/-]+)-([^/]+)/, (req: any, res: any) => {
       //res.write VS res.sendFile https://stackoverflow.com/a/44693016/12577650
       //res.writeHead VS res.setHeader https://stackoverflow.com/a/28094490/12577650
       res.writeHead(200, {
-        "Content-Type": "image/jpg",
+        "Content-Type": "image/jpeg",
         "Cache-Control": "max-age=31536000"
       });
 
