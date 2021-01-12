@@ -50,6 +50,7 @@ module.exports = class IgnoreNotFoundExportPlugin extends IgnoreWarningPlugin {
     //https://github.com/TypeStrong/ts-loader/issues/653#issuecomment-658129853
     if (message instanceof Array) {
       //https://github.com/sindresorhus/escape-string-regexp
+      //todo: add to packages/js
       let escapeStringForRegExp = string =>
         string.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
 
