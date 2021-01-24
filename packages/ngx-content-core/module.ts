@@ -5,7 +5,8 @@ import {
   SummaryPipe,
   Nl2brPipe,
   KeepHtmlPipe,
-  LengthPipe
+  LengthPipe,
+  Html2textPipe
 } from "./pipes";
 
 //we export Pipes, so other modules that imports this module can use them.
@@ -16,7 +17,8 @@ import {
     SummaryPipe,
     Nl2brPipe,
     KeepHtmlPipe,
-    LengthPipe
+    LengthPipe,
+    Html2textPipe
   ],
   imports: [],
   exports: [
