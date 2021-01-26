@@ -17,6 +17,9 @@
 
 - ts: enable all strict flags, replace all 'any' types, remove '@ts-ignore', '@ts-nocheck'
 
+- [cms] config/ -> config.ts export {firebase, meta, ...}
+  metaTags() -> convert to object meta{}
+
 # issue:
 
 - [dist/cms/server/express] convert ~cofig/\* to ../config/\*
