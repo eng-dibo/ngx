@@ -1,11 +1,21 @@
 //the basic webpack configurations for the project, extend it for server, browser
-const path = require("path");
+
+import { Configuration } from "webpack";
+import {
+  CustomWebpackBrowserSchema,
+  TargetOptions
+} from "@angular-builders/custom-webpack";
+import { resolve } from "path";
 //const webpack = require("webpack");
 //const process = require("process");
 const nodeExternals = require("webpack-node-externals");
 const IgnoreNotFoundExportPlugin = require("./packages/webpack-ignore/export-not-found");
 
-module.exports = (config, options) => {
+export default function(
+  config: Configuration,
+  options: CustomWebpackBrowserSchema,
+  targetOptions: TargetOptions
+): Configuration {
   options.target = options.target || "browser";
   //change 'mode' by env (ex: npx cross-env NODE_ENV=production ...)
   if (!("mode" in config)) config.mode = options.mode || "none";
@@ -19,8 +29,8 @@ module.exports = (config, options) => {
   //tsconfig.path & webpack.resolve.alias
   config.resolve = config.resolve || {};
   config.resolve.alias = config.resolve.alias || {};
-  config.resolve.alias["~~"] = path.resolve(__dirname, "./");
-  config.resolve.alias["@engineers"] = path.resolve(__dirname, "./packages/");
+  config.resolve.alias["~~"] = resolve(__dirname, "./");
+  config.resolve.alias["@engineers"] = resolve(__dirname, "./packages/");
   config.resolve.symlinks = false;
 
   //fix: setting library & libraryTarget to fix issue: require('./server.js') == undefined
@@ -54,4 +64,4 @@ module.exports = (config, options) => {
   //optimization: {minimize: false},
   //module.noParse: /polyfills-.*\.js/,
   return config;
-};
+}

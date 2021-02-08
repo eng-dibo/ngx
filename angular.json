@@ -21,7 +21,7 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "customWebpackConfig": {
-              "path": "projects/cms/browser/webpack.config.js"
+              "path": "projects/cms/browser/webpack.config.ts"
             },
             "outputPath": "dist/cms/core/browser",
             "index": "projects/cms/browser/index.html",
@@ -133,7 +133,7 @@
           "builder": "@angular-builders/custom-webpack:server",
           "options": {
             "customWebpackConfig": {
-              "path": "projects/cms/server/webpack.config.js"
+              "path": "projects/cms/server/webpack.config.ts"
             },
             "outputPath": "dist/cms/core/server",
             "main": "projects/cms/server/express.ts",

@@ -1,7 +1,16 @@
-const basicConfig = require("../../webpack.config.js");
-const path = require("path");
+import { Configuration } from "webpack";
+import {
+  CustomWebpackBrowserSchema,
+  TargetOptions
+} from "@angular-builders/custom-webpack";
+import { resolve } from "path";
+import basicConfig from "../../webpack.config.ts";
 
-module.exports = (config, options) => {
+export default function(
+  config: Configuration,
+  options: CustomWebpackBrowserSchema,
+  targetOptions: TargetOptions
+): Configuration {
   config = basicConfig(config, options);
 
   //exclude config dir, so the user can modify the dist version and add his own configs.
@@ -49,7 +58,7 @@ module.exports = (config, options) => {
 
   config.resolve = config.resolve || {};
   config.resolve.alias = config.resolve.alias || {};
-  config.resolve.alias["~"] = path.resolve(__dirname, "./");
+  config.resolve.alias["~"] = resolve(__dirname, "./");
 
   return config;
-};
+}
