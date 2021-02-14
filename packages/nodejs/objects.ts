@@ -209,13 +209,13 @@ export function replaceAsync(str: string, regex: RegExp, replacer: any) {
 }
 
 /**
- * detect and replace circular keys with a reference
+ * detect and replace circular references with a path reference
  * ex: x= {a:x, b:{k:x}, c:{k:b}} -> {a:':this:', b:{k: ':this:'}, c:{k:':this.b:'}}
  * @method removeCircular
  * @param  object         [description]
  * @return [description]
  */
-function cleanObject(object: any) {
+export function cleanObject(object: any) {
   if (objectType(object === "object")) {
     //todo: https://stackoverflow.com/questions/7582001/is-there-a-way-to-test-circular-reference-in-javascript/7583161#7583161
   }
