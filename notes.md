@@ -20,6 +20,8 @@
 - [cms] config/ -> config.ts export {firebase, meta, ...}
   metaTags() -> convert to object meta{}
 
+- [cms] reolace import "_/packages/_" with "@engineers/\*"
+
 # issue:
 
 - [dist/cms/server/express] convert ~cofig/\* to ../config/\*
