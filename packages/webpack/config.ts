@@ -1,6 +1,8 @@
 import { Configuration } from "webpack";
 import { node, ExternalsOptions } from "./externals";
 import IgnoreNotFoundExportPlugin from "./ignore-export-not-found";
+//todo: use @engineers/*
+import { deepMerge } from "../js/merge";
 
 export interface Obj {
   [key: string]: any;
@@ -37,31 +39,37 @@ export interface ConfigOptions {
  */
 export default function(
   config: Configuration,
-  options: ConfigOptions
+  options: ConfigOptions = {}
 ): Configuration {
-  let defaultOptions: ConfigOptions = {
-    target: "browser",
-    nodeExternals: [],
-    loaders: true,
-    plugins: true
-  };
+  options = deepMerge([
+    options,
+    {
+      target: "browser",
+      nodeExternals: true,
+      loaders: true,
+      plugins: true
+    }
+  ]);
 
-  //todo: initiate all config properties, ex: {resolve:{alias:[]}, ...}
-  let defaultConfig: Configuration = {
-    //change 'mode' by env (ex: npx cross-env NODE_ENV=production ...)
-    mode: "none",
-    externals: [],
-    output: {
-      library: "",
-      libraryTarget: "window"
-    },
-    module: {
-      rules: []
-    },
-    plugins: []
-  };
-  //todo: deepMerge defaultOptions, defaultConfig
+  //todo: initiate all config properties, ex: {resolve:{alias:[]}, ...
+  config = deepMerge([
+    config,
+    {
+      //change 'mode' by env (ex: npx cross-env NODE_ENV=production ...)
+      mode: "none",
+      externals: [],
+      output: {
+        library: "",
+        libraryTarget: "window"
+      },
+      module: {
+        rules: []
+      },
+      plugins: []
+    }
+  ]);
 
+  //todo: typescript: these objects cannot be empty
   //tmp: initiate config properties (remove after deepMerge config & defaultConfig)
   config.externals = config.externals || [];
   config.plugins = config.plugins || [];
