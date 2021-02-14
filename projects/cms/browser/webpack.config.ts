@@ -1,6 +1,8 @@
-const basicConfig = require("../webpack.config.js");
+//todo: import from "~webpack.config", "~~webpack.config"
+import basicConfig from "../webpack.config";
+import { ConfigOptions, Configuration } from "../../../webpack.config";
 
-module.exports = (config, options) => {
+export default (config: Configuration, options: ConfigOptions) => {
   options.target = "browser";
   config = basicConfig(config, options);
 
@@ -12,6 +14,7 @@ module.exports = (config, options) => {
     polyfills: "./browser/polyfills.ts"
   }; */
 
+  config.output = config.output || {};
   config.output.libraryTarget = "window";
   config.target = "web";
   return config;

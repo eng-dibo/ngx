@@ -1,15 +1,23 @@
-import { Configuration } from "webpack";
+import { join } from "path";
 import {
+  getConfig as basicConfig,
+  ConfigOptions,
+  Configuration,
   CustomWebpackBrowserSchema,
   TargetOptions
-} from "@angular-builders/custom-webpack";
-import { join } from "path";
-import basicConfig from "../webpack.config.ts";
+} from "../webpack.config";
 
 export default function(
   config: Configuration,
-  options: CustomWebpackBrowserSchema,
-  targetOptions: TargetOptions
+  options: ConfigOptions = {},
+  targetOptions?: TargetOptions
+): Configuration {
+  return getConfig(config);
+}
+
+export function getConfig(
+  config: Configuration,
+  options: ConfigOptions = {}
 ): Configuration {
   options.target = "server";
   config = basicConfig(config, options);

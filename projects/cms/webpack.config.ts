@@ -1,43 +1,46 @@
-import { Configuration } from "webpack";
+import { resolve } from "path";
 import {
+  getConfig as basicConfig,
+  ConfigOptions,
+  Configuration,
   CustomWebpackBrowserSchema,
   TargetOptions
-} from "@angular-builders/custom-webpack";
-import { resolve } from "path";
-import basicConfig from "../../webpack.config.ts";
+} from "../../webpack.config";
+//import { ExternalItem } from "webpack";
+import externals from "../../packages/webpack/externals";
+
+export {
+  ConfigOptions,
+  Configuration,
+  CustomWebpackBrowserSchema,
+  TargetOptions
+};
 
 export default function(
   config: Configuration,
-  options: CustomWebpackBrowserSchema,
-  targetOptions: TargetOptions
+  options: ConfigOptions = {},
+  targetOptions?: TargetOptions
+): Configuration {
+  return getConfig(config);
+}
+
+export function getConfig(
+  config: Configuration,
+  options: ConfigOptions = {}
 ): Configuration {
   config = basicConfig(config, options);
 
-  //exclude config dir, so the user can modify the dist version and add his own configs.
-  //i.e: keep it as require(config/*) instead of bundling it
-  //matches: ~config/* ~~config/* ./config/* ../../config/*
-  //todo: also exclude config dir in build:browser
   config.externals = config.externals || [];
-  config.externals.push(function() {
-    let context, request, callback;
-    if (arguments[0].context) {
-      //webpack 5
-      context = arguments[0].context;
-      request = arguments[0].request;
-      callback = arguments[1];
-    } else {
-      //webpack 4
-      context = arguments[0];
-      request = arguments[1];
-      callback = arguments[2];
-    }
+  if (!Array.isArray(config.externals)) config.externals = [config.externals];
 
-    let regex = /^(?:~{1,2}|\.\/|(?:\.\.\/)+)config\/(.*)/;
-    let match = request.match(regex);
-    if (match) {
-      //console.log({ context, request, match });
-      //
-      /*
+  /*or as ExternalItem[]*/
+  (config.externals as Array<any>).push(function() {
+    //exclude config dir, so the user can modify the dist version and add his own configs.
+    //i.e: keep it as require(config/*) instead of bundling it
+    //matches: ~config/* ~~config/* ./config/* ../../config/*
+    //todo: also exclude config dir in build:browser
+
+    /*
         //get the path to config from the project's root (i.e: process.cwd() or '.')
         //the dist path will include an additional part (core) i.e: dist/cms/core/server
         //so we need to add an extra '../'
@@ -48,16 +51,20 @@ export default function(
           //todo: get config's path from workspace's root
         }*/
 
-      //all paths are relative to the output file (i.e: dist/cms/core/express.js)
-      //because all require(config/*) statements are in this file
-      request = `../../config/${match[1]}`;
+    //all paths are relative to the output file (i.e: dist/cms/core/express.js)
+    //because all require(config/*) statements are in this file
 
-      callback(null, `commonjs ${request}`);
-    } else callback();
+    externals(
+      [/^(?:~{1,2}|\.\/|(?:\.\.\/)+)config\/(.*)/],
+      arguments,
+      (match: any) => `commonjs ../../config/${match[1]}`
+    );
   });
 
   config.resolve = config.resolve || {};
   config.resolve.alias = config.resolve.alias || {};
+
+  //@ts-ignore: TS7053: Element implicitly has an 'any' type because expression of type '"~"' can't be used to index type ...
   config.resolve.alias["~"] = resolve(__dirname, "./");
 
   return config;
