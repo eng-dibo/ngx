@@ -22,6 +22,9 @@
 
 - [cms] reolace import "_/packages/_" with "@engineers/\*"
 
+- [cms] config/tsconfig use 'module.exports' in the output, instead of 'exports.\*'.
+  same as webpack.output.libraryTarget="commonjs2"
+
 # issue:
 
 - [dist/cms/server/express] convert ~cofig/\* to ../config/\*
