@@ -26,6 +26,6 @@ export function getConfig(
   //paths are related to angular.json (i.e: ./projects/cms/server/*.ts)
   //the output will be dist/**/express.js instead of main.js
   config.entry = { express: join(__dirname, "./express.ts") };
-  //console.log({ config, options });
+  //console.log("server", { config, options });
   return config;
 }

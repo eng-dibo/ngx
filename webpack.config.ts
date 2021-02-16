@@ -61,5 +61,6 @@ export function getConfig(
 
   //optimization: {minimize: false},
   //module.noParse: /polyfills-.*\.js/,
+  //console.log("WS", { config, options });
   return config;
 }

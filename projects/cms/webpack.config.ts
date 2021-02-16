@@ -66,6 +66,6 @@ export function getConfig(
 
   //@ts-ignore: TS7053: Element implicitly has an 'any' type because expression of type '"~"' can't be used to index type ...
   config.resolve.alias["~"] = resolve(__dirname, "./");
-
+  //console.log("cms", { config, options });
   return config;
 }
