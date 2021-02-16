@@ -46,7 +46,7 @@ export function getConfig(
   config: Configuration,
   options: ConfigOptions = {}
 ): Configuration {
-  config = webpackConfig(config, {});
+  config = webpackConfig(config, options);
 
   //set the root path alias(ex: ~packages/*) for typescript and webpack
   //tsconfig.path & webpack.resolve.alias

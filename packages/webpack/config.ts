@@ -1,3 +1,5 @@
+//install the same version of 'webpack' as the version used internally by 'Angular'
+// > npm list webpack
 import { Configuration } from "webpack";
 import { node, ExternalsOptions } from "./externals";
 import IgnoreNotFoundExportPlugin from "./ignore-export-not-found";
@@ -42,18 +44,17 @@ export default function(
   options: ConfigOptions = {}
 ): Configuration {
   options = deepMerge([
-    options,
     {
       target: "browser",
       nodeExternals: true,
       loaders: true,
       plugins: true
-    }
+    },
+    options
   ]);
 
-  //todo: initiate all config properties, ex: {resolve:{alias:[]}, ...
+  //initiate iterable (i.e: Array/object) properties
   config = deepMerge([
-    config,
     {
       //change 'mode' by env (ex: npx cross-env NODE_ENV=production ...)
       mode: "none",
@@ -65,8 +66,10 @@ export default function(
       module: {
         rules: []
       },
-      plugins: []
-    }
+      plugins: [],
+      dependencies: []
+    },
+    config
   ]);
 
   //todo: typescript: these objects cannot be empty
@@ -86,8 +89,7 @@ export default function(
     });
 
   //todo: libraryTarget commonjs VS commonjs-module
-  if (options.target === "server")
-    config.output.libraryTarget = "commonjs-module";
+  if (options.target === "server") config.output.libraryTarget = "commonjs2";
 
   if (options.loaders) {
     if (options.loaders === true) options.loaders = ["ts", "node"];
@@ -103,7 +105,7 @@ export default function(
     if (options.loaders.ts) {
       if (options.loaders.ts === true) options.loaders.ts = {};
       config.module.rules.push({
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         loader: "ts-loader",
         options: options.loaders.ts
       });
