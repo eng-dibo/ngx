@@ -46,9 +46,10 @@ export function deepMerge(
     level: 0
   };
 
-  options = Object.assign(defaultOptions, options);
-  let type = objectType(elements[0]);
-  let result = elements.shift();
+  //make 'options' imutable
+  let opts = Object.assign({}, options, defaultOptions),
+    result = elements.shift(),
+    type = objectType(result);
 
   elements.forEach(el => {
     if (objectType(el) === type) {
@@ -58,23 +59,23 @@ export function deepMerge(
         for (let k in el) {
           if (
             objectType(el[k]) !== "object" ||
-            options.strategy === "replace" ||
+            opts.strategy === "replace" ||
             !(k in result)
           )
             result[k] = el[k];
-          else result[k] = deepMerge([result[k], el[k]], options);
+          else result[k] = deepMerge([result[k], el[k]], opts);
         }
       } else if (type === "array") {
         //ex: deepMerge([1,2], [3,4]) -> [1,2,3,4] | [3,4,1,2]
-        result[<Strategy>options.strategy](...el);
+        result[<Strategy>opts.strategy](...el);
       } else if (type === "string") {
         //ex: deepMerge(["ab", "cd"]) -> "abcd" | "cdab"
-        result = options.strategy === "unshift" ? el + result : result + el;
+        result = opts.strategy === "unshift" ? el + result : result + el;
       }
     } else {
       //ex: merge([{x:1}, y]) -> {x:1, y:true}
       //ex: merge([ [1,2], 3 ]) -> [1,2,3]  (i.e: Array.push())
-      //if(options.strict): error
+      //if(opts.strict): error
       //todo:
     }
   });
