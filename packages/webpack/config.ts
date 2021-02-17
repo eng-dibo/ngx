@@ -84,8 +84,8 @@ export default function(
   if (options.nodeExternals === true)
     (options.nodeExternals as ExternalsOptions) = { whiteList: [] };
   if (options.nodeExternals)
-    (config.externals as Array<any>).push(function() {
-      node(arguments, options.nodeExternals as ExternalsOptions);
+    (config.externals as Array<any>).push(function externalsNode() {
+      return node(arguments, options.nodeExternals as ExternalsOptions);
     });
 
   //todo: libraryTarget commonjs VS commonjs-module

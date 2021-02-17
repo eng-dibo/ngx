@@ -1,6 +1,6 @@
 //todo: use @engineers (@engineers/js/regex)
 import { toRegExp } from "../js/regex";
-import { objectType } from "../nodejs/objects";
+import { objectType, inArray } from "../nodejs/objects";
 
 export type ExternalsParams = IArguments;
 
@@ -11,11 +11,18 @@ export type ExternalsParams = IArguments;
  * @return [description]
  */
 export function params(args: ExternalsParams) {
-  let request, context, callback;
+  let request: string,
+    context: any,
+    callback: any,
+    contextInfo: any,
+    getResolve: any;
+
   if (args[0].context) {
     //webpack 5
     context = args[0].context;
     request = args[0].request;
+    contextInfo = args[0].contextInfo;
+    getResolve = args[0].getResolve;
     callback = args[1];
   } else {
     //webpack 4
@@ -24,7 +31,7 @@ export function params(args: ExternalsParams) {
     callback = args[2];
   }
 
-  return { request, context, callback };
+  return { request, context, callback, contextInfo, getResolve };
 }
 
 export type ExternalsOptions =
@@ -35,8 +42,25 @@ export type ExternalsOptions =
 export interface ExternalsOptionsObj {
   transform?: externalsOptionsTransform;
   whiteList?: externalsOptionsWhiteList;
+  //sources: a list of locations to get the packagesList,
+  //or an array of packagesList
+  //if provided and not empty, it will only include the `request` in `webpack.externals[]` if it exists in packagesList[]
+  //ex: sources= ["./package.json:dependencies,devDependencies", "./node_modules", "./arrayOfPackageNames", "./ObjectOfPackageNamesAndVersions", "./ObjectOfPackageNamesAndVersions:key1,key2", "./stringList:,"  ["pkg1", "pkg1"], {"pkg1":"1.0", "pkg2":"1.0"}]
+  //if the object is a file it will load it's content
+  //if it is an object it will use the 'keys' flag (i.e: ':key' or ':key1,key2');
+  //by default it uses keys of package.json ':/(dev|peer|optional)?dependencies/'
+  //if the file contains a string content, or a string provided with a key flag, it uses it as a delemeter
+  sources?: Array<string | Array<string> | { [key: string]: string }>;
+  log: boolean;
 }
-export type externalsOptionsTransform = string | ((matched: any) => string);
+export type externalsOptionsTransform =
+  | string
+  | ((
+      request: string,
+      context: any,
+      contextInfo: any,
+      getResolve: any
+    ) => string);
 export type externalsOptionsWhiteList = Array<string | RegExp>;
 
 /**
@@ -58,40 +82,65 @@ export default function externals(
   args: ExternalsParams,
   options: ExternalsOptions = {}
 ) {
-  let { request, context, callback } = params(args);
-  list.forEach(item => {
+  let { request, context, callback, contextInfo, getResolve } = params(args);
+  //prevent options from mutation
+  let opts = Object.assign({}, options);
+
+  for (let i = 0; i < list.length; i++) {
+    let item = list[0];
     //todo: item = 'pattern' | {pattern, ...options}
     //ex: {'^config/(.*).ts', value: 'commonjs [request]/[$1]'}
 
-    if (objectType(options) !== "object") {
-      (options as ExternalsOptionsObj) = Array.isArray(
-        <ExternalsOptions>options
-      )
-        ? <ExternalsOptionsObj>{ whiteList: options }
-        : <ExternalsOptionsObj>{ transform: options };
-    }
-
-    options = options as ExternalsOptionsObj;
-
     //todo: if(request.match(<options.whiteList>))callback()
-    let matched = request.match(toRegExp(item));
-    if (matched) {
+
+    if (toRegExp(item).test(request)) {
+      //adjust options: convert to {}
+      if (objectType(opts) !== "object") {
+        (opts as ExternalsOptionsObj) = Array.isArray(<ExternalsOptions>opts)
+          ? <ExternalsOptionsObj>{ whiteList: opts }
+          : <ExternalsOptionsObj>{ transform: opts };
+      }
+      opts = opts as ExternalsOptionsObj;
+
+      //create sources[] (packagesList)
+      let sources: Array<string> = [];
+      if (Array.isArray(opts.sources) && opts.sources.length > 0) {
+        //todo: parse (flatten) sources
+      }
+      //if 'request' doesn't included in 'sources[]' don't add it to externals[] even if it matched
+      if (sources.length > 0 && !inArray(request, sources)) return callback();
+
       //todo: use @engineers/js/aliases to transform module name (ex: "module" -> "commonjs module")
-      options.transform = options.transform || `commonjs ${request}`;
+      opts.transform = opts.transform || `commonjs2 ${request}`;
+      if (typeof opts.transform === "function")
+        opts.transform = opts.transform(
+          request,
+          context,
+          contextInfo,
+          getResolve
+        );
 
-      if (typeof options.transform === "function")
-        options.transform = options.transform(matched);
       //replace ${vars}; ex: 'commonjs ${request}'
-      options.transform = options.transform.replace(/\${(.*)}/g, m => {
-        //todo: expose more variables
-        let vars = { request, matched: m[1] };
-        //@ts-ignore
-        return vars[m[1]];
-      });
+      opts.transform = opts.transform.replace(
+        /\${(.*)}/g,
+        (matched: string): string => {
+          //todo: expose more variables
+          let vars = { request };
+          //@ts-ignore
+          return vars[matched];
+        }
+      );
+      if (opts.log !== false)
+        console.log(
+          `\n[webpack externals]: ${request} -> ${opts.transform}\n matched: ${item}`
+        );
 
-      callback(null, options.transform);
-    } else callback();
-  });
+      return callback(null, opts.transform);
+    }
+  }
+
+  //if 'request' doesn't match any item in list[], just call callback()
+  callback();
 }
 
 /**
@@ -102,7 +151,19 @@ export default function externals(
  * @return {[type]} [description]
  */
 export function node(args: ExternalsParams, options?: ExternalsOptions) {
-  //doesn't start with ".", ex: ".." and "./"
-  let regex = "^(?!.).*";
-  return externals([regex], args, options);
+  let list = [
+    //match request that doesn't start with ".", ex: ".." and "./"
+    // but not an absolute path (ex: D:/path in windows or /path in linux)
+    /*
+   pattern:
+    ^ starts with
+    (?!  negative lookahead i.e: "^(?!\.).*"
+    . | \/ | \\ | .+?:  dosen't start with any of these characters
+                        .+?: matches D:/
+    */
+    /^(?!\.|\/|\\|.+?:).*/,
+    //a path to node_modules/
+    /^.*?\/node_modules\//
+  ];
+  return externals(list, args, options);
 }
