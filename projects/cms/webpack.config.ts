@@ -8,6 +8,7 @@ import {
 } from "../../webpack.config";
 //import { ExternalItem } from "webpack";
 import externals from "../../packages/webpack/externals";
+import { deepMerge } from "../../packages/js/merge";
 
 export {
   ConfigOptions,
@@ -28,6 +29,22 @@ export function getConfig(
   config: Configuration,
   options: ConfigOptions = {}
 ): Configuration {
+  let configPattern = /^(?:~{1,2}|\.\/|(?:\.\.\/)+)config\/(.*)/;
+
+  options = deepMerge(
+    [
+      {
+        nodeExternals: {
+          //add ~config/* to whiteList to prevent it from transforming to `commnjs2 ~config/*`
+          //so it can be properly transormed to 'commonjs ../config/*' by the function bellow
+          whiteList: [configPattern]
+        }
+      },
+      options
+    ],
+    { strategy: "push" }
+  );
+
   config = basicConfig(config, options);
 
   config.externals = config.externals || [];
@@ -55,9 +72,10 @@ export function getConfig(
     //because all require(config/*) statements are in this file
 
     externals(
-      [/^(?:~{1,2}|\.\/|(?:\.\.\/)+)config\/(.*)/],
+      [configPattern],
       arguments,
-      (match: any) => `commonjs ../../config/${match[1]}`
+      //or: (reuest:string)=>`commonjs2 ....`
+      "commonjs2 ../../config/${request}"
     );
   });
 

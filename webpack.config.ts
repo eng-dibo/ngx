@@ -4,6 +4,8 @@
 //should know the alias path using tsconfig.paths
 //webpack runs `tsc` to compile this file into .js using tsconfig.json
 import webpackConfig, { ConfigOptions } from "./packages/webpack/config";
+import { ExternalsOptionsObj } from "./packages/webpack/externals";
+import { deepMerge } from "./packages/js/merge";
 import { Configuration } from "webpack";
 import {
   CustomWebpackBrowserSchema,
@@ -46,6 +48,21 @@ export function getConfig(
   config: Configuration,
   options: ConfigOptions = {}
 ): Configuration {
+  //todo: in other applications that use @engineers/* packages,
+  //it is better to not whiteList it, as it will be published to npm.
+
+  options = deepMerge(
+    [
+      {
+        nodeExternals: {
+          whiteList: [/@engineers\/.+/]
+        }
+      },
+      options
+    ],
+    { strategy: "push" }
+  );
+
   config = webpackConfig(config, options);
 
   //set the root path alias(ex: ~packages/*) for typescript and webpack
