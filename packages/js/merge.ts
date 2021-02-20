@@ -45,7 +45,6 @@ export function deepMerge(
     strategy: "push",
     level: 0
   };
-
   //make 'options' imutable
   let opts = Object.assign({}, options, defaultOptions),
     result = elements.shift(),
@@ -58,7 +57,10 @@ export function deepMerge(
         el = cleanObject(el);
         for (let k in el) {
           if (
-            objectType(el[k]) !== "object" ||
+            !(
+              objectType(result[k]) === "object" &&
+              objectType(el[k]) === "object"
+            ) ||
             opts.strategy === "replace" ||
             !(k in result)
           )
