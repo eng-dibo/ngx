@@ -43,7 +43,7 @@ export default function(
   config: Configuration,
   options: ConfigOptions = {}
 ): Configuration {
-  options = deepMerge([
+  let opts = deepMerge([
     {
       target: "browser",
       nodeExternals: true,
@@ -81,70 +81,70 @@ export default function(
   config.output = config.output || {};
   if (!Array.isArray(config.externals)) config.externals = [config.externals];
 
-  if (options.nodeExternals === true)
-    (options.nodeExternals as ExternalsOptions) = { whiteList: [] };
-  if (options.nodeExternals)
+  if (opts.nodeExternals === true)
+    (opts.nodeExternals as ExternalsOptions) = { whiteList: [] };
+  if (opts.nodeExternals)
     (config.externals as Array<any>).push(function externalsNode() {
-      return node(arguments, options.nodeExternals as ExternalsOptions);
+      return node(arguments, opts.nodeExternals as ExternalsOptions);
     });
 
   //todo: libraryTarget commonjs VS commonjs-module
-  if (options.target === "server") config.output.libraryTarget = "commonjs2";
+  if (opts.target === "server") config.output.libraryTarget = "commonjs2";
 
-  if (options.loaders) {
-    if (options.loaders === true) options.loaders = ["ts", "node"];
-    if (Array.isArray(options.loaders)) {
+  if (opts.loaders) {
+    if (opts.loaders === true) opts.loaders = ["ts", "node"];
+    if (Array.isArray(opts.loaders)) {
       let loadersTemp: { [key in Loaders]?: LoaderOptions } = {};
-      options.loaders.forEach(
+      opts.loaders.forEach(
         //@ts-ignore: TS7053: Element implicitly has an 'any' type because expression of type '"ts" | "node"' can't be used to index type '{ 0: LoaderOptions; 1: LoaderOptions; }'
         (item: Loaders) => (loadersTemp[item] = true)
       );
-      options.loaders = loadersTemp;
+      opts.loaders = loadersTemp;
     }
 
-    if (options.loaders.ts) {
-      if (options.loaders.ts === true) options.loaders.ts = {};
+    if (opts.loaders.ts) {
+      if (opts.loaders.ts === true) opts.loaders.ts = {};
       config.module.rules.push({
         test: /\.tsx?$/,
         loader: "ts-loader",
-        options: options.loaders.ts
+        options: opts.loaders.ts
       });
     }
 
     //load .node files
     //ex: ./node_modules/sharp/build/Release/sharp.node
     // https://github.com/lovell/sharp/issues/794#issuecomment-307188099
-    if (options.loaders.node) {
-      if (options.loaders.node === true)
-        options.loaders.node = { name: "[name]-[contenthash].[ext]" };
+    if (opts.loaders.node) {
+      if (opts.loaders.node === true)
+        opts.loaders.node = { name: "[name]-[contenthash].[ext]" };
       config.module.rules.push({
         test: /\.node$/,
         loader: "node-loader",
-        options: options.loaders.node
+        options: opts.loaders.node
       });
     }
   }
 
-  if (options.plugins) {
-    if (options.plugins === true) options.plugins = { ignoreNotFound: true };
-    if (Array.isArray(options.plugins)) {
+  if (opts.plugins) {
+    if (opts.plugins === true) opts.plugins = { ignoreNotFound: true };
+    if (Array.isArray(opts.plugins)) {
       let pluginsTemp: { [key in Plugins]?: Obj } = {};
-      options.plugins.forEach(
+      opts.plugins.forEach(
         //@ts-ignore: TS7053: Element implicitly has an 'any' type because expression of type '"ts" | "node"' can't be used to index type '{ 0: LoaderOptions; 1: LoaderOptions; }'
         (item: Plugins) => (pluginsTemp[item] = true)
       );
-      options.plugins = pluginsTemp;
+      opts.plugins = pluginsTemp;
     }
-    if (options.plugins.ignoreNotFound) {
-      if (options.plugins.ignoreNotFound === true)
-        options.plugins.ignoreNotFound = {
+    if (opts.plugins.ignoreNotFound) {
+      if (opts.plugins.ignoreNotFound === true)
+        opts.plugins.ignoreNotFound = {
           message: undefined,
           levels: ["warnings", "errors"]
         };
       config.plugins.push(
         new IgnoreNotFoundExportPlugin(
-          options.plugins.ignoreNotFound.message,
-          options.plugins.ignoreNotFound.levels
+          opts.plugins.ignoreNotFound.message,
+          opts.plugins.ignoreNotFound.levels
         )
       );
     }

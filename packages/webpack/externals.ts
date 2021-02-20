@@ -51,7 +51,7 @@ export interface ExternalsOptionsObj {
   //by default it uses keys of package.json ':/(dev|peer|optional)?dependencies/'
   //if the file contains a string content, or a string provided with a key flag, it uses it as a delemeter
   sources?: Array<string | Array<string> | { [key: string]: string }>;
-  log: boolean;
+  log?: boolean;
 }
 export type externalsOptionsTransform =
   | string
@@ -84,24 +84,26 @@ export default function externals(
 ) {
   let { request, context, callback, contextInfo, getResolve } = params(args);
   //prevent options from mutation
-  let opts = Object.assign({}, options);
+  let opts = Object.assign({ log: true }, options) as ExternalsOptionsObj;
+  //adjust options: convert to {}
+  if (objectType(opts) !== "object") {
+    (opts as ExternalsOptionsObj) = Array.isArray(<ExternalsOptions>opts)
+      ? <ExternalsOptionsObj>{ whiteList: opts }
+      : <ExternalsOptionsObj>{ transform: opts };
+  }
+
+  //if any of whiteList[] matched 'request', just return
+  if (inArray(opts.whiteList || [], [request])) {
+    if (opts.log) console.log(`\n[webpack externals]: whiteListed: ${request}`);
+    return callback();
+  }
 
   for (let i = 0; i < list.length; i++) {
     let item = list[0];
     //todo: item = 'pattern' | {pattern, ...options}
     //ex: {'^config/(.*).ts', value: 'commonjs [request]/[$1]'}
 
-    //todo: if(request.match(<options.whiteList>))callback()
-
     if (toRegExp(item).test(request)) {
-      //adjust options: convert to {}
-      if (objectType(opts) !== "object") {
-        (opts as ExternalsOptionsObj) = Array.isArray(<ExternalsOptions>opts)
-          ? <ExternalsOptionsObj>{ whiteList: opts }
-          : <ExternalsOptionsObj>{ transform: opts };
-      }
-      opts = opts as ExternalsOptionsObj;
-
       //create sources[] (packagesList)
       let sources: Array<string> = [];
       if (Array.isArray(opts.sources) && opts.sources.length > 0) {
@@ -130,7 +132,7 @@ export default function externals(
           return vars[matched];
         }
       );
-      if (opts.log !== false)
+      if (opts.log)
         console.log(
           `\n[webpack externals]: ${request} -> ${opts.transform}\n matched: ${item}`
         );
