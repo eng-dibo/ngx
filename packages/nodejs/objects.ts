@@ -87,17 +87,35 @@ export function merge(target: any, ...obj: any[]): any {
  * @param  caseSensitive applies only if the element is string
  * @return boolean
  *
- * todo: rename to in(container, element) or exists()
+ * todo: rename to in(element,container ) or exists()
+ * todo: add more container types (class,. ...)
+ * todo: inArray(element: string|RegEx, ["string",/RegEx/])
  */
 export function inArray(
   element: any,
   array: Array<any> | object | string,
   caseSensitive?: boolean // case sensitive
 ): boolean {
-  if (!caseSensitive && typeof element == "string") {
+  if (element instanceof Array) {
+    for (let i = 0; i < element.length; i++) {
+      if (inArray(element[i], array, caseSensitive)) return true;
+    }
+    return false;
+  }
+
+  if (element instanceof RegExp) {
+    if (typeof array === "string") return element.test(array);
+    else if (array instanceof Array) {
+      for (let i = 0; i < array.length; i++) {
+        if (inArray(element, array[i])) return true;
+      }
+      return false;
+    } //todo: else if(objectTybe==="object")
+  }
+  if (!caseSensitive && typeof element === "string") {
     element = element.toLowerCase();
   }
-  if (typeof array == "string") return !!array.indexOf(element);
+  if (typeof array == "string") return array.indexOf(element) > -1;
   // !! to convert number to boolean
   else if (array instanceof Array) return array.includes(element);
   else if (isIterable(array)) {
@@ -109,7 +127,9 @@ export function inArray(
           (array[i as keyof typeof array] as string).toLowerCase() == element)
       );
     }
-  } else if (typeof array == "object") {
+  }
+  //todo: use objectTyoe(array)
+  else if (typeof array == "object") {
     return element in array;
   }
 
