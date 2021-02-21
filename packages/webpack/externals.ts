@@ -84,12 +84,17 @@ export default function externals(
 ) {
   let { request, context, callback, contextInfo, getResolve } = params(args);
   //prevent options from mutation
-  let opts = Object.assign({ log: true }, options) as ExternalsOptionsObj;
-  //adjust options: convert to {}
-  if (objectType(opts) !== "object") {
-    (opts as ExternalsOptionsObj) = Array.isArray(<ExternalsOptions>opts)
-      ? <ExternalsOptionsObj>{ whiteList: opts }
-      : <ExternalsOptionsObj>{ transform: opts };
+  let opts: ExternalsOptionsObj;
+
+  if (objectType(options) === "object")
+    opts = Object.assign({ log: true }, options);
+  else {
+    //adjust options: convert to {}
+    opts = Array.isArray(options)
+      ? <ExternalsOptionsObj>{ whiteList: options }
+      : <ExternalsOptionsObj>{ transform: options };
+
+    opts.log = true;
   }
 
   //if any of whiteList[] matched 'request', just return
@@ -123,13 +128,16 @@ export default function externals(
         );
 
       //replace ${vars}; ex: 'commonjs ${request}'
+      //todo: support multiple groups: ex: "commonjs ${var1} - ${var2}"
       opts.transform = opts.transform.replace(
         /\${(.*)}/g,
-        (matched: string): string => {
-          //todo: expose more variables
+        (...matched: any[]): string => {
+          //todo: expose more variables (ex: context{}, matches[])
+          //todo: support obj.* syntax ex: "commonjs ${var.property}"
+          //todo: support js ex: "commonjs ${var.replace('x','y')}"
           let vars = { request };
           //@ts-ignore
-          return vars[matched];
+          return vars[matched[1]];
         }
       );
       if (opts.log)

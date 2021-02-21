@@ -149,6 +149,6 @@ export default function(
       );
     }
   }
-
+  //console.log("webpack.config", { config, opts, options });
   return config;
 }
