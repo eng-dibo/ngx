@@ -53,12 +53,12 @@ export function getConfig(
 
   options = deepMerge(
     [
+      options,
       {
         nodeExternals: {
           whiteList: [/@engineers\/.+/]
         }
-      },
-      options
+      }
     ],
     { strategy: "push" }
   );

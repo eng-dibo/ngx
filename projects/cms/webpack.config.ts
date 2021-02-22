@@ -33,14 +33,14 @@ export function getConfig(
 
   options = deepMerge(
     [
+      options,
       {
         nodeExternals: {
-          //add ~config/* to whiteList to prevent it from transforming to `commnjs2 ~config/*`
+          //add ~* (ex: ~config/*, ~browser/*) to whiteList to prevent it from transforming to `commnjs2 ~config/*`
           //so it can be properly transormed to 'commonjs ../config/*' by the function bellow
-          whiteList: [configPattern]
+          whiteList: [/^~/]
         }
-      },
-      options
+      }
     ],
     { strategy: "push" }
   );
@@ -74,8 +74,18 @@ export function getConfig(
     externals(
       [configPattern],
       arguments,
-      //or: (reuest:string)=>`commonjs2 ....`
-      "commonjs2 ../../config/${request}"
+
+      (request: string) => {
+        let match = request.match(configPattern);
+        //path is relative to this file (i.e: webpack.config.ts),
+        //not to the file that requested the 'request'
+        //so, we don't need to calculate the relative path
+        return `commonjs2 ../../config/${match![1]}`;
+
+        /*if (match[1] === "config")
+          return `commonjs2 ../../${match![1]}/${match![2]}`;
+        else if (match[1] === "browser") return; */
+      }
     );
   });
 
