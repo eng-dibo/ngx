@@ -4,6 +4,8 @@ import { execSync } from 'child_process';
 function exec(cmd: string): void{
     // display the output
     // https://stackoverflow.com/a/31104898/12577650
+    // todo: don't wait until std complete to display the output
+    // https://stackoverflow.com/a/30168821/12577650
     execSync(cmd, {stdio: 'inherit'}).toString();
 }
 
