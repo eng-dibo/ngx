@@ -49,6 +49,7 @@ export function server() {
         if (
           parts &&
           parts.hostname !== 'localhost' &&
+          parts.hostname !== '127.0.0.1' &&
           (!parts.subDomains || parts.subDomains === [] || !req.secure)
         ) {
           if (!parts.subDomains) { parts.subDomains = []; }
