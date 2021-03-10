@@ -58,6 +58,10 @@ export default function(
     {
       // change 'mode' by env (ex: npx cross-env NODE_ENV=production ...)
       mode: 'none',
+      resolve: {
+        extensions: ['.tsx', '.ts', '.jsx', '.js'],
+        symlinks: false
+      },
       externals: [],
       output: {
         library: '',

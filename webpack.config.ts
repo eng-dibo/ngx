@@ -28,7 +28,7 @@ export {
  * @param  targetOptions [description]
  * @return [description]
  */
-export default function(
+export default function (
   config: Configuration,
   options?: CustomWebpackBrowserSchema,
   targetOptions?: TargetOptions
@@ -44,7 +44,7 @@ export default function(
  * @param  options   [description]
  * @return [description]
  */
-export function getConfig(
+export function getConfig (
   config: Configuration,
   options: ConfigOptions = {}
 ): Configuration {
@@ -74,7 +74,6 @@ export function getConfig(
   config.resolve.alias['~~'] = resolve(__dirname, './');
   // @ts-ignore
   config.resolve.alias['@engineers'] = resolve(__dirname, './packages/');
-  config.resolve.symlinks = false;
 
   // optimization: {minimize: false},
   // module.noParse: /polyfills-.*\.js/,
