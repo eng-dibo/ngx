@@ -3,10 +3,11 @@
   "description": "A monorepo for multiple Angular projects",
   "version": "0.0.1",
   "scripts": {
+    "build:tasks": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --config webpack.config.tasks.ts",
+    "task":"node tasks!! ",
     "ng": "ng",
-    "cms:ctart": "npm run start --prefix projects/cms",
-    "cms:start:dev": "npm run start:dev --prefix projects/cms",
-    "build:tasks": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --config webpack.config.tasks.ts"
+    "cms:start": "npm run task run cms/start",
+    "cms:start:dev": "npm run task run cms/start:dev"    
   },
   "private": false,
   "keywords": [
