@@ -36,8 +36,6 @@ export default function (config: Config): Configuration {
       }
      }
  };
-  console.log(basicConfig(config, options));
-
   return basicConfig(config, options);
 }
 
