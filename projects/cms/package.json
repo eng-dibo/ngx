@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "ng",
+    "lint":"tslint --fix --config  tslint.json --project tsconfig.json",
     "build:browser": "ng build --aot --prod",
     "build:browser:dev": "ng build",
     "build:server": "ng run cms:server:production --bundleDependencies",
