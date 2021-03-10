@@ -1,0 +1,19 @@
+/*
+this file is used whith `webpack --config webpack.config.ts`,
+i.e: when writeing a webpack config with typescript
+module must be commonjs, otherwise it will throw an error: 
+cannot use import outside a module
+https://webpack.js.org/configuration/configuration-languages
+
+usage:
+ cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --config webpack.config.ts
+
+*/
+
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {   
+      "sourceMap": false,       
+      "module": "commonjs"     
+    }
+  }

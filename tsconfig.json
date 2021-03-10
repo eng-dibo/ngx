@@ -31,7 +31,7 @@
     "emitDecoratorMetadata": true,
     "locale": "en",
     "watch": false,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true,    
     "paths": {
       "~~*": ["./*"],
       "@engineers/*": ["./packages/*"],
@@ -42,7 +42,7 @@
     "strictPropertyInitialization": true
   },
   "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/e2e"],
-  "angularCompilerOptions": {
+   "angularCompilerOptions": {
     "enableIvy": true,
     "strictTemplates": true,
 
