@@ -1,6 +1,6 @@
 {
     "prettier.arrowParens": "avoid",
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "ms-vscode.vscode-typescript-tslint-plugin",
     "editor.formatOnSave": true,
     "files.autoSave": "off",
     "editor.fastScrollSensitivity": 3,
