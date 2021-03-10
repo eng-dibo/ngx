@@ -1,6 +1,6 @@
-//this file is to use firebase-admin SDK with  Nodejs,
-//to use firebase client-side (web) use ./firebase.ts
-//todo: add typescript definitions ex: upload():Promise<UploadResponse>
+// this file is to use firebase-admin SDK with  Nodejs,
+// to use firebase client-side (web) use ./firebase.ts
+// todo: add typescript definitions ex: upload():Promise<UploadResponse>
 
 /*
 todo: issue#
@@ -14,7 +14,7 @@ https://github.com/googleapis/gax-nodejs/issues/719#issuecomment-605323285
 
  */
 
-import * as admin from "firebase-admin";
+import * as admin from 'firebase-admin';
 
 interface Obj {
   [key: string]: any;
@@ -30,42 +30,48 @@ interface downloadOptionsObj extends Obj {
 export type downloadOptions = downloadOptionsObj | string;
 export interface initOptions extends Obj {}
 
-//todo: extends admin
+// todo: extends admin
 export class Firebase {
   public admin: any;
 
-  //todo: init app here causes error, admin.initializeApp() must be called from /server.ts
-  //https://medium.com/google-cloud/firebase-separating-configuration-from-code-in-admin-sdk-d2bcd2e87de6
+  // todo: init app here causes error, admin.initializeApp() must be called from /server.ts
+  // https://medium.com/google-cloud/firebase-separating-configuration-from-code-in-admin-sdk-d2bcd2e87de6
   constructor(options?: initOptions) {
     this.admin = admin;
-    if (options) this.init(options);
+    if (options) { this.init(options); }
   }
   init(options: initOptions = {}) {
-    if (!("credential" in options)) {
+    if (!('credential' in options)) {
       if (options.cert) {
-        //note: in this case the cert path must be absolute,
-        //or relative to dist/...
-        if (typeof options.cert === "string")
+        // note: in this case the cert path must be absolute,
+        // or relative to dist/...
+        if (typeof options.cert === 'string') {
           options.cert = require(options.cert);
+        }
         options.credential = this.admin.credential.cert(options.cert);
 
         options.projectId = options.projectId || options.cert.project_id;
 
         delete options.cert;
-      } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS)
+      } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
         options.credential = this.admin.credential.applicationDefault();
-    } else if (typeof options.credential === "string")
+ }
+    } else if (typeof options.credential === 'string') {
       options.credential = this.admin.credential.cert(options.credential);
+ }
 
     if (options.projectId) {
-      if (!("storageBucket" in options))
+      if (!('storageBucket' in options)) {
         options.storageBucket = `gs://${options.projectId}.appspot.com`;
+      }
 
-      if (!("databaseURL" in options))
+      if (!('databaseURL' in options)) {
         options.databaseURL = `https://${options.projectId}.firebaseio.com`;
+      }
 
-      if (!("authDomain" in options))
+      if (!('authDomain' in options)) {
         options.authDomain = `${options.projectId}.firebaseapp.com`;
+      }
     }
 
     this.admin.initializeApp(options);
@@ -76,17 +82,17 @@ export class Firebase {
   }
 }
 
-//todo: extends admin.storage
+// todo: extends admin.storage
 class Storage {
   /**
    * create a new bucket
    * @method constructor
    * @param  bucket  [description]
    */
-  //todo: if(bucket instanceof admin.Bucket)this.bucket=bucket
+  // todo: if(bucket instanceof admin.Bucket)this.bucket=bucket
   public bucket: any;
   constructor(admin: any, bucket?: string, app?: admin.app.App) {
-    this.bucket = admin.storage(app).bucket(bucket); //default bucket
+    this.bucket = admin.storage(app).bucket(bucket); // default bucket
   }
 
   /**
@@ -96,21 +102,22 @@ class Storage {
    * @param  destination [description]
    * @return Promise<UploadResponse>;  //UploadResponse=[File, API request]
    */
-  //todo: upload / download a folder
+  // todo: upload / download a folder
   upload(file: string | Buffer, options?: uploadOptions) {
-    if (typeof options === "string") options = { destination: options };
-    //console.log({ file, options });
+    if (typeof options === 'string') { options = { destination: options }; }
+    // console.log({ file, options });
 
-    //convert base64 to buffer
+    // convert base64 to buffer
     if (
-      typeof file === "string" &&
+      typeof file === 'string' &&
       /data:.+\/.+?;base64,([^=]+)={0,2}/.test(file)
-    )
-      file = Buffer.from(file.replace(/data:.+\/.+?;base64,/, ""), "base64");
+    ) {
+      file = Buffer.from(file.replace(/data:.+\/.+?;base64,/, ''), 'base64');
+    }
 
-    if (typeof file === "string") return this.bucket.upload(file, options);
+    if (typeof file === 'string') { return this.bucket.upload(file, options); }
     else if (file instanceof Buffer) {
-      let fileObj = this.bucket.file(options?.destination);
+      const fileObj = this.bucket.file(options?.destination);
       return fileObj.save(file);
     }
   }
@@ -123,10 +130,10 @@ class Storage {
    * @return Promise<DownloadResponse>
    */
 
-  //todo: file: string | File
+  // todo: file: string | File
   download(file: any, options?: downloadOptions) {
-    if (typeof file === "string") file = this.bucket.file(file);
-    if (typeof options === "string") options = { destination: options };
+    if (typeof file === 'string') { file = this.bucket.file(file); }
+    if (typeof options === 'string') { options = { destination: options }; }
     return file.download(options);
   }
 

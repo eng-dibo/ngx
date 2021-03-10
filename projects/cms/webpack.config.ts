@@ -1,14 +1,14 @@
-import { resolve } from "path";
+import { resolve } from 'path';
 import {
   getConfig as basicConfig,
   ConfigOptions,
   Configuration,
   CustomWebpackBrowserSchema,
   TargetOptions
-} from "../../webpack.config";
-//import { ExternalItem } from "webpack";
-import externals from "../../packages/webpack/externals";
-import { deepMerge } from "../../packages/js/merge";
+} from '../../webpack.config';
+// import { ExternalItem } from "webpack";
+import externals from '../../packages/webpack/externals';
+import { deepMerge } from '../../packages/js/merge';
 
 export {
   ConfigOptions,
@@ -29,33 +29,33 @@ export function getConfig(
   config: Configuration,
   options: ConfigOptions = {}
 ): Configuration {
-  let configPattern = /^(?:~{1,2}|\.\/|(?:\.\.\/)+)config\/(.*)/;
+  const configPattern = /^(?:~{1,2}|\.\/|(?:\.\.\/)+)config\/(.*)/;
 
   options = deepMerge(
     [
       options,
       {
         nodeExternals: {
-          //add ~* (ex: ~config/*, ~browser/*) to whiteList to prevent it from transforming to `commnjs2 ~config/*`
-          //so it can be properly transormed to 'commonjs ../config/*' by the function bellow
+          // add ~* (ex: ~config/*, ~browser/*) to whiteList to prevent it from transforming to `commnjs2 ~config/*`
+          // so it can be properly transormed to 'commonjs ../config/*' by the function bellow
           whiteList: [/^~/]
         }
       }
     ],
-    { strategy: "push" }
+    { strategy: 'push' }
   );
 
   config = basicConfig(config, options);
 
   config.externals = config.externals || [];
-  if (!Array.isArray(config.externals)) config.externals = [config.externals];
+  if (!Array.isArray(config.externals)) { config.externals = [config.externals]; }
 
   /*or as ExternalItem[]*/
   (config.externals as Array<any>).push(function() {
-    //exclude config dir, so the user can modify the dist version and add his own configs.
-    //i.e: keep it as require(config/*) instead of bundling it
-    //matches: ~config/* ~~config/* ./config/* ../../config/*
-    //todo: also exclude config dir in build:browser
+    // exclude config dir, so the user can modify the dist version and add his own configs.
+    // i.e: keep it as require(config/*) instead of bundling it
+    // matches: ~config/* ~~config/* ./config/* ../../config/*
+    // todo: also exclude config dir in build:browser
 
     /*
         //get the path to config from the project's root (i.e: process.cwd() or '.')
@@ -68,18 +68,18 @@ export function getConfig(
           //todo: get config's path from workspace's root
         }*/
 
-    //all paths are relative to the output file (i.e: dist/cms/core/express.js)
-    //because all require(config/*) statements are in this file
+    // all paths are relative to the output file (i.e: dist/cms/core/express.js)
+    // because all require(config/*) statements are in this file
 
     externals(
       [configPattern],
       arguments,
 
       (request: string) => {
-        let match = request.match(configPattern);
-        //path is relative to this file (i.e: webpack.config.ts),
-        //not to the file that requested the 'request'
-        //so, we don't need to calculate the relative path
+        const match = request.match(configPattern);
+        // path is relative to this file (i.e: webpack.config.ts),
+        // not to the file that requested the 'request'
+        // so, we don't need to calculate the relative path
         return `commonjs2 ../../config/${match![1]}`;
 
         /*if (match[1] === "config")
@@ -92,8 +92,8 @@ export function getConfig(
   config.resolve = config.resolve || {};
   config.resolve.alias = config.resolve.alias || {};
 
-  //@ts-ignore: TS7053: Element implicitly has an 'any' type because expression of type '"~"' can't be used to index type ...
-  config.resolve.alias["~"] = resolve(__dirname, "./");
-  //console.log("cms", { config, options });
+  // @ts-ignore: TS7053: Element implicitly has an 'any' type because expression of type '"~"' can't be used to index type ...
+  config.resolve.alias['~'] = resolve(__dirname, './');
+  // console.log("cms", { config, options });
   return config;
 }

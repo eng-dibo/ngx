@@ -18,11 +18,11 @@ import { NgModule } from "@angular/core";
 import { ServerModule } from "@angular/platform-server";
 */
 
-//imports for server()
-import "zone.js/dist/zone-node";
-import { ngExpressEngine } from "@nguniversal/express-engine";
-import express from "express";
-import { APP_BASE_HREF } from "@angular/common";
+// imports for server()
+import 'zone.js/dist/zone-node';
+import { ngExpressEngine } from '@nguniversal/express-engine';
+import express from 'express';
+import { APP_BASE_HREF } from '@angular/common';
 
 /*
 export interface ServerModuleOptions {
@@ -55,9 +55,9 @@ export function serverModule(options: ServerModuleOptions): any {
 
 export interface AppOptions {
   browserDir: string;
-  //AppServerModule from server/main (created by ng cli)
-  //todo: create AppServiceModule (options:{prod:bool, bootstrap: AppComponent})
-  //todo: serverModule type.
+  // AppServerModule from server/main (created by ng cli)
+  // todo: create AppServiceModule (options:{prod:bool, bootstrap: AppComponent})
+  // todo: serverModule type.
   serverModule: any;
   engine?: string;
   staticDirs?: string[];
@@ -73,51 +73,51 @@ export function server(
 ): express.Express {
   const app: express.Express = express();
 
-  //todo: error
-  if (!("browserDir" in options)) {
+  // todo: error
+  if (!('browserDir' in options)) {
   }
-  if (!("serverModule" in options)) {
+  if (!('serverModule' in options)) {
   }
 
-  let defaultOptions = {
-    engine: "html",
-    //todo: or static={dir: maxAge}
+  const defaultOptions = {
+    engine: 'html',
+    // todo: or static={dir: maxAge}
     staticDirs: [options.browserDir],
-    staticMaxAge: "1y",
-    indexFile: "index.html"
+    staticMaxAge: '1y',
+    indexFile: 'index.html'
   };
 
   options = Object.assign(options, defaultOptions);
 
-  //Universal express-engine
-  //https://github.com/angular/universal/tree/master/modules/express-engine
-  //https://expressjs.com/en/api.html#app.engine
+  // Universal express-engine
+  // https://github.com/angular/universal/tree/master/modules/express-engine
+  // https://expressjs.com/en/api.html#app.engine
   app.engine(
-    <string>options.engine,
+    options.engine as string,
     ngExpressEngine({
       bootstrap: options.serverModule
     })
   );
 
-  app.set("view engine", <string>options.engine);
-  app.set("views", options.browserDir);
+  app.set('view engine', options.engine as string);
+  app.set('views', options.browserDir);
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   if (options.staticDirs && options.staticDirs.length > 0) {
     options.staticDirs.forEach(dir =>
-      app.get("*.*", express.static(dir, { maxAge: options.staticMaxAge }))
+      app.get('*.*', express.static(dir, { maxAge: options.staticMaxAge }))
     );
   }
 
-  //allow the consumer to modify app (ex: adding routes) before the final route added (i.e: "*")
-  //app will be changed by reference, cb() dosn't have to return it.
-  if (cb && typeof cb === "function") cb(app); // app = cb(app) || app;
+  // allow the consumer to modify app (ex: adding routes) before the final route added (i.e: "*")
+  // app will be changed by reference, cb() dosn't have to return it.
+  if (cb && typeof cb === 'function') { cb(app); } // app = cb(app) || app;
 
   // All regular routes use the Universal engine, must be after all other routes
-  app.get("*", (req, res) => {
-    res.render(<string>options.indexFile, {
+  app.get('*', (req, res) => {
+    res.render(options.indexFile as string, {
       req,
       providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }]
     });

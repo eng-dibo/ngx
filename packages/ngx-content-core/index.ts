@@ -1,3 +1,3 @@
-export * from "./pipes";
-export * from "./functions";
-export * from "./module";
+export * from './pipes';
+export * from './functions';
+export * from './module';

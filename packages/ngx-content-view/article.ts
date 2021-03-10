@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from '@angular/core';
 
 interface Obj {
   [key: string]: any;
@@ -9,10 +9,10 @@ export interface Article extends Obj {
   title: string;
   subtitle?: string;
   content: string;
-  //todo: if(keywods:string)keywords=keywords.split(',').map(text=>({text}))
+  // todo: if(keywods:string)keywords=keywords.split(',').map(text=>({text}))
   keywords?: Keywords[];
   cover?: Image;
-  //todo: img?: string | Image
+  // todo: img?: string | Image
   author?: { name?: string; img?: string; link?: string };
   link?: string;
   categories?: string[];
@@ -27,7 +27,7 @@ export interface Keywords extends Obj {
   target?: string;
 }
 
-//todo: convert <img data-ngx-img="img: Image"> to <img>
+// todo: convert <img data-ngx-img="img: Image"> to <img>
 export interface Image {
   src?: string;
   srcset?: string;
@@ -35,20 +35,20 @@ export interface Image {
   alt?: string;
   lazy?: boolean;
   placeholder?: string;
-  width?: number; //html img.width is number ex: <img width="50" />
+  width?: number; // html img.width is number ex: <img width="50" />
   height?: number;
 }
 
 export interface Pref extends Obj {
-  layout?: string; //grid || list
-  back?: string; //the link in case of no content
-  noContent?: string; //noContent text; todo: html
+  layout?: string; // grid || list
+  back?: string; // the link in case of no content
+  noContent?: string; // noContent text; todo: html
 }
 
 @Component({
-  selector: "ngx-content-article",
-  templateUrl: "./article.html",
-  styleUrls: ["./view.scss"]
+  selector: 'ngx-content-article',
+  templateUrl: './article.html',
+  styleUrls: ['./view.scss']
 })
 export class NgxContentArticleComponent {
   @Input() data!: Article;

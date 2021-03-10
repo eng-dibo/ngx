@@ -1,31 +1,32 @@
-//todo move functions, pipes to ngx-content/core; because this package (view) requires many peepDependencies
+// todo move functions, pipes to ngx-content/core; because this package (view) requires many peepDependencies
 import {
   DomSanitizer,
   ɵDomSanitizerImpl,
   SafeHtml
-} from "@angular/platform-browser";
+} from '@angular/platform-browser';
 
-//todo: import from @dibo/general
+// todo: import from @dibo/general
 function objectType(obj: any): string {
   return Object.prototype.toString
     .call(obj)
-    .replace("[object ", "")
-    .replace("]", "")
+    .replace('[object ', '')
+    .replace(']', '')
     .toLowerCase();
 }
 
-export type ContentValue = any; //todo: article{} | string
+export type ContentValue = any; // todo: article{} | string
 export interface Obj {
   [k: string]: any;
 }
 
 export function getValue(value: ContentValue, keys: string | string[] = []) {
-  if (objectType(value) == "object") {
-    if (!(keys instanceof Array)) keys = [keys];
-    for (let i = 0; i < keys.length; i++)
-      if (value[keys[i]] && value[keys[i]] !== "") return value[keys[i]];
+  if (objectType(value) == 'object') {
+    if (!(keys instanceof Array)) { keys = [keys]; }
+    for (let i = 0; i < keys.length; i++) {
+      if (value[keys[i]] && value[keys[i]] !== '') { return value[keys[i]]; }
+    }
   }
-  if (typeof value != "string") return "";
+  if (typeof value != 'string') { return ''; }
   return value;
 }
 
@@ -40,33 +41,33 @@ export function getValue(value: ContentValue, keys: string | string[] = []) {
 export function slug(
   value: ContentValue,
   lngth = 200,
-  allowedChars = "",
+  allowedChars = '',
   encode = true
 ) {
-  let lang = {
-    ar: "أابتثجحخدذرزسشصضطظعغفقكلمنهويىآئءلألإإآة"
+  const lang = {
+    ar: 'أابتثجحخدذرزسشصضطظعغفقكلمنهويىآئءلألإإآة'
   };
 
   allowedChars = allowedChars
-    .split("|")
+    .split('|')
     .map(el =>
-      el.startsWith(":") ? lang[el.substr(1) as keyof typeof lang] : ""
+      el.startsWith(':') ? lang[el.substr(1) as keyof typeof lang] : ''
     )
-    .join("");
-  let slug = getValue(value, ["slug", "title"])
-    .trim() //remove trailing spaces
-    .replace(new RegExp(`[^a-z0-9-._~${allowedChars}]`, "gi"), "-") //remove unallowed charachters
-    .replace(/\s+/g, "-") //replace inner spaces with '-'
-    .replace("/", "") //replace '/' with '-', to prevent changing the current route ex: url/slug1-slug2 instead of /slug1/slug2 (in case of encode=false)
-    .replace(/-{2,}/g, "-") //remove sequental slaches
-    .replace(/^-+|-+$/g, ""); //remove trailing slashes, equivilant to php .trim('-'), starts or ends with one or more slashes
+    .join('');
+  const slug = getValue(value, ['slug', 'title'])
+    .trim() // remove trailing spaces
+    .replace(new RegExp(`[^a-z0-9-._~${allowedChars}]`, 'gi'), '-') // remove unallowed charachters
+    .replace(/\s+/g, '-') // replace inner spaces with '-'
+    .replace('/', '') // replace '/' with '-', to prevent changing the current route ex: url/slug1-slug2 instead of /slug1/slug2 (in case of encode=false)
+    .replace(/-{2,}/g, '-') // remove sequental slaches
+    .replace(/^-+|-+$/g, ''); // remove trailing slashes, equivilant to php .trim('-'), starts or ends with one or more slashes
 
   return length(encode ? encodeURIComponent(slug) : slug, lngth);
-  //todo: remove unwanted charachters & very short words}
+  // todo: remove unwanted charachters & very short words}
 }
 export function content(value: ContentValue) {
-  return getValue(value, ["content"]).replace(/\r\n|\n\r|\r|\n/g, "<br />"); //nl2br
-  //todo: KeepHTML, hypernate links,...
+  return getValue(value, ['content']).replace(/\r\n|\n\r|\r|\n/g, '<br />'); // nl2br
+  // todo: KeepHTML, hypernate links,...
 }
 
 /**
@@ -78,11 +79,11 @@ export function content(value: ContentValue) {
  * @return [description]
  */
 export function summary(value: ContentValue, lngth = 500, options: Obj = {}) {
-  if (options.br !== false) options.br = true; //keep <br>
-  return nl2br(length(html2text(getValue(value, ["content"]), options), lngth));
+  if (options.br !== false) { options.br = true; } // keep <br>
+  return nl2br(length(html2text(getValue(value, ['content']), options), lngth));
 }
 
-//todo: filter(el=>(boolean=false))
+// todo: filter(el=>(boolean=false))
 export function html2text(value: string, options: Obj = {}) {
   /*
 options:
@@ -90,18 +91,18 @@ options:
  -links: true= text (link.href), false= text
  */
   value = options.br
-    ? value.replace(/<p(>| .*>)/gi, "<br />") // we need only <p> or <p .*>, but not <pxxx>
-    : value.replace(/<br.*>/gi, "\n").replace(/<p(>| .*>)/gi, "\n");
+    ? value.replace(/<p(>| .*>)/gi, '<br />') // we need only <p> or <p .*>, but not <pxxx>
+    : value.replace(/<br.*>/gi, '\n').replace(/<p(>| .*>)/gi, '\n');
 
   value = value.replace(
     /<a.*href="(.*?)".*>(.*?)<\/a>/gi,
-    options.links ? " $2 ($1) " : " $2 "
+    options.links ? ' $2 ($1) ' : ' $2 '
   );
 
   return value
-    .replace(/<(style|script|meta)[^>]*>.*<\/\1>/gm, "") //remove inline <style>, <script>, <meta> blocks
-    .replace(/<[^>]+>/g, "") //strip html, or: /<(?:.|\s)*?>/
-    .replace(/([\r\n]+ +)+/gm, ""); //remove leading spaces and repeated CR/LF
+    .replace(/<(style|script|meta)[^>]*>.*<\/\1>/gm, '') // remove inline <style>, <script>, <meta> blocks
+    .replace(/<[^>]+>/g, '') // strip html, or: /<(?:.|\s)*?>/
+    .replace(/([\r\n]+ +)+/gm, ''); // remove leading spaces and repeated CR/LF
 }
 
 export function length(value: string, _length?: number, start = 0) {
@@ -109,7 +110,7 @@ export function length(value: string, _length?: number, start = 0) {
 }
 
 export function nl2br(value: string) {
-  return getValue(value).replace(/\r\n|\n\r|\r|\n/g, "<br />");
+  return getValue(value).replace(/\r\n|\n\r|\r|\n/g, '<br />');
 }
 
 /*
@@ -132,7 +133,7 @@ todo:
  * @return SafeHTML, the bypassed html value.
  */
 export function keepHtml(value: ContentValue, sanitizer?: any): string {
-  let content = getValue(value, "content");
+  const content = getValue(value, 'content');
   return sanitizer.bypassSecurityTrustHtml(content);
 }
 

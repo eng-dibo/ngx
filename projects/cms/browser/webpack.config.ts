@@ -1,9 +1,9 @@
-//todo: import from "~webpack.config", "~~webpack.config"
-import basicConfig from "../webpack.config";
-import { ConfigOptions, Configuration } from "../../../webpack.config";
+// todo: import from "~webpack.config", "~~webpack.config"
+import basicConfig from '../webpack.config';
+import { ConfigOptions, Configuration } from '../../../webpack.config';
 
 export default (config: Configuration, options: ConfigOptions) => {
-  options.target = "browser";
+  options.target = 'browser';
   config = basicConfig(config, options);
 
   /*
@@ -15,7 +15,7 @@ export default (config: Configuration, options: ConfigOptions) => {
   }; */
 
   config.output = config.output || {};
-  config.output.libraryTarget = "window";
-  config.target = "web";
+  config.output.libraryTarget = 'window';
+  config.target = 'web';
   return config;
 };

@@ -1,5 +1,5 @@
 export interface Ctg {
-  //todo: string | categoriy{}
+  // todo: string | categoriy{}
   main: any;
   categories: any[];
   branches: any[];
@@ -25,10 +25,10 @@ export class Categories {
    * @return  main[] & categories ( and add branches, parents, top to every category)
    */
   adjust() {
-    if (this.ctg.main) return this.ctg; //already adjusted
-    let main = this.getMain();
-    let categories = this.ctg.categories.map((ctg: any) => {
-      let parents = this.getParents(ctg);
+    if (this.ctg.main) { return this.ctg; } // already adjusted
+    const main = this.getMain();
+    const categories = this.ctg.categories.map((ctg: any) => {
+      const parents = this.getParents(ctg);
       ctg.branches = this.getBranches(ctg._id);
       ctg.parents = parents;
       ctg.top = this.getTop(ctg, parents, main);
@@ -48,7 +48,7 @@ export class Categories {
   itemCategories(data: any) {
     data = data || [];
 
-    //remove old articles from all categories
+    // remove old articles from all categories
     this.ctg.categories.map((el: any) => {
       el.items = [];
       return el;
@@ -61,7 +61,7 @@ export class Categories {
         el.categories.length > 0
       ) {
         el.categories.forEach((c: any) => {
-          if (this.ctg.categories[c]) this.ctg.categories[c].items.push(el._id);
+          if (this.ctg.categories[c]) { this.ctg.categories[c].items.push(el._id); }
         });
       }
     });
@@ -75,7 +75,7 @@ export class Categories {
    * @return ids[]
    */
   ids(ctg: any) {
-    return ctg.map((el: any) => (typeof el == "string" ? el : el._id));
+    return ctg.map((el: any) => (typeof el == 'string' ? el : el._id));
   }
 
   /**
@@ -85,7 +85,7 @@ export class Categories {
    * @return category{}
    */
   getCtg(id: any) {
-    return typeof id == "string"
+    return typeof id == 'string'
       ? this.ctg.categories.find((el: any) => el._id == id) || {}
       : id;
   }
@@ -97,64 +97,64 @@ export class Categories {
    * @return categories[] | ids[]
    */
   getMain(ids = true) {
-    let data = this.ctg.main
+    const data = this.ctg.main
       ? this.ctg.main
       : this.ctg.categories.filter((el: any) => !el.parent);
     return ids ? this.ids(data) : data;
   }
 
-  //top-level category of the carent one
+  // top-level category of the carent one
   getTop(ctg: any, parents: any, ids = true) {
-    let main = this.getMain(true);
+    const main = this.getMain(true);
 
-    let top = (parents || this.getParents(ctg, true)).find((el: any) =>
+    const top = (parents || this.getParents(ctg, true)).find((el: any) =>
       main.includes(el)
     );
     return ids ? top : this.getCtg(top);
   }
 
-  //get childs of this category
+  // get childs of this category
   getChilds(id: any, ids = true) {
-    if (typeof id != "string") id = id._id;
-    let data = this.ctg.categories.filter((el: any) => el.parent == id);
+    if (typeof id != 'string') { id = id._id; }
+    const data = this.ctg.categories.filter((el: any) => el.parent == id);
     return ids ? this.ids(data) : data;
   }
 
-  //get childs and childs of childs etc..
+  // get childs and childs of childs etc..
   getBranches(ctg: any, ids = true): Array<any> {
-    if (typeof ctg != "string") ctg = ctg._id;
-    let branches = [];
-    let childs = this.getChilds(ctg, ids); //ids[] or els[]
+    if (typeof ctg != 'string') { ctg = ctg._id; }
+    const branches = [];
+    const childs = this.getChilds(ctg, ids); // ids[] or els[]
 
     if (childs.length > 0) {
       branches.push(...childs);
       childs.forEach((el: any) => {
-        let childsOfChilds = this.getBranches(ids ? el : el._id, ids);
-        if (childsOfChilds.length > 0) branches.push(...childsOfChilds);
+        const childsOfChilds = this.getBranches(ids ? el : el._id, ids);
+        if (childsOfChilds.length > 0) { branches.push(...childsOfChilds); }
       });
     }
 
-    return [...new Set(branches)]; //get unique items
+    return [...new Set(branches)]; // get unique items
   }
 
-  //get parent and parent of parent etc...
+  // get parent and parent of parent etc...
   getParents(ctg: any, ids = true): any[] {
-    let parents = [];
+    const parents = [];
     ctg = this.getCtg(ctg);
-    if (!ctg) return [];
-    let parent = ctg.parent;
+    if (!ctg) { return []; }
+    const parent = ctg.parent;
     if (parent) {
       parents.push(ids ? parent : this.getCtg(parent));
-      let parentsOfParent = this.getParents(parent, ids);
-      if (parentsOfParent.length > 0) parents.push(...parentsOfParent);
+      const parentsOfParent = this.getParents(parent, ids);
+      if (parentsOfParent.length > 0) { parents.push(...parentsOfParent); }
     }
     return parents;
     // parents.map() may be applied internally for parentsOfParent,
-    //so, applying it again here will cause an error
-    //WRONG: return ids ? parents : parents.map(id => this.getCtg(id));
+    // so, applying it again here will cause an error
+    // WRONG: return ids ? parents : parents.map(id => this.getCtg(id));
   }
 
-  //create checkboxes tree
+  // create checkboxes tree
   /*
   ex:
     var inputs = c.createInputs(null, "", ["5ac348980d63be4aa0e967a2"]);
@@ -167,20 +167,21 @@ export class Categories {
     - add btn to open a dialog to select categories
    */
 
-  //todo: compitible with angular reactive forms, add formControl,...
+  // todo: compitible with angular reactive forms, add formControl,...
   createInputs(
     ctg?: any,
     filter?: ((el: any) => boolean) | string[],
-    tab = ""
+    tab = ''
   ) {
-    if (!ctg) ctg = this.getMain(false);
-    let output = "";
+    if (!ctg) { ctg = this.getMain(false); }
+    let output = '';
     if (ctg instanceof Array) {
       if (filter) {
-        if (filter instanceof Array)
+        if (filter instanceof Array) {
           ctg = ctg.filter(el => filter.includes(el._id));
-        //todo: el.startsWith("!")? !filter.includes(): filter.includes()
-        else ctg = ctg.filter(filter);
+        }
+        // todo: el.startsWith("!")? !filter.includes(): filter.includes()
+        else { ctg = ctg.filter(filter); }
       }
       ctg.forEach((el: any) => {
         output += this.createInputs(el, undefined, tab);
@@ -190,14 +191,15 @@ export class Categories {
       output =
         tab +
         `<input type="checkbox" name="groups" value="${ctg._id}" [formControl]="formControl" [formlyAttributes]="field" />${ctg.title}<br />`;
-      //`<mat-checkbox name="groups" value="${ctg._id}">${ctg.title}</mat-checkbox><br />`;
-      let childs = this.getChilds(ctg, true);
-      if (childs.length > 0)
+      // `<mat-checkbox name="groups" value="${ctg._id}">${ctg.title}</mat-checkbox><br />`;
+      const childs = this.getChilds(ctg, true);
+      if (childs.length > 0) {
         output += this.createInputs(
           childs,
           undefined,
-          tab + "&nbsp;".repeat(5)
+          tab + '&nbsp;'.repeat(5)
         );
+      }
     }
 
     return output;

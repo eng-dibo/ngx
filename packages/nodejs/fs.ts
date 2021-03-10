@@ -5,14 +5,14 @@ import {
   dirname,
   basename,
   extname
-} from "path";
-import { exportAll } from "./utils";
-import { objectType, isEmpty, isNumber, isPromise } from "./objects";
-import { setTimer, getTimer, endTimer, now } from "./timer";
+} from 'path';
+import { exportAll } from './utils';
+import { objectType, isEmpty, isNumber, isPromise } from './objects';
+import { setTimer, getTimer, endTimer, now } from './timer';
 
 import {
   existsSync,
-  lstatSync, //same as statSync, but dosen't follow symlinks, https://www.brainbell.com/javascript/fs-stats-structure.html
+  lstatSync, // same as statSync, but dosen't follow symlinks, https://www.brainbell.com/javascript/fs-stats-structure.html
   renameSync,
   readdirSync,
   unlinkSync,
@@ -23,7 +23,7 @@ import {
   readFileSync,
   MakeDirectoryOptions,
   PathLike
-} from "fs";
+} from 'fs';
 
 /*
 //todo: upgrade Nodejs to use "fs/promises"
@@ -42,12 +42,12 @@ import {
   rmdir
 } from "fs/promises";
 */
-//todo: does 'export *' impact the bundle size?
+// todo: does 'export *' impact the bundle size?
 
-//todo: error TS2308: Module "fs" has already exported a member named 'access'. Consider explicitly re-exporting to resolve the ambiguity.
-//export * from "fs";
-//export * from "fs/promises";
-const promises = require("fs").promises;
+// todo: error TS2308: Module "fs" has already exported a member named 'access'. Consider explicitly re-exporting to resolve the ambiguity.
+// export * from "fs";
+// export * from "fs/promises";
+const promises = require('fs').promises;
 const {
   lstat,
   rename,
@@ -67,13 +67,13 @@ import Path = require("./m");
 export { Path };
 */
 
-const dev = process.env.NODE_ENV === "development";
+const dev = process.env.NODE_ENV === 'development';
 
 export enum MoveOptionsExisting {
-  "replace",
-  "rename", // todo: rename pattern ex: {{filename}}({{count++}}).{{ext}}
-  "continue", // ignore
-  "stop"
+  'replace',
+  'rename', // todo: rename pattern ex: {{filename}}({{count++}}).{{ext}}
+  'continue', // ignore
+  'stop'
 }
 export interface MoveOptions {
   existing: MoveOptionsExisting;
@@ -86,8 +86,8 @@ export interface DeleteOptions {
 
 // = string | Buffer | URL, but URL here refers to typescript/URL not node/URL
 
-//exportAll(fs);
-//exportAll(Path); // todo: check if there is any conflict betweet fs & path methods
+// exportAll(fs);
+// exportAll(Path); // todo: check if there is any conflict betweet fs & path methods
 // todo: const fs=Fs(root): auto add root to all paths
 
 /**
@@ -104,9 +104,9 @@ export function resolve(...paths: PathLike[]): string {
 }
 
 export function parsePath(path: any) {
-  let extension = getExtension(path);
+  const extension = getExtension(path);
   return {
-    type: isDirSync(path) ? "dir" : "file",
+    type: isDirSync(path) ? 'dir' : 'file',
     dir: dirname(path),
     file: basename(path, extension),
     extension
@@ -121,31 +121,31 @@ export function parsePath(path: any) {
  */
 // TODO: if(file[0]=='.' && no other ".")return file ex: .gitignore
 // todo: remove `.` from extention
-//or: file.split(".").pop().toLowerCase()
+// or: file.split(".").pop().toLowerCase()
 export function getExtension(file: PathLike): string | undefined {
-  if (typeof file != "string") return undefined;
+  if (typeof file != 'string') { return undefined; }
   return extname(file).toLowerCase();
 }
 
 export function getSize(
   path?: PathLike,
-  unit: "b" | "kb" | "mb" | "gb" = "b"
+  unit: 'b' | 'kb' | 'mb' | 'gb' = 'b'
 ): Promise<number> {
   return lstat(path)
     .then((stats: any) => stats.size)
     .then((size: any) => {
-      if (unit === "kb") return size / 1024;
-      else if (unit === "mb") return size / (1024 * 1024);
-      else if (unit === "gb") return size / (1024 * 1024 * 1024);
-      else return size;
+      if (unit === 'kb') { return size / 1024; }
+      else if (unit === 'mb') { return size / (1024 * 1024); }
+      else if (unit === 'gb') { return size / (1024 * 1024 * 1024); }
+      else { return size; }
     });
 }
 
 export function getSizeSync(
   path: PathLike,
-  unit: "b" | "kb" | "mb" | "gb" = "b"
+  unit: 'b' | 'kb' | 'mb' | 'gb' = 'b'
 ): number {
-  let base = { b: 1, kb: 1024, mb: 1024 ^ 2, gb: 1024 ^ 3 };
+  const base = { b: 1, kb: 1024, mb: 1024 ^ 2, gb: 1024 ^ 3 };
   return lstatSync(path).size / base[unit];
 }
 
@@ -174,7 +174,7 @@ todo:
  - options.existing: replace|rename_pattern|continue
  */
 function move(path: PathLike, newPath: PathLike, options?: MoveOptions) {
-  //todo: mkdir(path).then->fsp.rename()
+  // todo: mkdir(path).then->fsp.rename()
   return rename(path, newPath);
 }
 
@@ -210,38 +210,40 @@ export function remove(
   path: string | string[],
   options: DeleteOptions = {}
 ): Promise<boolean | { [path: string]: any }> {
-  if (!path) return Promise.reject("no path");
-  if (path instanceof Array)
+  if (!path) { return Promise.reject('no path'); }
+  if (path instanceof Array) {
     return Promise.all(path.map(p => ({ [p]: remove(p as string, options) })));
+  }
 
   return (
     access(path, constants.R_OK)
       .then(() => isDir(path as string))
       .then((_isDir: boolean) => {
-        if (_isDir)
+        if (_isDir) {
           return (
             readdir(path)
               .then((files: any[]) =>
                 Promise.all(
                   files.map(file => {
-                    let curPath = `${path}/${file}`;
+                    const curPath = `${path}/${file}`;
                     return isDir(curPath).then(_isDir2 => {
-                      if (!_isDir2) return unlink(curPath).then(() => true); //todo: {[file]: unlink()}
-                      if (!options.filesOnly) return remove(curPath, options);
+                      if (!_isDir2) { return unlink(curPath).then(() => true); } // todo: {[file]: unlink()}
+                      if (!options.filesOnly) { return remove(curPath, options); }
                     });
                   })
                 )
               )
-              //make both values (i.e: return from if(_isDir) & else) of same type, for example 'boolean'
+              // make both values (i.e: return from if(_isDir) & else) of same type, for example 'boolean'
               .then(() => true)
           );
-        else return unlink(path).then(() => true);
+        }
+        else { return unlink(path).then(() => true); }
       })
       .then(() => {
-        //.then(results=>{})
-        if (!options.keepDir) return rmdir(path);
+        // .then(results=>{})
+        if (!options.keepDir) { return rmdir(path); }
       })
-      //todo: or {file: boolean}
+      // todo: or {file: boolean}
       .then(() => true)
       .catch(() => false)
   );
@@ -251,25 +253,27 @@ export function removeSync(
   path: string | string[],
   options: DeleteOptions = {}
 ): boolean | { [path: string]: any } {
-  if (!path) return false; //todo: throw error
-  if (path instanceof Array)
+  if (!path) { return false; } // todo: throw error
+  if (path instanceof Array) {
     return path.map((p: string) => ({ [p]: removeSync(p as string, options) }));
+  }
 
-  path = <string>path;
+  path = (path as string);
   path = resolve(path);
 
-  //todo: options.noExist=stop
-  if (!existsSync(path)) return false;
+  // todo: options.noExist=stop
+  if (!existsSync(path)) { return false; }
 
-  if (isDirSync(path))
+  if (isDirSync(path)) {
     readdirSync(path).forEach((file: string) => {
-      let curPath = `${path}/${file}`;
+      const curPath = `${path}/${file}`;
       if (isDirSync(curPath)) {
-        if (!options.filesOnly) removeSync(curPath, options);
-      } else unlinkSync(curPath);
+        if (!options.filesOnly) { removeSync(curPath, options); }
+      } else { unlinkSync(curPath); }
     });
-  else unlinkSync(path);
-  if (!options.keepDir) rmdirSync(path);
+  }
+  else { unlinkSync(path); }
+  if (!options.keepDir) { rmdirSync(path); }
   return true;
 }
 
@@ -277,25 +281,25 @@ export function write(file: PathLike, data: any, options?: any): Promise<void> {
   file = resolve(file);
   return mkdir(file as string, true)
     .then(() =>
-      ["array", "object"].includes(objectType(data))
+      ['array', 'object'].includes(objectType(data))
         ? JSON.stringify(data)
         : data
     )
     .then(dataString => writeFile(file, dataString, options));
-  //.then-> {file,data}
+  // .then-> {file,data}
 }
 
 export function writeSync(
   file: PathLike,
   data: any,
-  options?: any //todo: options?:WriteFileOptions
+  options?: any // todo: options?:WriteFileOptions
 ): void {
   file = resolve(file);
   mkdirSync(file as string, true);
-  let dataString = ["array", "object"].includes(objectType(data))
+  const dataString = ['array', 'object'].includes(objectType(data))
     ? JSON.stringify(data)
     : data;
-  //todo: if(JSON.stringify error)->throw error
+  // todo: if(JSON.stringify error)->throw error
 
   return writeFileSync(file, dataString, options);
 }
@@ -322,20 +326,20 @@ export function writeSync(
 
  */
 export function cache(
-  files: string | string[], //todo: PathLike | PathLike[]
+  files: string | string[], // todo: PathLike | PathLike[]
   dataSource: () => any,
   age: number | [number, number] = 0,
   type?: string,
   allowEmpty = false
 ): Promise<any> {
-  setTimer("cache");
+  setTimer('cache');
 
-  if (!(files instanceof Array)) files = [files];
+  if (!(files instanceof Array)) { files = [files]; }
   files = files.map(file => resolve(file));
 
   let maxAge: number;
-  if (age instanceof Array) [age, maxAge] = age;
-  else maxAge = 0;
+  if (age instanceof Array) { [age, maxAge] = age; }
+  else { maxAge = 0; }
 
   /*
   //use fs.delete(files)
@@ -343,38 +347,39 @@ export function cache(
     return Promise.all(files.map((file: string) => ({ [file]: unlink(file) })));
 */
   let data;
-  let readCache = function(file: string) {
+  const readCache = function(file: string) {
     if (!type) {
-      if (getExtension(file) === ".json") type = "json";
+      if (getExtension(file) === '.json') { type = 'json'; }
       else if (
-        //todo: list all media types
-        [".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp3", ".mp4"].includes(
-          <string>getExtension(file)
+        // todo: list all media types
+        ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp3', '.mp4'].includes(
+          getExtension(file) as string
         )
-      )
-        type = "buffer";
+      ) {
+        type = 'buffer';
+ }
     }
 
-    if (type == "buffer") data = readFile(file);
+    if (type == 'buffer') { data = readFile(file); }
     else {
       // without encoding (i.e utf-8) will return a stream instead of a string
-      data = readFile(file, "utf8").then((data: any) => {
+      data = readFile(file, 'utf8').then((data: any) => {
         data = data.toString();
-        if (type === "json") data = JSON.parse(data);
+        if (type === 'json') { data = JSON.parse(data); }
         return data;
       });
     }
 
     return data.then((data: any) => {
-      if (dev) console.log("[cache] file exists", endTimer("cache"), file);
+      if (dev) { console.log('[cache] file exists', endTimer('cache'), file); }
       return data;
     });
   };
 
-  //todo: remove filesInfo
-  let filesInfo: { [key: string]: number } = {}; //contains exists files only with mtime for each file.
+  // todo: remove filesInfo
+  const filesInfo: { [key: string]: number } = {}; // contains exists files only with mtime for each file.
 
-  let _now = now();
+  const _now = now();
 
   for (let i = 0; i < files.length; i++) {
     if (existsSync(files[i])) {
@@ -383,45 +388,49 @@ export function cache(
       if (
         age > -1 &&
         (age == 0 || filesInfo[files[i]] + age * 60 * 60 * 1000 > _now)
-      )
+      ) {
         return readCache(files[i]);
+      }
     }
   }
 
-  //if there is no valid file, run dataSource()
-  if (dev) console.log("[cache] refreshing", files[0]);
-  mkdirSync(files[0] as string, true); //todo: replace with mkdir().then()
+  // if there is no valid file, run dataSource()
+  if (dev) { console.log('[cache] refreshing', files[0]); }
+  mkdirSync(files[0] as string, true); // todo: replace with mkdir().then()
   data = dataSource();
 
-  //todo: also support rxjs.Observable
-  let p: Promise<any> = isPromise(data) ? data : Promise.resolve(data);
+  // todo: also support rxjs.Observable
+  const p: Promise<any> = isPromise(data) ? data : Promise.resolve(data);
 
   return p
     .then((data: any) => {
-      if (allowEmpty || !isEmpty(data)) write(files[0], data);
-      if (dev)
-        console.log("[cache] refereshed in", endTimer("cache"), files[0]);
-      return data; //todo: return write()
+      if (allowEmpty || !isEmpty(data)) { write(files[0], data); }
+      if (dev) {
+        console.log('[cache] refereshed in', endTimer('cache'), files[0]);
+      }
+      return data; // todo: return write()
     })
     .catch((error: any) => {
-      if (dev)
+      if (dev) {
         console.warn(
-          "[cache] faild to refresh the cache" +
+          '[cache] faild to refresh the cache' +
             (maxAge > -1
-              ? ", trying to get data from any valid cache file"
-              : ""),
-          getTimer("cache"),
+              ? ', trying to get data from any valid cache file'
+              : ''),
+          getTimer('cache'),
           error
         );
+      }
 
       if (maxAge > -1) {
-        for (let k in filesInfo) {
-          if (maxAge == 0 || filesInfo[k] + maxAge * 60 * 60 * 1000 > _now)
+        for (const k in filesInfo) {
+          if (maxAge == 0 || filesInfo[k] + maxAge * 60 * 60 * 1000 > _now) {
             return readCache(k);
+          }
         }
       }
 
-      return Promise.reject("[cache] cannot fetch any data");
+      return Promise.reject('[cache] cannot fetch any data');
     });
 }
 
@@ -430,60 +439,65 @@ export function mkdir(
   file = false,
   options: number | string | MakeDirectoryOptions = {}
 ): Promise<any> {
-  if (path instanceof Array)
+  if (path instanceof Array) {
     return Promise.all(path.map(p => ({ [p]: mkdir(p, file) })));
+  }
 
-  if (file) path = dirname(path);
-  if (typeof options === "string" || isNumber(options))
-    options = <MakeDirectoryOptions>{ mode: <number | string>options };
+  if (file) { path = dirname(path); }
+  if (typeof options === 'string' || isNumber(options)) {
+    options = ({ mode: options as number | string } as MakeDirectoryOptions);
+  }
 
-  if (!("recursive" in <MakeDirectoryOptions>options))
-    (<MakeDirectoryOptions>options).recursive = true;
+  if (!('recursive' in (options as MakeDirectoryOptions))) {
+    (options as MakeDirectoryOptions).recursive = true;
+  }
 
   return access(path, constants.R_OK).then(() =>
-    _mkdir(<string>path, <MakeDirectoryOptions>options)
+    _mkdir(path as string, options as MakeDirectoryOptions)
   );
 }
 
-//todo: return boolean | {[file:string]: any}
+// todo: return boolean | {[file:string]: any}
 export function mkdirSync(
   path: string | string[],
   file = false,
   options: number | string | MakeDirectoryOptions = {}
 ): void | { [key: string]: void } {
   if (path instanceof Array) {
-    let result: { [key: string]: void } = {};
+    const result: { [key: string]: void } = {};
     path.forEach((p: string) => {
-      result[p] = <void>mkdirSync(p, file);
+      result[p] = (mkdirSync(p, file) as void);
     });
     return result;
   }
 
-  if (file) path = dirname(path);
-  if (typeof options === "string" || isNumber(options))
-    options = <MakeDirectoryOptions>{ mode: options };
+  if (file) { path = dirname(path); }
+  if (typeof options === 'string' || isNumber(options)) {
+    options = ({ mode: options } as MakeDirectoryOptions);
+  }
 
-  if (!("recursive" in <MakeDirectoryOptions>options))
-    (<MakeDirectoryOptions>options).recursive = true;
+  if (!('recursive' in (options as MakeDirectoryOptions))) {
+    (options as MakeDirectoryOptions).recursive = true;
+  }
 
   existsSync(path) || _mkdirSync(path, { recursive: true });
-  //todo: return boolean
+  // todo: return boolean
 }
 
-//todo: replace with read() & write()
+// todo: replace with read() & write()
 export let json = {
   read(file: string): any {
-    if (!file) return null;
-    var data = readFileSync(file).toString();
+    if (!file) { return null; }
+    const data = readFileSync(file).toString();
     return data ? JSON.parse(data) : null;
   },
   write(file: string, data: any, options?: any) {
     return write(file, data, options);
   },
   convert(data: any) {
-    if (typeof data == "string") {
-      if (getExtension(data) == ".json") return this.read(data);
-      if (data.trim().charAt(0) == "{") return JSON.parse(data) || null;
+    if (typeof data == 'string') {
+      if (getExtension(data) == '.json') { return this.read(data); }
+      if (data.trim().charAt(0) == '{') { return JSON.parse(data) || null; }
     } else {
       return JSON.stringify(data);
     }

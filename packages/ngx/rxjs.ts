@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
 
 /**
  * if the value is an observable, subscribe to it and run the callback,
@@ -15,6 +15,6 @@ import { Observable } from "rxjs";
 export function obs(value: any, cb: (value: any) => void) {
   if (value instanceof Observable) {
     value.subscribe(v => cb(v));
-  } else cb(value);
+  } else { cb(value); }
 }
 //

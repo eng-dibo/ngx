@@ -1,11 +1,11 @@
-import { enableProdMode } from "@angular/core";
-import env from "~config/env";
-import { NgModule } from "@angular/core";
-import { ServerModule } from "@angular/platform-server";
-import { AppModule } from "~browser/app/app.module";
-import { AppComponent } from "~browser/app/app.component";
+import { enableProdMode } from '@angular/core';
+import env from '~config/env';
+import { NgModule } from '@angular/core';
+import { ServerModule } from '@angular/platform-server';
+import { AppModule } from '~browser/app/app.module';
+import { AppComponent } from '~browser/app/app.component';
 
-if (env.mode === "prod") {
+if (env.mode === 'prod') {
   enableProdMode();
 }
 
@@ -14,4 +14,4 @@ if (env.mode === "prod") {
   bootstrap: [AppComponent]
 })
 export class AppServerModule {}
-export { renderModule, renderModuleFactory } from "@angular/platform-server";
+export { renderModule, renderModuleFactory } from '@angular/platform-server';

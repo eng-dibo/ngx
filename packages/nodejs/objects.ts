@@ -1,13 +1,13 @@
-import { setTimer, endTimer, getTimer } from "./timer";
+import { setTimer, endTimer, getTimer } from './timer';
 
 export interface Obj {
   [key: string]: any;
 }
 
-const dev = process.env.NODE_ENV === "development";
+const dev = process.env.NODE_ENV === 'development';
 
 export function isNumber(value: any) {
-  //isNumber() anly accepts numbers or NaN value https://stackoverflow.com/a/42121162/12577650
+  // isNumber() anly accepts numbers or NaN value https://stackoverflow.com/a/42121162/12577650
   return !isNaN(Number(value));
 }
 
@@ -15,13 +15,13 @@ export function isIterable(obj: any): boolean {
   return (
     obj &&
     (obj instanceof Array ||
-      (typeof obj != "string" && typeof obj[Symbol.iterator] == "function"))
+      (typeof obj != 'string' && typeof obj[Symbol.iterator] == 'function'))
     // todo: or obj={...}
   );
 }
 
 export function isPromise(obj: any): boolean {
-  return obj instanceof Promise || (obj && typeof obj.then == "function");
+  return obj instanceof Promise || (obj && typeof obj.then == 'function');
 }
 
 /**
@@ -41,13 +41,13 @@ export function isPromise(obj: any): boolean {
 export function objectType(obj: any): string {
   return Object.prototype.toString
     .call(obj)
-    .replace("[object ", "")
-    .replace("]", "")
+    .replace('[object ', '')
+    .replace(']', '')
     .toLowerCase();
 }
 
 export function isEmpty(obj: any): boolean {
-  return typeof obj == "undefined" || inArray(obj, ["", null, [], {}]);
+  return typeof obj == 'undefined' || inArray(obj, ['', null, [], {}]);
 }
 
 export function merge(target: any, ...obj: any[]): any {
@@ -61,16 +61,16 @@ export function merge(target: any, ...obj: any[]): any {
       return target;
     }
   }
-  if (type == "array") {
+  if (type == 'array') {
     target = target.concat(...obj);
-  } else if (type == "object") {
+  } else if (type == 'object') {
     // target=Object.assign(target,...obj) //later objects dosen't override previous ones
     for (let i = 1; i < _arg.length; i++) {
       for (const p in _arg[i]) {
         target[p] = _arg[i][p]; // to override current values
       }
     }
-  } else if (type == "class") {
+  } else if (type == 'class') {
     // add or override target's methods & properties
   }
 
@@ -98,42 +98,42 @@ export function inArray(
 ): boolean {
   if (element instanceof Array) {
     for (let i = 0; i < element.length; i++) {
-      if (inArray(element[i], array, caseSensitive)) return true;
+      if (inArray(element[i], array, caseSensitive)) { return true; }
     }
     return false;
   }
 
   if (element instanceof RegExp) {
-    if (typeof array === "string") return element.test(array);
+    if (typeof array === 'string') { return element.test(array); }
     else if (array instanceof Array) {
       for (let i = 0; i < array.length; i++) {
-        if (inArray(element, array[i])) return true;
+        if (inArray(element, array[i])) { return true; }
       }
       return false;
-    } //todo: else if(objectTybe==="object")
+    } // todo: else if(objectTybe==="object")
   }
-  if (!caseSensitive && typeof element === "string") {
+  if (!caseSensitive && typeof element === 'string') {
     element = element.toLowerCase();
   }
-  if (typeof array == "string") return array.indexOf(element) > -1;
+  if (typeof array == 'string') { return array.indexOf(element) > -1; }
   // !! to convert number to boolean
-  else if (array instanceof Array) return array.includes(element);
+  else if (array instanceof Array) { return array.includes(element); }
   else if (isIterable(array)) {
     for (let i = 0; i < (array as Array<any>).length; i++) {
       return (
         array[i as keyof typeof array] == element ||
         (!caseSensitive &&
-          typeof array[i as keyof typeof array] == "string" &&
+          typeof array[i as keyof typeof array] == 'string' &&
           (array[i as keyof typeof array] as string).toLowerCase() == element)
       );
     }
   }
-  //todo: use objectTyoe(array)
-  else if (typeof array == "object") {
+  // todo: use objectTyoe(array)
+  else if (typeof array == 'object') {
     return element in array;
   }
 
-  //todo: throw exception
+  // todo: throw exception
   return false;
 }
 
@@ -146,9 +146,10 @@ export function inArray(
  */
 
 export function arrayChunk(arr: Array<any>, chunkSize: number) {
-  let result = [];
-  for (let i = 0; i < arr.length; i += chunkSize)
+  const result = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
     result.push(arr.slice(i, i + chunkSize));
+  }
   return result;
 }
 // ------------- /Arrays ------------------- //
@@ -167,9 +168,9 @@ export function replaceAll(
   replace: string | RegExp,
   replaceWith: string
 ): string {
-  replace = new RegExp(replace, "g");
-  return str.replace(replace as RegExp, replaceWith); //faster than str.split().join() https://jsperf.com/replace-all-vs-split-join
-  //return str.split(replace).join(with)
+  replace = new RegExp(replace, 'g');
+  return str.replace(replace as RegExp, replaceWith); // faster than str.split().join() https://jsperf.com/replace-all-vs-split-join
+  // return str.split(replace).join(with)
 }
 
 /**
@@ -189,27 +190,28 @@ todo:
    ex: replacer may be a promise or a function that returns a promise
  */
 export function replaceAsync(str: string, regex: RegExp, replacer: any) {
-  setTimer("replaceAsync");
+  setTimer('replaceAsync');
   const matched = str.match(regex);
-  if (!matched) return Promise.resolve(str);
-  if (!regex.global)
+  if (!matched) { return Promise.resolve(str); }
+  if (!regex.global) {
     return replacer(...matched).then((newStr: any) =>
       str.replace(regex, newStr)
     );
+  }
 
-  //if regex.global (i.e: /regex/g) we need to recursively apply the replacement
+  // if regex.global (i.e: /regex/g) we need to recursively apply the replacement
   let i = 0;
   let index = 0;
   const result: string[] = [];
-  const copy = new RegExp(regex.source, regex.flags.replace("g", ""));
+  const copy = new RegExp(regex.source, regex.flags.replace('g', ''));
   const callbacks: any = [];
 
   while (matched.length > 0) {
-    const substr: string = matched.shift() || ""; //remove the first element and return it
-    const nextIndex = str.indexOf(substr, index); //position of substr after the current index
+    const substr: string = matched.shift() || ''; // remove the first element and return it
+    const nextIndex = str.indexOf(substr, index); // position of substr after the current index
     result[i] = str.slice(index, nextIndex);
     i++;
-    let j = i;
+    const j = i;
     callbacks.push(
       replacer(...(substr.match(copy) || []), nextIndex, str).then(
         (newStr: any) => {
@@ -222,9 +224,10 @@ export function replaceAsync(str: string, regex: RegExp, replacer: any) {
   }
   result[i] = str.slice(index);
   return Promise.all(callbacks).then(() => {
-    if (dev)
-      console.log("replaceAsync", endTimer("replaceAsync"), { str, regex });
-    return result.join("");
+    if (dev) {
+      console.log('replaceAsync', endTimer('replaceAsync'), { str, regex });
+    }
+    return result.join('');
   });
 }
 
@@ -236,8 +239,8 @@ export function replaceAsync(str: string, regex: RegExp, replacer: any) {
  * @return [description]
  */
 export function cleanObject(object: any) {
-  if (objectType(object === "object")) {
-    //todo: https://stackoverflow.com/questions/7582001/is-there-a-way-to-test-circular-reference-in-javascript/7583161#7583161
+  if (objectType(object === 'object')) {
+    // todo: https://stackoverflow.com/questions/7582001/is-there-a-way-to-test-circular-reference-in-javascript/7583161#7583161
   }
   return object;
 }

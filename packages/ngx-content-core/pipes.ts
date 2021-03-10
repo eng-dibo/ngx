@@ -1,9 +1,9 @@
-import { Pipe, PipeTransform } from "@angular/core";
-import * as fn from "./functions";
-import { DomSanitizer } from "@angular/platform-browser";
+import { Pipe, PipeTransform } from '@angular/core';
+import * as fn from './functions';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Pipe({
-  name: "slug"
+  name: 'slug'
 })
 export class SlugPipe implements PipeTransform {
   /**
@@ -14,24 +14,24 @@ export class SlugPipe implements PipeTransform {
    * @param  value     [description]
    * @return [description]
    */
-  //todo: transform(...args) causes an error, but transform(value,...args) not!
+  // todo: transform(...args) causes an error, but transform(value,...args) not!
   transform(value: fn.ContentValue, ...args: any[]): string {
     return fn.slug(value, ...args);
   }
 }
 
 @Pipe({
-  name: "content"
+  name: 'content'
 })
 export class ContentPipe implements PipeTransform {
-  //constructor(private sanitizer: DomSanitizer) {}
+  // constructor(private sanitizer: DomSanitizer) {}
   transform(value: fn.ContentValue): string {
     return fn.content(value);
   }
 }
 
 @Pipe({
-  name: "html2text"
+  name: 'html2text'
 })
 export class Html2textPipe implements PipeTransform {
   transform(value: string, ...args: any[]): string {
@@ -40,7 +40,7 @@ export class Html2textPipe implements PipeTransform {
 }
 
 @Pipe({
-  name: "summary"
+  name: 'summary'
 })
 export class SummaryPipe implements PipeTransform {
   transform(value: fn.ContentValue, ...args: any[]): string {
@@ -49,7 +49,7 @@ export class SummaryPipe implements PipeTransform {
 }
 
 @Pipe({
-  name: "length"
+  name: 'length'
 })
 export class LengthPipe implements PipeTransform {
   transform(value: string, ...args: any[]): string {
@@ -58,7 +58,7 @@ export class LengthPipe implements PipeTransform {
 }
 
 @Pipe({
-  name: "nl2br"
+  name: 'nl2br'
 })
 export class Nl2brPipe implements PipeTransform {
   transform(value: string): string {
@@ -66,7 +66,7 @@ export class Nl2brPipe implements PipeTransform {
   }
 }
 
-@Pipe({ name: "keepHtml", pure: false })
+@Pipe({ name: 'keepHtml', pure: false })
 export class KeepHtmlPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
   /**

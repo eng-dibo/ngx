@@ -9,35 +9,35 @@
 
 */
 
-import { HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { NgxContentViewComponent } from "./view";
-import { NgxContentArticleComponent } from "./article";
-import { NgxContentCoreModule } from "@engineers/ngx-content-core"; //to use pipes
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgxContentViewComponent } from './view';
+import { NgxContentArticleComponent } from './article';
+import { NgxContentCoreModule } from '@engineers/ngx-content-core'; // to use pipes
 
-import { MatGridListModule } from "@angular/material/grid-list";
-import { MatIconModule } from "@angular/material/icon";
-import { MatListModule } from "@angular/material/list";
-import { MatProgressBarModule } from "@angular/material/progress-bar";
-import { MatSnackBarModule } from "@angular/material/snack-bar";
-import { MatCardModule } from "@angular/material/card";
-import { MatChipsModule } from "@angular/material/chips";
-import { MatBadgeModule } from "@angular/material/badge";
-import { MatButtonModule } from "@angular/material/button";
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
 
-import { LazyLoadImageModule } from "ng-lazyload-image";
-import { HighlightModule } from "ngx-highlightjs";
-import { QuillModule } from "ngx-quill";
-import { ShareButtonsModule } from "@ngx-share/buttons";
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { HighlightModule } from 'ngx-highlightjs';
+import { QuillModule } from 'ngx-quill';
+import { ShareButtonsModule } from '@ngx-share/buttons';
 import {
   FontAwesomeModule,
   FaIconLibrary
-} from "@fortawesome/angular-fontawesome";
-import { fab } from "@fortawesome/free-brands-svg-icons";
-import { fas } from "@fortawesome/free-solid-svg-icons";
-import { NgxLoadingModule } from "ngx-loading";
-import { ScrollingModule } from "@angular/cdk/scrolling";
+} from '@fortawesome/angular-fontawesome';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { NgxLoadingModule } from 'ngx-loading';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
   declarations: [NgxContentViewComponent, NgxContentArticleComponent],
@@ -61,9 +61,9 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
     HttpClientModule,
     NgxContentCoreModule,
     NgxLoadingModule.forRoot({
-      primaryColour: "red",
-      secondaryColour: "blue",
-      tertiaryColour: "green"
+      primaryColour: 'red',
+      secondaryColour: 'blue',
+      tertiaryColour: 'green'
     }),
     ScrollingModule
   ],

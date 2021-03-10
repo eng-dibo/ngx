@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 import {
   SlugPipe,
   ContentPipe,
@@ -7,9 +7,9 @@ import {
   KeepHtmlPipe,
   LengthPipe,
   Html2textPipe
-} from "./pipes";
+} from './pipes';
 
-//we export Pipes, so other modules that imports this module can use them.
+// we export Pipes, so other modules that imports this module can use them.
 @NgModule({
   declarations: [
     SlugPipe,

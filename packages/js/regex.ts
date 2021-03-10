@@ -6,7 +6,7 @@
  * @return {string} escaped value
  */
 export function escape(value: string): string {
-  return value.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
+  return value.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
 }
 
 /**
@@ -16,5 +16,5 @@ export function escape(value: string): string {
  * @return [description]
  */
 export function toRegExp(value: string | RegExp): RegExp {
-  return typeof value === "string" ? new RegExp(escape(value)) : value;
+  return typeof value === 'string' ? new RegExp(escape(value)) : value;
 }

@@ -6,23 +6,23 @@ import {
   ViewContainerRef,
   AfterViewInit,
   AfterViewChecked
-} from "@angular/core";
-import { FieldType } from "@ngx-formly/material";
-import { DynamicLoadService } from "@engineers/ngx/dynamic-load.service";
-import { DomSanitizer } from "@angular/platform-browser";
-import { Categories } from "./functions";
-import { Observable } from "rxjs";
+} from '@angular/core';
+import { FieldType } from '@ngx-formly/material';
+import { DynamicLoadService } from '@engineers/ngx/dynamic-load.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Categories } from './functions';
+import { Observable } from 'rxjs';
 
-//todo: use template:Categories.createInputs() instead of type=FormlyFieldCategories
+// todo: use template:Categories.createInputs() instead of type=FormlyFieldCategories
 @Component({
-  selector: "formly-field-categories",
+  selector: 'formly-field-categories',
   template: `
     <ng-template #ref> </ng-template>
   `
 })
 export class FormlyFieldCategories extends FieldType implements OnInit {
   categories: any;
-  @ViewChild("ref", { read: ViewContainerRef, static: true })
+  @ViewChild('ref', { read: ViewContainerRef, static: true })
   ref!: ViewContainerRef;
 
   constructor(private dynamic: DynamicLoadService) {
@@ -31,7 +31,7 @@ export class FormlyFieldCategories extends FieldType implements OnInit {
 
   ngOnInit() {
     //  this.createComponent();
-    //todo: load <mat-checkbox> inputs directly without a helper class
+    // todo: load <mat-checkbox> inputs directly without a helper class
     this.dynamic.load(FormlyFieldCategoriesHelper, this.ref, {
       data: this.to.categories,
       to: this.to,
@@ -58,7 +58,7 @@ todo:
 
  */
 @Component({
-  selector: "formly-field-categories-helper",
+  selector: 'formly-field-categories-helper',
   template: `
     <div [innerHTML]="categories"></div>
     <div *ngIf="!categories">Loading....</div>
@@ -67,26 +67,26 @@ todo:
 /*implements OnInit, AfterViewInit, AfterViewChecked*/
 export class FormlyFieldCategoriesHelper {
   @Input() data!: any[];
-  @Input() to: any; //templateOptions
-  @Input() formControl: any; //https://github.com/aitboudad/ngx-formly/blob/28bf56ab63ad158a7418ea6d7f2377165252a3e3/src/material/checkbox/src/checkbox.type.ts
+  @Input() to: any; // templateOptions
+  @Input() formControl: any; // https://github.com/aitboudad/ngx-formly/blob/28bf56ab63ad158a7418ea6d7f2377165252a3e3/src/material/checkbox/src/checkbox.type.ts
   @Input() field: any;
   categories: any;
   constructor(private sanitizer: DomSanitizer) {}
   ngOnInit() {
-    console.log("FormlyFieldCategoriesHelper", {
+    console.log('FormlyFieldCategoriesHelper', {
       categories: this.data,
       to: this.to,
       formControl: this.formControl,
       field: this.field
     });
 
-    let ctg = new Categories(this.data);
-    let inputs =
-      ctg.createInputs(null, el => el._id != "5ac348980d63be4aa0e967cb") +
+    const ctg = new Categories(this.data);
+    const inputs =
+      ctg.createInputs(null, el => el._id != '5ac348980d63be4aa0e967cb') +
       `<mat-checkbox [formControl]="formControl" [formlyAttributes]="field">test</mat-checkbox>` +
       `<input type="checkbox" name="categories" value="5ac348980d63be4aa0e96846" [formcontrol]="formControl" [formlyattributes]="field"> test2`;
     this.categories = this.sanitizer.bypassSecurityTrustHtml(inputs);
-    //using "keepHtml" pipe makes all checkboxes disabled.
+    // using "keepHtml" pipe makes all checkboxes disabled.
   }
 
   /*  //https://stackoverflow.com/a/58906176
@@ -120,7 +120,7 @@ export class FormlyFieldCategoriesHelper {
   } */
 
   onChange(el: any) {
-    //todo: add el to formControl
-    console.log("onChange", el);
+    // todo: add el to formControl
+    console.log('onChange', el);
   }
 }

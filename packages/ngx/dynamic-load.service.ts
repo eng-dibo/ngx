@@ -1,10 +1,10 @@
-//dynamically load a component into the template
+// dynamically load a component into the template
 import {
   Injectable,
   ComponentFactoryResolver,
   Renderer2,
   RendererFactory2
-} from "@angular/core";
+} from '@angular/core';
 
 @Injectable()
 export class DynamicLoadService {
@@ -13,7 +13,7 @@ export class DynamicLoadService {
     private resolver: ComponentFactoryResolver,
     private rendererFactory: RendererFactory2
   ) {
-    this.renderer = rendererFactory.createRenderer(null, null); //fix: No provider for Renderer2   https://stackoverflow.com/a/47925259
+    this.renderer = rendererFactory.createRenderer(null, null); // fix: No provider for Renderer2   https://stackoverflow.com/a/47925259
   }
 
   /**
@@ -36,23 +36,23 @@ export class DynamicLoadService {
   load(component: any, placeholder: any, inputs: any) {
     placeholder.clear();
 
-    //todo: provide text or renderer methods
-    let content = this.renderer.createText("");
+    // todo: provide text or renderer methods
+    const content = this.renderer.createText('');
 
     // resolve the component component and get the factory class to create the component dynamically
-    let factory = this.resolver.resolveComponentFactory(component);
+    const factory = this.resolver.resolveComponentFactory(component);
 
     // create the component and append to the placeholder in the template
-    let componentRef = placeholder.createComponent(factory);
+    const componentRef = placeholder.createComponent(factory);
 
     if (inputs) {
-      let comp = componentRef.instance; //todo: <ComponentType>componentRef.instance
-      for (let k in inputs) {
-        comp[k] = inputs[k]; //or: Object.assign(..)
+      const comp = componentRef.instance; // todo: <ComponentType>componentRef.instance
+      for (const k in inputs) {
+        comp[k] = inputs[k]; // or: Object.assign(..)
       }
     }
 
-    let el = componentRef.location.nativeElement as HTMLElement;
-    el.appendChild(content); //or: return el
+    const el = componentRef.location.nativeElement as HTMLElement;
+    el.appendChild(content); // or: return el
   }
 }

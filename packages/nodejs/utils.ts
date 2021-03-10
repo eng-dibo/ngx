@@ -1,4 +1,4 @@
-import { inspect, InspectOptions } from "util";
+import { inspect, InspectOptions } from 'util';
 
 // todo: test if this function exports module keys & work correctly
 export function exportAll(module: any) {
@@ -20,7 +20,7 @@ export function exportAll(module: any) {
 
 export function log(
   obj: any,
-  type = "log",
+  type = 'log',
   options: InspectOptions = {}
 ): void {
   options = Object.assign(

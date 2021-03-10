@@ -3,7 +3,7 @@ ignore webpack warnings
 see ./export-not-found.js for more details
  */
 
-export type Level = "warnings" | "errors";
+export type Level = 'warnings' | 'errors';
 export type Message = RegExp | string | Array<string>;
 
 export default class IgnoreWarningPlugin {
@@ -20,30 +20,30 @@ export default class IgnoreWarningPlugin {
    */
   constructor(
     message: Message,
-    levels: Level | Array<Level> = ["warnings"],
-    pluginName: string = "WebpackIgnorePlugin"
+    levels: Level | Array<Level> = ['warnings'],
+    pluginName: string = 'WebpackIgnorePlugin'
   ) {
     this.pluginName = pluginName;
     this.message = message;
-    this.levels = typeof levels === "string" ? [levels] : levels;
+    this.levels = typeof levels === 'string' ? [levels] : levels;
   }
 
   apply(compiler: any) {
-    let _this = this;
+    const _this = this;
 
     function hook(stats: any) {
-      if (stats.getStats) stats = stats.getStats();
+      if (stats.getStats) { stats = stats.getStats(); }
       _this.levels.forEach((level: Level) => {
-        //console.log(stats.compilation[level]);
+        // console.log(stats.compilation[level]);
         stats.compilation[level] = (
           stats.compilation[level] || []
         ).filter((warn: any) => _this.filter(warn, level));
       });
     }
 
-    //use hooks.afterCompile instead of hooks.done
-    //https://github.com/TypeStrong/ts-loader/issues/653#issuecomment-658129853
-    this.addHook(compiler, "afterCompile", hook);
+    // use hooks.afterCompile instead of hooks.done
+    // https://github.com/TypeStrong/ts-loader/issues/653#issuecomment-658129853
+    this.addHook(compiler, 'afterCompile', hook);
   }
 
   /**
@@ -53,10 +53,10 @@ export default class IgnoreWarningPlugin {
    * @return {boolean} return false to ignore the warning
    */
   filter(warn: any, level: Level) {
-    //convert message to RegExp
-    let message = this.getMessage(this.message);
+    // convert message to RegExp
+    const message = this.getMessage(this.message);
 
-    //if the message matches warn.mesage ignore it.
+    // if the message matches warn.mesage ignore it.
     return !message.test(warn.message);
   }
 
@@ -69,21 +69,21 @@ export default class IgnoreWarningPlugin {
    * @return {Regex}   [description]
    */
   getMessage(message: Message) {
-    if (message instanceof RegExp) return message;
+    if (message instanceof RegExp) { return message; }
 
-    //https://github.com/TypeStrong/ts-loader/issues/653#issuecomment-658129853
-    if (message instanceof Array) message = message.join("|");
-    else message = message || ".*";
+    // https://github.com/TypeStrong/ts-loader/issues/653#issuecomment-658129853
+    if (message instanceof Array) { message = message.join('|'); }
+    else { message = message || '.*'; }
 
-    //https://github.com/sindresorhus/escape-string-regexp
-    //todo: add to packages/js
-    let escapeStringForRegExp = (string: string) =>
-      string.replace(/[|\\{}()[\]^$+*?.]/g, "\\$&");
+    // https://github.com/sindresorhus/escape-string-regexp
+    // todo: add to packages/js
+    const escapeStringForRegExp = (string: string) =>
+      string.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
 
     return new RegExp(escapeStringForRegExp(message));
   }
 
-  addHook(compiler: any, level = "done", hook: any) {
+  addHook(compiler: any, level = 'done', hook: any) {
     if (compiler.hooks) {
       compiler.hooks[level].tap(this.pluginName, hook);
     } else {

@@ -3,8 +3,8 @@ import {
   model,
   mongoose,
   types
-} from "@engineers/mongoose";
-import { schemas, DB } from "~config/server";
+} from '@engineers/mongoose';
+import { schemas, DB } from '~config/server';
 
 /**
  * connect to the database using 'config'
@@ -13,13 +13,14 @@ import { schemas, DB } from "~config/server";
  * @return
  */
 export function connect(uri?: types.uri) {
-  if (!uri)
+  if (!uri) {
     uri = {
       auth: DB.auth,
       host: DB.host,
       srv: DB.srv,
       dbName: DB.dbName
     };
+  }
 
   return _connect(uri, { multiple: false });
 }
@@ -41,19 +42,19 @@ export function disconnect() {
  * @return [description]
  */
 export function getModel(collection: any, schemaObj = {}) {
-  //console.log("model: " +{ type, models: mongoose.models, modelNames: mongoose.modelNames() });
-  //todo: schemas/mongoose.ts
+  // console.log("model: " +{ type, models: mongoose.models, modelNames: mongoose.modelNames() });
+  // todo: schemas/mongoose.ts
 
   if (!schemaObj) {
-    //schemaName is the same as collection name (except if [collection]_categories)
-    //ex: articles_categories, jobs_categories
-    let schemaName = collection.indexOf("_categories")
-      ? "categories"
+    // schemaName is the same as collection name (except if [collection]_categories)
+    // ex: articles_categories, jobs_categories
+    const schemaName = collection.indexOf('_categories')
+      ? 'categories'
       : collection;
     schemaObj =
       schemaName in schemas
         ? schemas[schemaName as keyof typeof schemas]
-        : schemas["basic"] || {};
+        : schemas.basic || {};
   }
 
   return model(collection, schemaObj, { strict: false });
